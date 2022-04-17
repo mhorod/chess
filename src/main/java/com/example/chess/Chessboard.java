@@ -2,23 +2,151 @@ package com.example.chess;
 
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.LongToIntFunction;
+import java.util.stream.Collectors;
 
 
 public class Chessboard extends Pane {
     public final double fieldSize;
     Field[][] fields = new Field[8][8];
-    List<Field> legalFields = new ArrayList<>();
     Field highlightedField;
+
+    BoardState state = new NormalState();
+
+    abstract class BoardState {
+        void onPieceClick(Piece p) {}
+        void onFieldClick(Field f) {}
+        void onFieldMouseEntered(Field f) {}
+        void onPieceDrag(Piece p, MouseEvent e) {}
+        void onPieceDrop(Piece p) {}
+        void init() {}
+        void cleanUp() {}
+
+        final void changeState(BoardState state) {
+            cleanUp();
+            Chessboard.this.state = state;
+            state.init();
+        }
+    }
+
+    class NormalState extends BoardState {
+        @Override
+        void onPieceClick(Piece p) {
+            changeState(new PieceSelectedState(p));
+        }
+
+        @Override
+        void onPieceDrag(Piece p, MouseEvent e) {
+            changeState(new PieceDraggedState(p));
+        }
+    }
+
+    class PieceSelectedState extends BoardState {
+        Piece selectedPiece;
+        Field highlightedField;
+        List<Field> legalFields;
+        PieceSelectedState(Piece p) {
+            this.selectedPiece = p;
+            legalFields = p.piece.getLegalMoves().stream().map(f -> fields[f.x()][f.y()]).collect(Collectors.toList());
+        }
+
+        @Override
+        void onPieceClick(Piece p) {
+            if(p != selectedPiece) changeState(new PieceSelectedState(p));
+        }
+
+        @Override
+        void onFieldClick(Field f) {
+            if(f.legal) selectedPiece.piece.makeMove(f.x, f.y);
+            changeState(new NormalState());
+        }
+
+        @Override
+        void onFieldMouseEntered(Field f) {
+            if(highlightedField != null) highlightedField.dehighlight();
+            if(f.legal) {
+                f.highlight();
+                highlightedField = f;
+            }
+        }
+
+        @Override
+        void onPieceDrag(Piece p, MouseEvent e) {
+            changeState(new PieceDraggedState(p));
+        }
+
+        @Override
+        void init() {
+            selectedPiece.pickUp();
+            for(Field f : legalFields)
+                f.markAsLegal();
+        }
+
+        @Override
+        void cleanUp() {
+            selectedPiece.putDown();
+            if(highlightedField != null) highlightedField.dehighlight();
+            for(Field f : legalFields)
+                f.toNormal();
+        }
+    }
+
+    class PieceDraggedState extends BoardState {
+        Piece selectedPiece;
+        Field highlightedField;
+        List<Field> legalFields;
+        PieceDraggedState(Piece p) {
+            this.selectedPiece = p;
+            legalFields = p.piece.getLegalMoves().stream().map(f -> fields[f.x()][f.y()]).collect(Collectors.toList());
+        }
+
+        @Override
+        void onPieceDrag(Piece p, MouseEvent e) {
+            selectedPiece.setCenterX(e.getX());
+            selectedPiece.setCenterY(e.getY());
+            if(highlightedField != null) highlightedField.dehighlight();
+            highlightedField = nearestLegal(e.getX(), e.getY());
+            highlightedField.highlight();
+        }
+
+        @Override
+        void onPieceDrop(Piece p) {
+            selectedPiece.piece.makeMove(highlightedField.x, highlightedField.y);
+            changeState(new NormalState());
+        }
+
+        @Override
+        void init() {
+            selectedPiece.pickUp();
+            for(Field f : legalFields)
+                f.markAsLegal();
+        }
+
+        @Override
+        void cleanUp() {
+            selectedPiece.putDown();
+            if(highlightedField != null) highlightedField.dehighlight();
+            for(Field f : legalFields)
+                f.toNormal();
+        }
+
+        Field nearestLegal(double realX, double realY) {
+            return legalFields.stream().min((a, b) -> (int) Math.signum(distance2(a, realX, realY) - distance2(b, realX, realY))).orElse(null);
+        }
+
+        static double distance2(Field a, double x, double y) {
+            double deltaX = a.getCenter().getX() - x;
+            double deltaY = a.getCenter().getY() - y;
+            return deltaX * deltaX + deltaY * deltaY;
+        }
+    }
 
     private class Piece extends Circle {
         LogicalPiece piece;
@@ -26,50 +154,36 @@ public class Chessboard extends Pane {
         private Piece(LogicalPiece piece, Color fill, Color stroke) {
             this.piece = piece;
             setCursor(Cursor.CLOSED_HAND);
-            Field currentField = fieldAt(piece.x, piece.y);
+            Field currentField = fields[piece.x][piece.y];
             setCenterX(currentField.getCenter().getX());
             setCenterY(currentField.getCenter().getY());
             setStroke(stroke);
             setFill(fill);
             setStrokeWidth(5);
-
             putDown();
 
-            setOnMousePressed(e -> pickUp());
-
-            setOnMouseDragged(e -> {
-                setCenterX(e.getX());
-                setCenterY(e.getY());
-                Field current = nearestLegal(e.getX(), e.getY());
-                if(current != null) current.highlight();
-            });
-
-            setOnMouseReleased(e -> {
-                piece.makeMove(highlightedField.x, highlightedField.y);
-                setCenterX(fields[piece.x][piece.y].getCenter().getX());
-                setCenterY(fields[piece.x][piece.y].getCenter().getY());
-                putDown();
-                dehighlightAll();
-            });
+            setOnMousePressed(e -> state.onPieceClick(this));
+            setOnMouseDragged(e -> state.onPieceDrag(this, e));
+            setOnMouseReleased(e -> state.onPieceDrop(this));
         }
 
         void pickUp() {
             toFront();
-            Field current = fields[piece.x][piece.y];
-            current.highlight();
-            setLegalFields(piece.getLegalMoves());
             setRadius(fieldSize*0.5);
         }
 
         void putDown() {
             setRadius(fieldSize*0.4);
-            setLegalFields(List.of());
+            Field currentField = fields[piece.x][piece.y];
+            setCenterX(currentField.getCenter().getX());
+            setCenterY(currentField.getCenter().getY());
         }
     }
 
     private class Field extends Rectangle {
         int x, y;
         boolean dark;
+        boolean legal = false;
         private Field(boolean dark, int x, int y) {
             super(fieldSize, fieldSize, fieldSize, fieldSize);
             this.dark = dark;
@@ -79,6 +193,9 @@ public class Chessboard extends Pane {
             setStrokeType(StrokeType.INSIDE);
             setStroke(Color.color(1, 0, 1));
             setStrokeWidth(0);
+
+            setOnMouseEntered(e -> state.onFieldMouseEntered(this));
+            setOnMousePressed(e -> state.onFieldClick(this));
         }
 
         Point2D getCenter() {
@@ -86,7 +203,6 @@ public class Chessboard extends Pane {
         }
 
         void highlight() {
-            dehighlightAll();
             highlightedField = this;
             setStrokeWidth(4);
         }
@@ -96,44 +212,19 @@ public class Chessboard extends Pane {
         }
 
         void markAsLegal() {
-            legalFields.add(this);
-            setFill(dark ? Color.color(0.2, 0, 0.2) : Color.color(0.8, 0.3, 0.8));
+            setCursor(Cursor.CLOSED_HAND);
+            legal = true;
+            setFill(dark ? Color.color(0, 0.4, 0) : Color.color(0.4, 0.8, 0.4));
         }
 
         void toNormal() {
+            setCursor(Cursor.DEFAULT);
+            legal = false;
             setFill(dark ? Color.color(0.1, 0.1, 0.1) : Color.color(0.7, 0.7, 0.7));
         }
     }
 
-    Field fieldAt(double realX, double realY) {
-        int x = (int) Math.floor(realX/fieldSize);
-        int y = (int) Math.floor(realY/fieldSize);
-        if(x >= 0 && x < 8 && y >= 0 && y < 8) return fields[x][y];
-        else return null;
-    }
 
-    Field nearestLegal(double realX, double realY) {
-        return legalFields.stream().min((a, b) -> (int) Math.signum(distance2(a, realX, realY) - distance2(b, realX, realY))).orElse(null);
-    }
-
-    static double distance2(Field a, double x, double y) {
-        double deltaX = a.getCenter().getX() - x;
-        double deltaY = a.getCenter().getY() - y;
-        return deltaX * deltaX + deltaY * deltaY;
-    }
-
-    void dehighlightAll() {
-        if(highlightedField != null) highlightedField.dehighlight();
-        highlightedField = null;
-    }
-
-    void setLegalFields(List<LogicalField> fields) {
-        for(Field f : legalFields)
-            f.toNormal();
-        legalFields.clear();
-        for(LogicalField f : fields)
-            this.fields[f.x()][f.y()].markAsLegal();
-    }
 
 
     public Chessboard(double fieldSize) {
