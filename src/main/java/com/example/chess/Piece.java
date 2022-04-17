@@ -1,7 +1,7 @@
 package com.example.chess;
 
 /**
- * An abstract class that represents a chess piece.
+ * An class that represents a chess piece.
  * The chess board will be a 2-dimensional array of such pieces.
  *
  * @author Dominik Matuszek
