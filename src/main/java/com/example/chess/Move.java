@@ -9,20 +9,20 @@ import javafx.util.*;
 
 public class Move{
 
-    public enum file{
+    public enum File{
         A,B,C,D,E,F,G,H
     }
-    public enum rank{
-        ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE
+    public enum Rank{
+        ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT
     }
 
 
-    private final file fileNow;
-    private final file fileNext;
-    private final rank rankNow;
-    private final rank rankNext;
+    private final File fileNow;
+    private final File fileNext;
+    private final Rank rankNow;
+    private final Rank rankNext;
 
-    public Move(file fileNow, rank rankNow, file fileNext, rank rankNext){
+    public Move(File fileNow, Rank rankNow, File fileNext, Rank rankNext){
 
 
         if(rankNow == null || rankNext == null || fileNow == null || fileNext == null){
@@ -36,7 +36,7 @@ public class Move{
         this.fileNext = fileNext;
     }
 
-    private int fileToInt(file a){
+    private static int fileToInt(File a){
         return switch(a){
             case A -> 1;
             case B -> 2;
@@ -49,7 +49,7 @@ public class Move{
         };
     }
 
-    private int rankToInt(rank a){
+    private static int rankToInt(Rank a){
         return switch(a){
             case ONE -> 1;
             case TWO -> 2;
@@ -59,7 +59,34 @@ public class Move{
             case SIX -> 6;
             case SEVEN -> 7;
             case EIGHT -> 8;
-            case NINE -> 9;
+        };
+    }
+
+    public static File inToFile(int a){
+        return switch(a){
+            case 1 -> File.A;
+            case 2 -> File.B;
+            case 3 -> File.C;
+            case 4 -> File.D;
+            case 5 -> File.E;
+            case 6 -> File.F;
+            case 7 -> File.G;
+            case 8 -> File.H;
+            default -> throw new IllegalStateException("Unexpected value: " + a);
+        };
+    }
+
+    public static Rank intToRank(int a){
+        return switch(a){
+            case 1 -> Rank.ONE;
+            case 2 -> Rank.TWO;
+            case 3 -> Rank.THREE;
+            case 4 -> Rank.FOUR;
+            case 5 -> Rank.FIVE;
+            case 6 -> Rank.SIX;
+            case 7 -> Rank.SEVEN;
+            case 8 -> Rank.EIGHT;
+            default -> throw new IllegalStateException("Unexpected value: " + a);
         };
     }
 
@@ -75,7 +102,7 @@ public class Move{
      *
      * @return Position that given piece should be currently located on (represented by a pair of enums used for construction)
      */
-    public Pair<rank,file> getCurrentPositionEnum(){
+    public Pair<Rank,File> getCurrentPositionEnum(){
         return new Pair<>(rankNow, fileNow);
     }
 
@@ -92,7 +119,7 @@ public class Move{
      *
      * @return Position that given piece should be located on after performing a move (represented by a pair of enums used for construction)
      */
-    public Pair<rank,file> getNextPositionEnum(){
+    public Pair<Rank,File> getNextPositionEnum(){
         return new Pair<>(rankNext, fileNext);
     }
 
