@@ -2,14 +2,16 @@ package app.ui;
 
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,11 +35,22 @@ public class Chessboard extends Pane {
         }
 
         getChildren().add(grid);
-
-        for (int x = 0; x < 14; x++) {
-            Piece circle = new Piece(new LogicalPiece(0, 0), Color.color(1, .5, 1), Color.color(1, 0, 1));
-            getChildren().add(circle);
+        List<Piece> pieces = new ArrayList<Piece>();
+        for (int x = 0; x < 8; x++) {
+            pieces.add(new Piece(new LogicalPiece(x, 1), ImageManager.PAWN));
         }
+        pieces.add(new Piece(new LogicalPiece(0, 0), ImageManager.ROOK));
+        pieces.add(new Piece(new LogicalPiece(1, 0), ImageManager.KNIGHT));
+        pieces.add(new Piece(new LogicalPiece(2, 0), ImageManager.BISHOP));
+        pieces.add(new Piece(new LogicalPiece(3, 0), ImageManager.KING));
+        pieces.add(new Piece(new LogicalPiece(4, 0), ImageManager.QUEEN));
+        pieces.add(new Piece(new LogicalPiece(5, 0), ImageManager.BISHOP));
+        pieces.add(new Piece(new LogicalPiece(6, 0), ImageManager.KNIGHT));
+        pieces.add(new Piece(new LogicalPiece(7, 0), ImageManager.ROOK));
+
+
+        for (Piece p : pieces)
+            getChildren().add(p);
     }
 
     abstract class BoardState {
@@ -194,20 +207,18 @@ public class Chessboard extends Pane {
         }
     }
 
-    private class Piece extends Circle {
+    private class Piece extends ImageView {
         LogicalPiece piece;
 
-        private Piece(LogicalPiece piece, Color fill, Color stroke) {
+        private Piece(LogicalPiece piece, Image img) {
+            super(img);
             this.piece = piece;
-            setCursor(Cursor.CLOSED_HAND);
-            Field currentField = fields[piece.x][piece.y];
-            setCenterX(currentField.getCenter().getX());
-            setCenterY(currentField.getCenter().getY());
-            setStroke(stroke);
-            setFill(fill);
-            setStrokeWidth(5);
-            putDown();
+            setFitWidth(fieldSize);
+            setFitHeight(fieldSize);
 
+            setCursor(Cursor.CLOSED_HAND);
+
+            putDown();
             setOnMousePressed(e -> state.onPieceClick(this));
             setOnMouseDragged(e -> state.onPieceDrag(this, e));
             setOnMouseReleased(e -> state.onPieceDrop(this));
@@ -215,11 +226,24 @@ public class Chessboard extends Pane {
 
         void pickUp() {
             toFront();
-            setRadius(fieldSize * 0.5);
+            setFitWidth(fieldSize * 1.2);
+            setFitHeight(fieldSize * 1.2);
+            Field currentField = fields[piece.x][piece.y];
+            setCenterX(currentField.getCenter().getX());
+            setCenterY(currentField.getCenter().getY());
+        }
+
+        void setCenterX(double x) {
+            setX(x - getFitWidth() / 2);
+        }
+
+        void setCenterY(double y) {
+            setY(y - getFitHeight() / 2);
         }
 
         void putDown() {
-            setRadius(fieldSize * 0.4);
+            setFitWidth(fieldSize);
+            setFitHeight(fieldSize);
             Field currentField = fields[piece.x][piece.y];
             setCenterX(currentField.getCenter().getX());
             setCenterY(currentField.getCenter().getY());
@@ -266,7 +290,7 @@ public class Chessboard extends Pane {
         void toNormal() {
             setCursor(Cursor.DEFAULT);
             legal = false;
-            setFill(dark ? Color.color(0.1, 0.1, 0.1) : Color.color(0.7, 0.7, 0.7));
+            setFill(dark ? Color.color(0.4, 0.4, 0.4) : Color.color(0.7, 0.7, 0.7));
         }
     }
 }
