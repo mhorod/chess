@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 public class App extends Application {
     @Override
     public void start(Stage stage) {
+
         Pane board = new Chessboard(60);
         VBox pane = new VBox();
         pane.setAlignment(Pos.CENTER);
