@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 public class Chessboard extends Pane {
     public final double fieldSize;
     Field[][] fields = new Field[8][8];
-    Field highlightedField;
-
     BoardState state = new NormalState();
 
     abstract class BoardState {
@@ -60,6 +58,7 @@ public class Chessboard extends Pane {
         @Override
         void onPieceClick(Piece p) {
             if(p != selectedPiece) changeState(new PieceSelectedState(p));
+            else changeState(new NormalState());
         }
 
         @Override
@@ -118,7 +117,7 @@ public class Chessboard extends Pane {
 
         @Override
         void onPieceDrop(Piece p) {
-            selectedPiece.piece.makeMove(highlightedField.x, highlightedField.y);
+            if(highlightedField != null) selectedPiece.piece.makeMove(highlightedField.x, highlightedField.y);
             changeState(new NormalState());
         }
 
@@ -138,7 +137,9 @@ public class Chessboard extends Pane {
         }
 
         Field nearestLegal(double realX, double realY) {
-            return legalFields.stream().min((a, b) -> (int) Math.signum(distance2(a, realX, realY) - distance2(b, realX, realY))).orElse(null);
+            return legalFields.stream()
+                    .min((a, b) -> (int) Math.signum(distance2(a, realX, realY) - distance2(b, realX, realY)))
+                    .orElse(null);
         }
 
         static double distance2(Field a, double x, double y) {
@@ -203,7 +204,6 @@ public class Chessboard extends Pane {
         }
 
         void highlight() {
-            highlightedField = this;
             setStrokeWidth(4);
         }
 
