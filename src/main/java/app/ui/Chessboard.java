@@ -1,4 +1,4 @@
-package com.example.chess;
+package app.ui;
 
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
@@ -9,23 +9,58 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
+
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 public class Chessboard extends Pane {
     public final double fieldSize;
     Field[][] fields = new Field[8][8];
     BoardState state = new NormalState();
 
+    public Chessboard(double fieldSize) {
+        this.fieldSize = fieldSize;
+        setMaxWidth(8 * fieldSize);
+        setMaxHeight(8 * fieldSize);
+        GridPane grid = new GridPane();
+
+
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                fields[x][y] = new Field((x + y) % 2 == 1, x, y);
+                grid.add(fields[x][y], x, y);
+            }
+        }
+
+        getChildren().add(grid);
+
+        for (int x = 0; x < 14; x++) {
+            Piece circle = new Piece(new LogicalPiece(0, 0), Color.color(1, .5, 1), Color.color(1, 0, 1));
+            getChildren().add(circle);
+        }
+    }
+
     abstract class BoardState {
-        void onPieceClick(Piece p) {}
-        void onFieldClick(Field f) {}
-        void onFieldMouseEntered(Field f) {}
-        void onPieceDrag(Piece p, MouseEvent e) {}
-        void onPieceDrop(Piece p) {}
-        void init() {}
-        void cleanUp() {}
+        void onPieceClick(Piece p) {
+        }
+
+        void onFieldClick(Field f) {
+        }
+
+        void onFieldMouseEntered(Field f) {
+        }
+
+        void onPieceDrag(Piece p, MouseEvent e) {
+        }
+
+        void onPieceDrop(Piece p) {
+        }
+
+        void init() {
+        }
+
+        void cleanUp() {
+        }
 
         final void changeState(BoardState state) {
             cleanUp();
@@ -50,6 +85,7 @@ public class Chessboard extends Pane {
         Piece selectedPiece;
         Field highlightedField;
         List<Field> legalFields;
+
         PieceSelectedState(Piece p) {
             this.selectedPiece = p;
             legalFields = p.piece.getLegalMoves().stream().map(f -> fields[f.x()][f.y()]).collect(Collectors.toList());
@@ -57,20 +93,24 @@ public class Chessboard extends Pane {
 
         @Override
         void onPieceClick(Piece p) {
-            if(p != selectedPiece) changeState(new PieceSelectedState(p));
-            else changeState(new NormalState());
+            if (p != selectedPiece)
+                changeState(new PieceSelectedState(p));
+            else
+                changeState(new NormalState());
         }
 
         @Override
         void onFieldClick(Field f) {
-            if(f.legal) selectedPiece.piece.makeMove(f.x, f.y);
+            if (f.legal)
+                selectedPiece.piece.makeMove(f.x, f.y);
             changeState(new NormalState());
         }
 
         @Override
         void onFieldMouseEntered(Field f) {
-            if(highlightedField != null) highlightedField.dehighlight();
-            if(f.legal) {
+            if (highlightedField != null)
+                highlightedField.dehighlight();
+            if (f.legal) {
                 f.highlight();
                 highlightedField = f;
             }
@@ -84,15 +124,16 @@ public class Chessboard extends Pane {
         @Override
         void init() {
             selectedPiece.pickUp();
-            for(Field f : legalFields)
+            for (Field f : legalFields)
                 f.markAsLegal();
         }
 
         @Override
         void cleanUp() {
             selectedPiece.putDown();
-            if(highlightedField != null) highlightedField.dehighlight();
-            for(Field f : legalFields)
+            if (highlightedField != null)
+                highlightedField.dehighlight();
+            for (Field f : legalFields)
                 f.toNormal();
         }
     }
@@ -101,38 +142,48 @@ public class Chessboard extends Pane {
         Piece selectedPiece;
         Field highlightedField;
         List<Field> legalFields;
+
         PieceDraggedState(Piece p) {
             this.selectedPiece = p;
             legalFields = p.piece.getLegalMoves().stream().map(f -> fields[f.x()][f.y()]).collect(Collectors.toList());
+        }
+
+        static double distance2(Field a, double x, double y) {
+            double deltaX = a.getCenter().getX() - x;
+            double deltaY = a.getCenter().getY() - y;
+            return deltaX * deltaX + deltaY * deltaY;
         }
 
         @Override
         void onPieceDrag(Piece p, MouseEvent e) {
             selectedPiece.setCenterX(e.getX());
             selectedPiece.setCenterY(e.getY());
-            if(highlightedField != null) highlightedField.dehighlight();
+            if (highlightedField != null)
+                highlightedField.dehighlight();
             highlightedField = nearestLegal(e.getX(), e.getY());
             highlightedField.highlight();
         }
 
         @Override
         void onPieceDrop(Piece p) {
-            if(highlightedField != null) selectedPiece.piece.makeMove(highlightedField.x, highlightedField.y);
+            if (highlightedField != null)
+                selectedPiece.piece.makeMove(highlightedField.x, highlightedField.y);
             changeState(new NormalState());
         }
 
         @Override
         void init() {
             selectedPiece.pickUp();
-            for(Field f : legalFields)
+            for (Field f : legalFields)
                 f.markAsLegal();
         }
 
         @Override
         void cleanUp() {
             selectedPiece.putDown();
-            if(highlightedField != null) highlightedField.dehighlight();
-            for(Field f : legalFields)
+            if (highlightedField != null)
+                highlightedField.dehighlight();
+            for (Field f : legalFields)
                 f.toNormal();
         }
 
@@ -140,12 +191,6 @@ public class Chessboard extends Pane {
             return legalFields.stream()
                     .min((a, b) -> (int) Math.signum(distance2(a, realX, realY) - distance2(b, realX, realY)))
                     .orElse(null);
-        }
-
-        static double distance2(Field a, double x, double y) {
-            double deltaX = a.getCenter().getX() - x;
-            double deltaY = a.getCenter().getY() - y;
-            return deltaX * deltaX + deltaY * deltaY;
         }
     }
 
@@ -170,11 +215,11 @@ public class Chessboard extends Pane {
 
         void pickUp() {
             toFront();
-            setRadius(fieldSize*0.5);
+            setRadius(fieldSize * 0.5);
         }
 
         void putDown() {
-            setRadius(fieldSize*0.4);
+            setRadius(fieldSize * 0.4);
             Field currentField = fields[piece.x][piece.y];
             setCenterX(currentField.getCenter().getX());
             setCenterY(currentField.getCenter().getY());
@@ -185,6 +230,7 @@ public class Chessboard extends Pane {
         int x, y;
         boolean dark;
         boolean legal = false;
+
         private Field(boolean dark, int x, int y) {
             super(fieldSize, fieldSize, fieldSize, fieldSize);
             this.dark = dark;
@@ -221,31 +267,6 @@ public class Chessboard extends Pane {
             setCursor(Cursor.DEFAULT);
             legal = false;
             setFill(dark ? Color.color(0.1, 0.1, 0.1) : Color.color(0.7, 0.7, 0.7));
-        }
-    }
-
-
-
-
-    public Chessboard(double fieldSize) {
-        this.fieldSize = fieldSize;
-        setMaxWidth(8*fieldSize);
-        setMaxHeight(8*fieldSize);
-        GridPane grid = new GridPane();
-
-
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
-                fields[x][y] = new Field((x + y) % 2 == 1, x, y);
-                grid.add(fields[x][y], x, y);
-            }
-        }
-
-        getChildren().add(grid);
-
-        for(int x = 0; x < 14; x++) {
-            Piece circle = new Piece(new LogicalPiece(0, 0), Color.color(1, .5, 1), Color.color(1, 0, 1));
-            getChildren().add(circle);
         }
     }
 }

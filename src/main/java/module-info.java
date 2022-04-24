@@ -1,8 +1,10 @@
-module com.example.chess {
+module app {
     requires javafx.controls;
     requires javafx.fxml;
 
 
-    opens com.example.chess to javafx.fxml;
-    exports com.example.chess;
+    opens app to javafx.fxml;
+    exports app;
+    exports app.ui;
+    opens app.ui to javafx.fxml;
 }
