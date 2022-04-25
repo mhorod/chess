@@ -11,8 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeType;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -91,7 +90,7 @@ public class Chessboard extends Pane {
             text.setEffect(new DropShadow());
             setMinWidth(25);
             setMinHeight(25);
-            setBackground(new Background(new BackgroundFill(dark ? Color.color(0.3, 0.3, 0.3) : Color.color(0.5, 0.5, 0.5), CornerRadii.EMPTY, Insets.EMPTY)));
+            setBackground(new Background(new BackgroundFill(dark ? Color.color(0.4, 0.4, 0.4) : Color.color(0.5, 0.5, 0.5), CornerRadii.EMPTY, Insets.EMPTY)));
             getChildren().add(text);
             setAlignment(Pos.CENTER);
         }
@@ -298,23 +297,30 @@ public class Chessboard extends Pane {
         }
     }
 
-    private class Field extends Rectangle {
+    private class Field extends VBox {
         int x, y;
         boolean dark;
         boolean legal = false;
+        Circle circle = new Circle(fieldSize / 5);
 
         private Field(boolean dark, int x, int y) {
-            super(fieldSize, fieldSize, fieldSize, fieldSize);
+            super();
+            setMaxWidth(fieldSize);
+            setMaxHeight(fieldSize);
+            setMinWidth(fieldSize);
+            setMinHeight(fieldSize);
+
+            setAlignment(Pos.CENTER);
+            circle.setFill(dark ? Color.color(0.6, 0.6, 0.6, 0.7) : Color.color(0.5, 0.5, 0.5, 0.7));
+            getChildren().add(circle);
+
             this.dark = dark;
             this.x = x;
             this.y = y;
             toNormal();
-            setStrokeType(StrokeType.INSIDE);
-            setStroke(Color.color(1, 0, 1));
-            setStrokeWidth(0);
-
             setOnMouseEntered(e -> state.onFieldMouseEntered(this));
             setOnMousePressed(e -> state.onFieldClick(this));
+
         }
 
         Point2D getCenter() {
@@ -322,23 +328,24 @@ public class Chessboard extends Pane {
         }
 
         void highlight() {
-            setStrokeWidth(4);
+            circle.setRadius(fieldSize / 3);
         }
 
         void dehighlight() {
-            setStrokeWidth(0);
+            circle.setRadius(fieldSize / 4);
         }
 
         void markAsLegal() {
             setCursor(Cursor.CLOSED_HAND);
             legal = true;
-            setFill(dark ? Color.color(0.2, 0.6, 0.2) : Color.color(0.4, 0.8, 0.4));
+            circle.setVisible(true);
         }
 
         void toNormal() {
             setCursor(Cursor.DEFAULT);
             legal = false;
-            setFill(dark ? Color.color(0.2, 0.2, 0.2) : Color.color(0.7, 0.7, 0.7));
+            circle.setVisible(false);
+            setBackground(new Background(new BackgroundFill(dark ? Color.color(0.4, 0.4, 0.4) : Color.color(0.7, 0.7, 0.7), CornerRadii.EMPTY, Insets.EMPTY)));
         }
     }
 }
