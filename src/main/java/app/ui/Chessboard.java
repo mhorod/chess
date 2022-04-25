@@ -269,11 +269,8 @@ public class Chessboard extends Pane {
             colorAdjust.setHue(hue);
             colorAdjust.setSaturation(color.getSaturation());
             colorAdjust.setBrightness(-1 + color.getBrightness());
-            colorAdjust.setInput(new DropShadow());
-
             var dropShadow = new DropShadow();
             dropShadow.setInput(colorAdjust);
-
             setEffect(dropShadow);
             setCursor(Cursor.CLOSED_HAND);
 

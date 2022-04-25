@@ -13,7 +13,7 @@ public class App extends Application {
     public void start(Stage stage) {
         Style style = new Style() {
             {
-                whitePiece = Color.color(0.9, 0.9, 0.9);
+                whitePiece = Color.color(0.8, 0.8, 0.8);
                 blackPiece = Color.color(0.3, 0.3, 0.3);
                 whiteField = Color.color(0.7, 0.7, 0.7);
                 blackField = Color.color(0.4, 0.4, 0.4);
