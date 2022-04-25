@@ -1,6 +1,7 @@
-package app.pieceplayer;
+package app.utils.pieceplayer;
 
-import app.core.game.*;
+import app.core.game.Piece;
+import app.core.game.moves.Move;
 
 /**
  * Interface for moving single piece, to be used with external controllers such as UI

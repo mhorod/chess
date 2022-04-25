@@ -1,7 +1,8 @@
-package app.pieceplayer;
+package app.utils.pieceplayer;
 
-import app.core.game.*;
-import app.core.interactor.*;
+import app.core.game.Piece;
+import app.core.game.moves.Move;
+import app.core.interactor.Player;
 
 /**
  * Player wrapper that allows moving with pieces instead moves

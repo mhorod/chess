@@ -1,6 +1,7 @@
 package app.core.interactor;
 
-import app.core.game.*;
+import app.core.game.Piece;
+import app.core.game.moves.Move;
 
 /**
  * Represents possible interactions with game
