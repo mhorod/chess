@@ -1,7 +1,6 @@
 package app.core.game.moves;
 
-import app.core.game.Field;
-import app.core.game.Piece;
+import app.core.game.*;
 
 public class PieceMove<P extends Piece> implements Move<P> {
     private final P piece;
@@ -15,5 +14,9 @@ public class PieceMove<P extends Piece> implements Move<P> {
     @Override
     final public void match(MoveMatcher<P> matcher) {
         matcher.pieceMove(piece, field);
+    }
+
+    final public P getPiece() {
+        return piece;
     }
 }
