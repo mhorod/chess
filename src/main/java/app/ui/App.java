@@ -11,8 +11,20 @@ import javafx.stage.Stage;
 public class App extends Application {
     @Override
     public void start(Stage stage) {
-
-        Pane board = new Chessboard(60);
+        Style style = new Style() {
+            {
+                whitePiece = Color.color(0.9, 0.9, 0.9);
+                blackPiece = Color.color(0.3, 0.3, 0.3);
+                whiteField = Color.color(0.7, 0.7, 0.7);
+                blackField = Color.color(0.4, 0.4, 0.4);
+                borderWhite = Color.color(0.5, 0.5, 0.5);
+                borderBlack = Color.color(0.4, 0.4, 0.4);
+                borderText = Color.color(0.9, 0.9, 0.9);
+                whiteFieldCircle = Color.color(0.5, 0.5, 0.5, 0.7);
+                blackFieldCircle = Color.color(0.6, 0.6, 0.6, 0.7);
+            }
+        };
+        Pane board = new Chessboard(60, style);
         VBox pane = new VBox();
         pane.setAlignment(Pos.CENTER);
         pane.getChildren().add(board);

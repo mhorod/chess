@@ -23,8 +23,10 @@ public class Chessboard extends Pane {
     public final double fieldSize;
     Field[][] fields = new Field[8][8];
     BoardState state = new NormalState();
+    Style style;
 
-    public Chessboard(double fieldSize) {
+    public Chessboard(double fieldSize, Style style) {
+        this.style = style;
         this.fieldSize = fieldSize;
         setMaxWidth(8 * fieldSize);
         setMaxHeight(8 * fieldSize);
@@ -48,49 +50,51 @@ public class Chessboard extends Pane {
         }
 
 
+        Color white = style.whitePiece;
+        Color black = style.blackPiece;
         getChildren().add(grid);
         List<Piece> pieces = new ArrayList<Piece>();
         for (int x = 0; x < 8; x++) {
-            pieces.add(new Piece(new LogicalPiece(x, 1), ImageManager.PAWN, false));
+            pieces.add(new Piece(new LogicalPiece(x, 1), ImageManager.PAWN, white));
         }
-        pieces.add(new Piece(new LogicalPiece(0, 0), ImageManager.ROOK, false));
-        pieces.add(new Piece(new LogicalPiece(1, 0), ImageManager.KNIGHT, false));
-        pieces.add(new Piece(new LogicalPiece(2, 0), ImageManager.BISHOP, false));
-        pieces.add(new Piece(new LogicalPiece(3, 0), ImageManager.KING, false));
-        pieces.add(new Piece(new LogicalPiece(4, 0), ImageManager.QUEEN, false));
-        pieces.add(new Piece(new LogicalPiece(5, 0), ImageManager.BISHOP, false));
-        pieces.add(new Piece(new LogicalPiece(6, 0), ImageManager.KNIGHT, false));
-        pieces.add(new Piece(new LogicalPiece(7, 0), ImageManager.ROOK, false));
+        pieces.add(new Piece(new LogicalPiece(0, 0), ImageManager.ROOK, white));
+        pieces.add(new Piece(new LogicalPiece(1, 0), ImageManager.KNIGHT, white));
+        pieces.add(new Piece(new LogicalPiece(2, 0), ImageManager.BISHOP, white));
+        pieces.add(new Piece(new LogicalPiece(3, 0), ImageManager.KING, white));
+        pieces.add(new Piece(new LogicalPiece(4, 0), ImageManager.QUEEN, white));
+        pieces.add(new Piece(new LogicalPiece(5, 0), ImageManager.BISHOP, white));
+        pieces.add(new Piece(new LogicalPiece(6, 0), ImageManager.KNIGHT, white));
+        pieces.add(new Piece(new LogicalPiece(7, 0), ImageManager.ROOK, white));
 
         for (int x = 0; x < 8; x++) {
-            pieces.add(new Piece(new LogicalPiece(x, 6), ImageManager.PAWN, true));
+            pieces.add(new Piece(new LogicalPiece(x, 6), ImageManager.PAWN, black));
         }
-        pieces.add(new Piece(new LogicalPiece(0, 7), ImageManager.ROOK, true));
-        pieces.add(new Piece(new LogicalPiece(1, 7), ImageManager.KNIGHT, true));
-        pieces.add(new Piece(new LogicalPiece(2, 7), ImageManager.BISHOP, true));
-        pieces.add(new Piece(new LogicalPiece(3, 7), ImageManager.KING, true));
-        pieces.add(new Piece(new LogicalPiece(4, 7), ImageManager.QUEEN, true));
-        pieces.add(new Piece(new LogicalPiece(5, 7), ImageManager.BISHOP, true));
-        pieces.add(new Piece(new LogicalPiece(6, 7), ImageManager.KNIGHT, true));
-        pieces.add(new Piece(new LogicalPiece(7, 7), ImageManager.ROOK, true));
+        pieces.add(new Piece(new LogicalPiece(0, 7), ImageManager.ROOK, black));
+        pieces.add(new Piece(new LogicalPiece(1, 7), ImageManager.KNIGHT, black));
+        pieces.add(new Piece(new LogicalPiece(2, 7), ImageManager.BISHOP, black));
+        pieces.add(new Piece(new LogicalPiece(3, 7), ImageManager.KING, black));
+        pieces.add(new Piece(new LogicalPiece(4, 7), ImageManager.QUEEN, black));
+        pieces.add(new Piece(new LogicalPiece(5, 7), ImageManager.BISHOP, black));
+        pieces.add(new Piece(new LogicalPiece(6, 7), ImageManager.KNIGHT, black));
+        pieces.add(new Piece(new LogicalPiece(7, 7), ImageManager.ROOK, black));
 
 
         for (Piece p : pieces)
             getChildren().add(p);
     }
 
-    private static class Label extends VBox {
+    private class Label extends VBox {
         static Font font = Font.loadFont(Label.class.getResource("/fonts/AzeretMono-Bold.ttf").toExternalForm(), 20);
 
         Label(String content, boolean dark) {
             super();
             var text = new Text(content);
             text.setFont(font);
-            text.setFill(Color.color(0.9, 0.9, 0.9));
+            text.setFill(style.borderText);
             text.setEffect(new DropShadow());
             setMinWidth(25);
             setMinHeight(25);
-            setBackground(new Background(new BackgroundFill(dark ? Color.color(0.4, 0.4, 0.4) : Color.color(0.5, 0.5, 0.5), CornerRadii.EMPTY, Insets.EMPTY)));
+            setBackground(new Background(new BackgroundFill(dark ? style.borderBlack : style.borderWhite, CornerRadii.EMPTY, Insets.EMPTY)));
             getChildren().add(text);
             setAlignment(Pos.CENTER);
         }
@@ -253,16 +257,24 @@ public class Chessboard extends Pane {
     private class Piece extends ImageView {
         LogicalPiece piece;
 
-        private Piece(LogicalPiece piece, Image img, boolean black) {
+        private Piece(LogicalPiece piece, Image img, Color color) {
             super(img);
             this.piece = piece;
             setFitWidth(fieldSize);
             setFitHeight(fieldSize);
 
-            var effect = new ColorAdjust();
-            effect.setBrightness(black ? -0.7 : -0.1);
-            effect.setInput(new DropShadow());
-            setEffect(effect);
+            var colorAdjust = new ColorAdjust();
+            var hue = color.getHue() / 180;
+            if (hue > 1) hue -= 2;
+            colorAdjust.setHue(hue);
+            colorAdjust.setSaturation(color.getSaturation());
+            colorAdjust.setBrightness(-1 + color.getBrightness());
+            colorAdjust.setInput(new DropShadow());
+
+            var dropShadow = new DropShadow();
+            dropShadow.setInput(colorAdjust);
+
+            setEffect(dropShadow);
             setCursor(Cursor.CLOSED_HAND);
 
             putDown();
@@ -311,7 +323,7 @@ public class Chessboard extends Pane {
             setMinHeight(fieldSize);
 
             setAlignment(Pos.CENTER);
-            circle.setFill(dark ? Color.color(0.6, 0.6, 0.6, 0.7) : Color.color(0.5, 0.5, 0.5, 0.7));
+            circle.setFill(dark ? style.blackFieldCircle : style.whiteFieldCircle);
             getChildren().add(circle);
 
             this.dark = dark;
@@ -345,7 +357,7 @@ public class Chessboard extends Pane {
             setCursor(Cursor.DEFAULT);
             legal = false;
             circle.setVisible(false);
-            setBackground(new Background(new BackgroundFill(dark ? Color.color(0.4, 0.4, 0.4) : Color.color(0.7, 0.7, 0.7), CornerRadii.EMPTY, Insets.EMPTY)));
+            setBackground(new Background(new BackgroundFill(dark ? style.blackField : style.whiteField, CornerRadii.EMPTY, Insets.EMPTY)));
         }
     }
 }
