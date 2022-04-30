@@ -144,6 +144,6 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
     @Override
     public int getPlayerCount() {
-        return 0;
+        return 2; //It's always going to be that way in classical chess
     }
 }

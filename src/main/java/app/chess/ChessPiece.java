@@ -44,7 +44,7 @@ public abstract class ChessPiece implements Piece {
         return wasMoved;
     }
 
-    abstract ChessPieceKind getKind();
+    public abstract ChessPieceKind getKind();
 
 
 }
