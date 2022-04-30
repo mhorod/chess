@@ -4,7 +4,7 @@ import app.core.game.*;
 
 public abstract class ChessPiece implements Piece {
 
-    static class IncorrectPiecePlacementException extends RuntimeException{}
+    static class IncorrectPiecePlacement extends RuntimeException{}
     boolean wasMoved = false;
     boolean isBlack;
     boolean isAlive = true; //Defaults to true, who would like to create a dead chess piece anyways
@@ -20,8 +20,8 @@ public abstract class ChessPiece implements Piece {
         int rank = position.rank();
         int file = position.file();
 
-        if(rank > 8 || rank < 1 || file > 8 || file < 1) { //A quick validation to check whether if arguments supplied here are correct
-            throw new IncorrectPiecePlacementException();
+        if(rank > 8 || rank < 1 || file > 8 || file < 1) { //A quick validation to check whether arguments supplied here are correct
+            throw new IncorrectPiecePlacement();
         }
 
     }
