@@ -2,14 +2,13 @@ package app.chess;
 
 import app.core.game.*;
 
-public class Pawn extends ChessPiece {
-
-    Pawn(Field position, boolean isBlack) {
+public class Rook extends ChessPiece{
+    Rook(Field position, boolean isBlack) {
         super(position, isBlack);
     }
 
     @Override
     public ChessPieceKind getKind() {
-        return ChessPieceKind.PAWN;
+        return ChessPieceKind.ROOK;
     }
 }
