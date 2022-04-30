@@ -12,11 +12,11 @@ public class PieceMove<P extends Piece> implements Move<P> {
     }
 
     @Override
-    final public void match(MoveMatcher<P> matcher) {
+    public final void match(MoveMatcher<P> matcher) {
         matcher.pieceMove(piece, field);
     }
 
-    final public P getPiece() {
+    public final P getPiece() {
         return piece;
     }
 }
