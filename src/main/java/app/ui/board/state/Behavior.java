@@ -4,8 +4,8 @@ import app.core.game.Field;
 import app.ui.board.Piece;
 import javafx.scene.input.MouseEvent;
 
-public interface Behavior {
-    default void onPieceClick(Piece p) {
+public interface Behavior<P extends Piece<?, ?>> {
+    default void onPieceClick(P p) {
     }
 
     default void onFieldClick(Field f) {
@@ -14,9 +14,9 @@ public interface Behavior {
     default void onFieldMouseEntered(Field f) {
     }
 
-    default void onPieceDrag(Piece p, MouseEvent e) {
+    default void onPieceDrag(P p, MouseEvent e) {
     }
 
-    default void onPieceDrop(Piece p) {
+    default void onPieceDrop(P p) {
     }
 }

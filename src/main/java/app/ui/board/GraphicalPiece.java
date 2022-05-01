@@ -1,7 +1,7 @@
 package app.ui.board;
 
+import app.chess.pieces.ChessPieceKind;
 import app.ui.ImageManager;
-import app.ui.PieceType;
 import app.ui.utils.ColoredImage;
 import app.ui.utils.Position;
 import javafx.scene.Cursor;
@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 
 public class GraphicalPiece extends ColoredImage {
 
-    public GraphicalPiece(PieceType type, GraphicalField graphicalField, Color color) {
+    public GraphicalPiece(ChessPieceKind type, GraphicalField graphicalField, Color color) {
         super(ImageManager.getPieceImage(type), color);
         putDown(graphicalField);
         setCursor(Cursor.HAND);

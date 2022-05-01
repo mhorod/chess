@@ -9,28 +9,28 @@ import javafx.scene.input.MouseEvent;
 
 import java.util.List;
 
-public class PieceDragged extends State {
-    private final Board board;
-    private final Piece selectedPiece;
+public class PieceDragged<P extends Piece<?, ?>> extends State<P> {
+    private final Board<?, ?> board;
+    private final P selectedPiece;
     private final List<Field> legalFields;
     private Field highlightedField;
 
-    PieceDragged(Board board, Piece selectedPiece) {
+    PieceDragged(Board<?, ?> board, P selectedPiece) {
         this.board = board;
         this.selectedPiece = selectedPiece;
-        legalFields = selectedPiece.logical.getLegalMoves();
+        legalFields = selectedPiece.logical.getLegalMoveFields().keySet().stream().toList();
     }
 
     @Override
     protected void init() {
-        selectedPiece.graphical.pickUp(board.getGraphicalField(selectedPiece.logical.getPosition()));
+        selectedPiece.graphical.pickUp(board.getGraphicalField(selectedPiece.logical.getPiece().getPosition()));
         for (Field f : legalFields)
             board.getGraphicalField(f).markAsLegal();
     }
 
     @Override
     protected void cleanUp() {
-        selectedPiece.graphical.putDown(board.getGraphicalField(selectedPiece.logical.getPosition()));
+        selectedPiece.graphical.putDown(board.getGraphicalField(selectedPiece.logical.getPiece().getPosition()));
         if (highlightedField != null)
             board.getGraphicalField(highlightedField).unhighlight();
         for (Field f : legalFields)
@@ -38,19 +38,20 @@ public class PieceDragged extends State {
     }
 
     @Override
-    public void onPieceDrag(Piece piece, MouseEvent e) {
+    public void onPieceDrag(P piece, MouseEvent e) {
         selectedPiece.graphical.setCenter(new Position(e.getX(), e.getY()));
         if (highlightedField != null)
             board.getGraphicalField(highlightedField).unhighlight();
         highlightedField = nearestLegal(e.getX(), e.getY());
-        board.getGraphicalField(highlightedField).highlight();
+        if (highlightedField != null)
+            board.getGraphicalField(highlightedField).highlight();
     }
 
     @Override
-    public void onPieceDrop(Piece piece) {
+    public void onPieceDrop(P piece) {
         if (highlightedField != null)
             piece.logical.makeMove(highlightedField);
-        changeState(new Normal(board));
+        changeState(new Normal<>(board));
     }
 
     private double distance2(Field a, double x, double y) {

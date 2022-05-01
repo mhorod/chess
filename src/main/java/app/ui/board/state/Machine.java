@@ -6,17 +6,17 @@ import app.ui.board.Piece;
 import app.ui.board.state.states.Normal;
 import javafx.scene.input.MouseEvent;
 
-public class Machine implements Behavior {
-    State current;
+public class Machine<P extends Piece<?, ?>> implements Behavior<P> {
+    State<P> current;
 
-    public Machine(Board board) {
-        current = new Normal(board);
+    public Machine(Board<?, ?> board) {
+        current = new Normal<>(board);
         current.loadMachine(this);
         current.init();
     }
 
     @Override
-    public void onPieceClick(Piece p) {
+    public void onPieceClick(P p) {
         current.onPieceClick(p);
     }
 
@@ -31,16 +31,16 @@ public class Machine implements Behavior {
     }
 
     @Override
-    public void onPieceDrag(Piece p, MouseEvent e) {
+    public void onPieceDrag(P p, MouseEvent e) {
         current.onPieceDrag(p, e);
     }
 
     @Override
-    public void onPieceDrop(Piece p) {
+    public void onPieceDrop(P p) {
         current.onPieceDrop(p);
     }
 
-    void changeState(State newState) {
+    void changeState(State<P> newState) {
         current.cleanUp();
         current = newState;
         newState.loadMachine(this);

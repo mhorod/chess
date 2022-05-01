@@ -1,9 +1,11 @@
 package app.utils.pieceplayer;
 
-import app.core.game.*;
-import app.core.game.moves.*;
+import app.core.game.Piece;
+import app.core.game.moves.Move;
+import app.core.game.moves.PieceMove;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Interface for moving single piece, to be used with external controllers such as UI
@@ -17,7 +19,10 @@ public class InteractivePiece<M extends Move<P>, P extends Piece> {
     }
 
     public final List<M> getLegalMoves() {
-        return player.getLegalMoves(piece);
+        if (player == null)
+            return new ArrayList<>();
+        else
+            return player.getLegalMoves(piece);
     }
 
     /**

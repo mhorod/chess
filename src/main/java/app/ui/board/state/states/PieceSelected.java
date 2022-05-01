@@ -8,28 +8,28 @@ import javafx.scene.input.MouseEvent;
 
 import java.util.List;
 
-public class PieceSelected extends State {
-    private final Board board;
-    private final Piece selectedPiece;
+public class PieceSelected<P extends Piece<?, ?>> extends State<P> {
+    private final P selectedPiece;
     private final List<Field> legalFields;
+    private final Board<?, ?> board;
     private Field highlightedField;
 
-    PieceSelected(Board board, Piece selectedPiece) {
+    PieceSelected(Board<?, ?> board, P selectedPiece) {
         this.board = board;
         this.selectedPiece = selectedPiece;
-        legalFields = selectedPiece.logical.getLegalMoves();
+        legalFields = selectedPiece.logical.getLegalMoveFields().keySet().stream().toList();
     }
 
     @Override
     protected void init() {
-        selectedPiece.graphical.pickUp(board.getGraphicalField(selectedPiece.logical.getPosition()));
+        selectedPiece.graphical.pickUp(board.getGraphicalField(selectedPiece.logical.getPiece().getPosition()));
         for (Field f : legalFields)
             board.getGraphicalField(f).markAsLegal();
     }
 
     @Override
     protected void cleanUp() {
-        selectedPiece.graphical.putDown(board.getGraphicalField(selectedPiece.logical.getPosition()));
+        selectedPiece.graphical.putDown(board.getGraphicalField(selectedPiece.logical.getPiece().getPosition()));
         if (highlightedField != null)
             board.getGraphicalField(highlightedField).unhighlight();
         for (Field f : legalFields)
@@ -38,18 +38,18 @@ public class PieceSelected extends State {
 
 
     @Override
-    public void onPieceClick(Piece piece) {
+    public void onPieceClick(P piece) {
         if (piece != selectedPiece)
-            changeState(new PieceSelected(board, piece));
+            changeState(new PieceSelected<>(board, piece));
         else
-            changeState(new Normal(board));
+            changeState(new Normal<>(board));
     }
 
     @Override
     public void onFieldClick(Field field) {
         var graphicalField = board.getGraphicalField(field);
         if (graphicalField.isLegal()) selectedPiece.logical.makeMove(field);
-        changeState(new Normal(board));
+        changeState(new Normal<>(board));
     }
 
     @Override
@@ -65,7 +65,7 @@ public class PieceSelected extends State {
     }
 
     @Override
-    public void onPieceDrag(Piece piece, MouseEvent e) {
-        changeState(new PieceDragged(board, piece));
+    public void onPieceDrag(P piece, MouseEvent e) {
+        changeState(new PieceDragged<>(board, piece));
     }
 }

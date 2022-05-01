@@ -1,9 +1,13 @@
 package app.ui.board;
 
+import app.chess.pieces.ChessPiece;
+import app.chess.pieces.ChessPieceKind;
 import app.core.game.Field;
 import app.ui.Style;
 import app.ui.board.state.Machine;
 import app.ui.utils.Position;
+import app.utils.pieceplayer.InteractivePiece;
+import app.utils.pieceplayer.PiecePlayer;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -11,16 +15,15 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
-import static app.ui.PieceType.PAWN;
-
-public class Board extends Pane {
+public class Board<M extends app.core.game.moves.Move<P>, P extends ChessPiece> extends Pane {
     double fieldSize;
     Style style;
     GraphicalField[][] graphicalFields = new GraphicalField[8][8];
-    Machine stateMachine;
+    Machine<Piece<M, P>> stateMachine;
 
-    public Board(double fieldSize, Style style) {
+    public Board(PiecePlayer<M, P> player, double fieldSize, Style style) {
         this.style = style;
         this.fieldSize = fieldSize;
         setMaxWidth(8 * fieldSize + 25);
@@ -28,7 +31,7 @@ public class Board extends Pane {
         setEffect(new DropShadow());
         GridPane grid = new GridPane();
 
-        this.stateMachine = new Machine(this);
+        this.stateMachine = new Machine<>(this);
 
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
@@ -38,7 +41,7 @@ public class Board extends Pane {
                 else
                     graphicalFields[x][y] = new GraphicalField(style.whiteField, style.whiteFieldCircle, fieldSize,
                             new Position(25 + x * fieldSize + fieldSize / 2, y * fieldSize + fieldSize / 2));
-                final Field field = new Field(7 - y, 7 - x);
+                final Field field = new Field(8 - y, x + 1);
                 graphicalFields[x][y].setOnMousePressed(e -> stateMachine.onFieldClick(field));
                 graphicalFields[x][y].setOnMouseEntered(e -> stateMachine.onFieldMouseEntered(field));
                 grid.add(graphicalFields[x][y], x + 1, y + 1);
@@ -48,7 +51,7 @@ public class Board extends Pane {
         for (int y = 0; y < 8; y++) {
             Label label;
             String text = String.valueOf(y + 1);
-            if (y % 2 == 0)
+            if (y % 2 == 1)
                 label = new Label(text, style.font, style.borderBlack, style.borderText);
             else
                 label = new Label(text, style.font, style.borderWhite, style.borderText);
@@ -66,23 +69,31 @@ public class Board extends Pane {
         }
 
 
-        Color white = style.whitePiece;
+        //Color white = style.whitePiece;
         Color black = style.blackPiece;
         getChildren().add(grid);
-        List<Piece> pieces = new ArrayList<>();
-        for (int x = 0; x < 8; x++) {
-            pieces.add(new Piece(new GraphicalPiece(PAWN, graphicalFields[x][1], white), stateMachine));
-        }
 
-        for (int x = 0; x < 8; x++) {
-            pieces.add(new Piece(new GraphicalPiece(PAWN, graphicalFields[x][6], black), stateMachine));
-        }
+        var board = this;
+        var supplier = new Supplier<InteractivePiece<M, P>>() {
+            final List<Piece<M, P>> pieces = new ArrayList<>();
 
-        for (Piece p : pieces)
+            public InteractivePiece<M, P> get() {
+                var piece = new Piece<>(new GraphicalPiece(ChessPieceKind.KING, graphicalFields[0][0], black), stateMachine, board);
+                pieces.add(piece);
+                return piece.logical;
+            }
+        };
+
+        player.connectPieces(supplier);
+
+
+        for (var p : supplier.pieces) {
+            p.logical.update();
             getChildren().add(p.graphical);
+        }
     }
 
     public GraphicalField getGraphicalField(Field field) {
-        return graphicalFields[7 - field.file()][7 - field.rank()];
+        return graphicalFields[8 - field.file()][field.rank() - 1];
     }
 }

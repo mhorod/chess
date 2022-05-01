@@ -1,21 +1,37 @@
 package app.ui.board;
 
 import app.core.game.Field;
+import app.core.game.Piece;
+import app.core.game.moves.Move;
+import app.core.game.moves.MoveMatcher;
+import app.utils.pieceplayer.InteractivePiece;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-public abstract class LogicalPiece {
-    public Field getPosition() {
-        return new Field(0, 0);
-    }
+public abstract class LogicalPiece<M extends Move<P>, P extends Piece> extends InteractivePiece<M, P> {
 
-    public List<Field> getLegalMoves() {
-        return List.of(new Field(0, 0));
+    public Map<Field, M> getLegalMoveFields() {
+        Map<Field, M> fields = new HashMap<>();
+        for (var move : getLegalMoves()) {
+            var matcher = new MoveMatcher<P>() {
+                Field result;
+
+                @Override
+                public void pieceMove(Piece piece, Field field) {
+                    result = field;
+                }
+            };
+            move.match(matcher);
+            if (matcher.result != null)
+                fields.put(matcher.result, move);
+        }
+        return fields;
     }
 
     public void makeMove(Field field) {
-
+        makeMove(getLegalMoveFields().get(field));
     }
 
-    abstract void update();
+    public abstract void update();
 }

@@ -1,13 +1,14 @@
 package app.ui.board.state;
 
-public abstract class State implements Behavior {
-    private Machine machine;
 
-    final protected void changeState(State newState) {
+public abstract class State<P extends app.ui.board.Piece<?, ?>> implements Behavior<P> {
+    private Machine<P> machine;
+
+    final protected void changeState(State<P> newState) {
         machine.changeState(newState);
     }
 
-    final void loadMachine(Machine machine) {
+    final void loadMachine(Machine<P> machine) {
         this.machine = machine;
     }
 

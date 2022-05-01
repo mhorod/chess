@@ -11,7 +11,7 @@ public class ColoredImage extends ImageView {
         setColor(color);
     }
 
-    void setColor(Color color) {
+    public void setColor(Color color) {
         var colorAdjust = new ColorAdjust();
         var hue = color.getHue() / 180;
         if (hue > 1) hue -= 2;

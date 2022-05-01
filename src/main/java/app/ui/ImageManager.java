@@ -1,13 +1,14 @@
 package app.ui;
 
+import app.chess.pieces.ChessPieceKind;
 import javafx.scene.image.Image;
 
 import java.util.Map;
 
-import static app.ui.PieceType.*;
+import static app.chess.pieces.ChessPieceKind.*;
 
 public class ImageManager {
-    private static final Map<PieceType, Image> pieces = Map.ofEntries(
+    private static final Map<ChessPieceKind, Image> pieces = Map.ofEntries(
             Map.entry(KNIGHT, new Image(ImageManager.class.getResource("/img/knight.png").toString())),
             Map.entry(KING, new Image(ImageManager.class.getResource("/img/king.png").toString())),
             Map.entry(ROOK, new Image(ImageManager.class.getResource("/img/rook.png").toString())),
@@ -16,7 +17,7 @@ public class ImageManager {
             Map.entry(PAWN, new Image(ImageManager.class.getResource("/img/pawn.png").toString()))
     );
 
-    public static Image getPieceImage(PieceType pieceType) {
+    public static Image getPieceImage(ChessPieceKind pieceType) {
         return pieces.get(pieceType);
     }
 }
