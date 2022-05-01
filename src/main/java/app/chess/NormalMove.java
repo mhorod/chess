@@ -8,7 +8,7 @@ public class NormalMove extends PieceMove<ChessPiece> implements ChessMove{
         super(piece, field);
     }
 
-    Field getField(){
+    public Field getField(){
         return this.field;
     }
 }
