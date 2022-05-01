@@ -1,10 +1,10 @@
-package app.chess;
+package app.chess.moves;
 
 import app.chess.pieces.*;
 import app.core.game.*;
 import app.core.game.moves.*;
 
-public class Castle extends PieceMove<ChessPiece> implements ChessMove{
+public class Castle extends PieceMove<ChessPiece> implements ChessMove {
     static class OnlyKingCanCastle extends RuntimeException{}
 
     protected Castle(ChessPiece piece, Field field) {

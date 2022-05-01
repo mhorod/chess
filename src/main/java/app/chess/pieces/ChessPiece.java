@@ -1,7 +1,7 @@
-package app.chess;
+package app.chess.pieces;
 
+import app.chess.moves.*;
 import app.core.game.*;
-import app.core.game.moves.*;
 
 import java.util.*;
 
@@ -14,7 +14,7 @@ public abstract class ChessPiece implements Piece {
 
     Field position;
 
-    ChessPiece(Field position, boolean isBlack) {
+    public ChessPiece(Field position, boolean isBlack) {
 
         this.position = position;
 

@@ -1,13 +1,13 @@
-package app.chess;
+package app.chess.pieces;
 
-import app.chess.pieces.*;
+import app.chess.moves.*;
 import app.core.game.*;
 
 import java.util.*;
 
 public class Pawn extends ChessPiece {
 
-    Pawn(Field position, boolean isBlack) {
+    public Pawn(Field position, boolean isBlack) {
         super(position, isBlack);
     }
 

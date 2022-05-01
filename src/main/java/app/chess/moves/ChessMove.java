@@ -1,4 +1,4 @@
-package app.chess;
+package app.chess.moves;
 
 import app.chess.pieces.*;
 import app.core.game.*;

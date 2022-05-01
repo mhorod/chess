@@ -1,13 +1,14 @@
-package app.chess;
+package app.chess.pieces;
 
-import app.chess.pieces.*;
+import app.chess.*;
+import app.chess.moves.*;
 import app.core.game.*;
 
 import java.util.*;
 
 public class Bishop extends ChessPiece {
 
-    Bishop(Field position, boolean isBlack) {
+    public Bishop(Field position, boolean isBlack) {
         super(position, isBlack);
     }
 
@@ -28,7 +29,7 @@ public class Bishop extends ChessPiece {
                 for(int howManyTimes = 1; howManyTimes <= Chess.SIZE; howManyTimes++){
                     Field potentialField = new Field(initialRank + rankVector * howManyTimes, initialFile + fileVector * howManyTimes);
                     if(Chess.fieldIsValid(potentialField)){
-                        potentialMoves.add(new NormalMove(this,potentialField));
+                        potentialMoves.add(new NormalMove(this, potentialField));
                     }
                 }
             }

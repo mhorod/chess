@@ -1,11 +1,13 @@
-package app.chess;
+package app.chess.pieces;
 
+import app.chess.*;
+import app.chess.moves.*;
 import app.core.game.*;
 
 import java.util.*;
 
-public class Rook extends ChessPiece{
-    Rook(Field position, boolean isBlack) {
+public class Rook extends ChessPiece {
+    public Rook(Field position, boolean isBlack) {
         super(position, isBlack);
     }
 
@@ -26,7 +28,7 @@ public class Rook extends ChessPiece{
             Field fieldOnTheSameFile = new Field(i,currentPosition.file());
             Field fieldOnTheSameRank = new Field(currentPosition.rank(), i);
 
-            ChessMove moveOnTheSameFile = new NormalMove(this,fieldOnTheSameFile);
+            ChessMove moveOnTheSameFile = new NormalMove(this, fieldOnTheSameFile);
             ChessMove moveOnTheSameRank = new NormalMove(this, fieldOnTheSameRank);
 
             potentialMoves.add(moveOnTheSameFile);
