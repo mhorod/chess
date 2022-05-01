@@ -1,9 +1,12 @@
 package app.core.interactor;
 
-import app.core.game.*;
-import app.core.game.moves.*;
+import app.core.game.Game;
+import app.core.game.Piece;
+import app.core.game.moves.Move;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Wraps game allowing players to interact with each other and notifies participants about events
@@ -78,7 +81,7 @@ public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends
 
         var changedPieces = game.makeMove(player, move);
         for (var p : participants)
-            p.update(player, move);
+            p.update(player, move, changedPieces);
         return changedPieces;
     }
 

@@ -5,6 +5,7 @@ import app.core.game.moves.Move;
 import app.core.interactor.Player;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -17,10 +18,10 @@ public final class PiecePlayer<M extends Move<P>, P extends Piece> extends Playe
     Map<P, InteractivePiece<M, P>> pieces = new HashMap<>();
 
     @Override
-    public void update(int player, M move) {
-        for (var piece : pieces.values()) {
-            piece.update(move);
-            piece.update();
+    public void update(int player, M move, List<P> changedPieces) {
+        for (var piece : changedPieces) {
+            pieces.get(piece).update(move);
+            pieces.get(piece).update();
         }
     }
 
