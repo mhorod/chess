@@ -10,7 +10,7 @@ public class PiecePick<P extends Piece> implements Move<P> {
     }
 
     @Override
-    final public void match(MoveMatcher<P> matcher) {
+    public final void match(MoveMatcher<P> matcher) {
         matcher.piecePick(piece);
     }
 }
