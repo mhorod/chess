@@ -5,6 +5,7 @@ import app.chess.pieces.*;
 import app.core.game.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * TODO: Extend Game with appropriate types and implement chess logic
@@ -20,6 +21,8 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
     private boolean blackToMove = false;
     private boolean pendingPromotion = false; //In case there is a promotion of a pawn, that move is split into 2 submoves
+
+    private boolean testMode = false; //this is NOT how it should be done, but it's the simplest way
 
     private void initializePawns(){
         final int whitePawnRank = 2;
@@ -46,7 +49,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
          *   1 2 3 4 5 6 7 8
          */
 
-        initializePawns();
+        //initializePawns();
 
         final int whiteRank = 1;
         final int blackRank = 8;
@@ -151,12 +154,14 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         chessBoard[previousRank][previousFile] = null;
 
         try{
+            testMode = true;
             getLegalMoves(secondPlayer);
         }
         catch (KingCanBeTaken e){
             return false;
         }
         finally {
+            testMode = false;
             //We revert the state of the board to the previous status
             chessBoard[previousRank][previousFile] = move.getPiece();
             chessBoard[rank][file] = whatWasThere;
@@ -171,6 +176,39 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     private boolean pawnMoveValidation(ChessMove move){
         //Because pawns have somewhat weird moving possibilities, validation of their moves is inside another function
         return true;
+    }
+
+    private boolean roadNotObstructed(Field currentPosition, Field newPosition) {
+            //First, we will validate the path itself (not including the last spot)
+            //Because of that, we don't calculate the knight as it sort of "jumps"
+
+            int rankDelta = newPosition.rank() - currentPosition.rank();
+            int fileDelta = newPosition.file() - currentPosition.file();
+
+            if(rankDelta == 0 && fileDelta == 0){
+                //You can't move on a field on which you already are
+                return false;
+            }
+
+            int rankVector = Integer.compare(rankDelta, 0);
+            int fileVector = Integer.compare(fileDelta, 0);
+
+            int iterRank = currentPosition.rank();
+            int iterFile = currentPosition.file();
+
+            while(iterRank+rankVector != newPosition.rank() || iterFile+fileVector != newPosition.file()){
+                iterRank+=rankVector;
+                iterFile+=fileVector;
+
+                //System.out.println(iterRank + " " + iterFile);
+
+                if(chessBoard[iterRank][iterFile] != null){
+                    //Something's on our way, that means that the move is invalid
+                    return false;
+                }
+
+            }
+            return true;
     }
 
     private boolean validateMove(ChessMove move){
@@ -188,9 +226,11 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
         if(chessBoard[currentPosition.rank()][currentPosition.file()] != move.getPiece()){
             //We've got a discrepancy in the data, as move references other piece than it should be referencing
-            /*System.err.println(move.getPiece().getKind());
-            System.err.println(currentPosition.file() + " " + currentPosition.rank());
-            System.err.println(chessBoard[currentPosition.rank()][currentPosition.file()]);*/
+            System.err.println(chessBoard[currentPosition.rank()][currentPosition.file()]);
+            System.err.println(move.getPiece());
+            System.err.println(move.getPiece().getPosition());
+
+            System.err.println("CRITICAL ERROR " + move);
             throw new BoardDiscrepancy();
         }
 
@@ -198,29 +238,12 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         //We will initially check if the path isn't obstructed
 
         if(move.getPiece().getKind() != ChessPieceKind.KNIGHT){
-            //First, we will validate the path itself (not including the last spot)
-            //Because of that, we don't calculate the knight as it sort of "jumps"
-
-            int rankDelta = newPosition.rank() - currentPosition.rank();
-            int fileDelta = newPosition.file() - currentPosition.file();
-
-            int rankVector = Integer.compare(rankDelta, 0);
-            int fileVector = Integer.compare(fileDelta, 0);
-
-            int iterRank = currentPosition.rank();
-            int iterFile = currentPosition.file();
-
-            while(iterRank+1 != newPosition.rank() && iterFile+1 != newPosition.file()){
-
-                if(chessBoard[iterRank][iterFile] != null){
-                    //Something's on our way, that means that the move is invalid
-                    return false;
-                }
-
-                iterRank+=rankVector;
-                iterFile+=fileVector;
+            //This function doesn't care about knights movement, checks only "transit"
+            if(!roadNotObstructed(currentPosition,newPosition)){
+                return false;
             }
         }
+
 
         ChessPiece figureOnNewPosition = chessBoard[newPosition.rank()][newPosition.file()];
 
@@ -237,10 +260,13 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         //Seems like the path for our piece is ok
         //Now there is king's safety to be validated
 
-        if(!validateKingSafety(move)){
+
+        if(!testMode && !validateKingSafety(move)){
             return false;
         }
 
+
+        //System.out.println("Hello!");
         //seems good to me
 
         return true;
@@ -256,8 +282,18 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         return getMatchingPieces(false, 0);
     }
 
+    private List<ChessMove> getPromotionMoves(int player){
+        return Collections.emptyList();
+    }
     @Override
     public List<ChessMove> getLegalMoves(int player) {
+
+        if(pendingPromotion){
+            //Promotion is this funny case where we should create entirely different branch
+            pendingPromotion = false;
+            return getPromotionMoves(player);
+        }
+
         List<ChessPiece> playersPieces = getPieces(player);
 
         List<ChessMove> allPlayersLegalMoves = new ArrayList<>();
@@ -282,17 +318,85 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         List<ChessMove> legalMoves = new ArrayList<>();
 
         for(ChessMove potentialMove : potentialMoves){
+            //System.out.println("Validating " + potentialMove);
             if(validateMove(potentialMove)){
+                //System.out.println("Validation for " + potentialMove + " OK");
                 legalMoves.add(potentialMove);
             }
+            //System.out.println("End of validation " + potentialMove);
         }
 
         return legalMoves;
     }
 
+    private void resetWasMoved(){
+        var allPieces = getAllPieces();
+
+        for(var currentPiece : allPieces){
+            currentPiece.resetMoved();
+        }
+    }
+
     @Override
     public List<ChessPiece> makeMove(int player, ChessMove move) {
-        return null;
+        if(move.getPiece().getPlayer() != player){
+            throw new PlayerDiscrepancy();
+        }
+
+        //It's better to be sure that the move we get is actually legal
+        List<ChessMove> acceptableMoves = this.getLegalMoves(player, move.getPiece());
+        if(!acceptableMoves.contains(move)){
+            System.err.println(acceptableMoves);
+            System.err.println(move);
+            throw new IllegalMove();
+        }
+
+        if(pendingPromotion){
+            ///TODO: IMPLEMENT PROMOTION
+            pendingPromotion = false;
+        }
+
+        resetWasMoved(); //Because things will be overwritten
+
+        //Given the fact that this move is legal, we can simply execute it now
+        if(move.getField().rank() == SIZE || move.getField().rank() == 1){
+            //That's funny because it will result in a pawn promotion
+            if(pendingPromotion){
+                throw new RuntimeException("This shouldn't even be mathematically possible");
+            }
+            pendingPromotion = true;
+        }
+
+        int newRank = move.getField().rank();
+        int newFile = move.getField().file();
+
+        int oldRank = move.getPiece().getPosition().rank();
+        int oldFile = move.getPiece().getPosition().file();
+
+        ChessPiece wasHereBefore = chessBoard[newRank][newFile];
+
+        if(wasHereBefore != null && wasHereBefore.getPlayer() == player){
+            throw new IllegalMove(); //This shouldn't even be possible because we've validated that already, but just to be sure
+        }
+
+        if(wasHereBefore != null){
+            wasHereBefore.kill();
+            chessBoard[newRank][newFile] = move.getPiece();
+        }
+        else{
+            chessBoard[newRank][newFile] = move.getPiece();
+        }
+
+        chessBoard[oldRank][oldFile] = null;
+
+        move.getPiece().move(move.getField());
+
+        if(!pendingPromotion){
+            player = player == 0 ? 1 : 0;
+        }
+
+        //After executing the move, we can finally return a list informing what's happening on the board
+        return this.getAllPieces();
     }
 
     @Override

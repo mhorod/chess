@@ -47,6 +47,19 @@ public abstract class ChessPiece implements Piece {
         return wasMoved;
     }
 
+    public void kill(){
+        isAlive = false;
+    }
+
+    public void move(Field newPosition){
+        position = newPosition;
+        wasMoved = true;
+    }
+
+    public void resetMoved(){
+        wasMoved = false;
+    }
+
     public abstract ChessPieceKind getKind();
 
     /**
