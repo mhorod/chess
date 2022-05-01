@@ -1,22 +1,23 @@
 package app.chess;
 
+import app.chess.pieces.*;
 import app.core.game.*;
 
 import java.util.*;
 
-public class Pawn extends ChessPiece {
+public class Queen extends ChessPiece {
 
-    Pawn(Field position, boolean isBlack) {
+    Queen(Field position, boolean isBlack) {
         super(position, isBlack);
     }
 
     @Override
     public ChessPieceKind getKind() {
-        return ChessPieceKind.PAWN;
+        return ChessPieceKind.QUEEN;
     }
 
     @Override
     public List<ChessMove> getPotentialMoves() {
-        return null;
+        return Collections.emptyList();
     }
 }

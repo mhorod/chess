@@ -1,5 +1,6 @@
 package app.chess;
 
+import app.chess.pieces.*;
 import app.core.game.*;
 import app.core.game.moves.*;
 

@@ -1,5 +1,6 @@
 package app.chess;
 
+import app.chess.pieces.*;
 import app.core.game.*;
 
 import java.util.*;
@@ -17,6 +18,6 @@ public class King extends ChessPiece {
 
     @Override
     public List<ChessMove> getPotentialMoves() {
-        return null;
+        return Collections.emptyList();
     }
 }
