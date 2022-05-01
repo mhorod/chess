@@ -12,4 +12,30 @@ public class NormalMove extends PieceMove<ChessPiece> implements ChessMove {
     public Field getField(){
         return this.field;
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(o == null){
+            return false;
+        }
+        if (o.getClass() != NormalMove.class){
+            return false;
+        }
+
+        var converted = (NormalMove) o;
+
+        if(converted.getField().rank() != this.getField().rank()){
+            return false;
+        }
+        else {
+            return converted.getField().file() == this.getField().file() && converted.getPiece() == this.getPiece();
+            }
+        }
+
+    @Override
+    public String toString(){
+        return this.getField().rank() + " " + this.getField().file() + " " + this.getPiece().getKind();
+    }
+
+
 }
