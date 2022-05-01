@@ -2,6 +2,8 @@ package app.chess;
 
 import app.core.game.*;
 
+import java.util.*;
+
 public class King extends ChessPiece {
 
     King(Field position, boolean isBlack) {
@@ -11,5 +13,10 @@ public class King extends ChessPiece {
     @Override
     public ChessPieceKind getKind() {
         return ChessPieceKind.KING;
+    }
+
+    @Override
+    public List<ChessMove> getPotentialMoves() {
+        return null;
     }
 }

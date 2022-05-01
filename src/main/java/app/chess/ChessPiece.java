@@ -1,6 +1,9 @@
 package app.chess;
 
 import app.core.game.*;
+import app.core.game.moves.*;
+
+import java.util.*;
 
 public abstract class ChessPiece implements Piece {
 
@@ -46,5 +49,10 @@ public abstract class ChessPiece implements Piece {
 
     public abstract ChessPieceKind getKind();
 
+    /**
+     *
+     * @return A list of ChessMoves that are potentially valid (i.e. the caller needs to check if king's safety is ok and whether path to the given field isn't obstructed
+     */
+    public abstract List<ChessMove> getPotentialMoves();
 
 }
