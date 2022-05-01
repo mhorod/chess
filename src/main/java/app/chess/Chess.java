@@ -9,8 +9,7 @@ import java.util.*;
  */
 public class Chess implements Game<ChessMove, ChessPiece> {
 
-    private static final int SIZE = 8;
-    private static final int MODIFIER = 1;
+    static final int SIZE = 8;
     ChessPiece[][] chessBoard = new ChessPiece[SIZE+1][SIZE+1]; //We are adding 1 because we will start counting at 1
     //This is a little uncommon, but in Chess such numeration is also starting from 1 and it will hopefully create less bugs if we stick to this convention
 
