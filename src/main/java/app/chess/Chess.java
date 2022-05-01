@@ -49,7 +49,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
          *   1 2 3 4 5 6 7 8
          */
 
-        //initializePawns();
+        initializePawns();
 
         final int whiteRank = 1;
         final int blackRank = 8;
