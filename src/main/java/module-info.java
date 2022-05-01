@@ -5,4 +5,6 @@ module app {
 
     opens app to javafx.fxml;
     exports app;
+    exports app.ui;
+    opens app.ui to javafx.fxml;
 }

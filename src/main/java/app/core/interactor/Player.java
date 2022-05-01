@@ -1,9 +1,10 @@
 package app.core.interactor;
 
-import app.core.game.*;
-import app.core.game.moves.*;
+import app.core.game.Game;
+import app.core.game.Piece;
+import app.core.game.moves.Move;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Player exposed to external controllers such as UI, abstracts out player number and input method

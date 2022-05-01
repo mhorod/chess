@@ -1,11 +1,12 @@
 package app.utils.pieceplayer;
 
-import app.core.game.*;
-import app.core.game.moves.*;
-import app.core.interactor.*;
+import app.core.game.Piece;
+import app.core.game.moves.Move;
+import app.core.interactor.Player;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
 
 /**
