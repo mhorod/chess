@@ -303,7 +303,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             return false;
         }
 
-        //Second: Road between king and rook he wants to castle with cannot be obstructed by any piece
+        //Second: Rook and king haven't moved since beginning of the game
 
         final int currentRank = move.getPiece().getPosition().rank();
         final int currentFile = move.getPiece().getPosition().file();
@@ -337,8 +337,24 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         //That's perfect, second condition is satisfied
 
         //Third condition: Road between rook and king is not obstructed
-        if(!roadNotObstructed(move.getField(), new Field(rookRank,rookFile))){
+        if(!roadNotObstructed(move.getPiece().getPosition(), new Field(rookRank,rookFile))){
             return false;
+        }
+
+        //Fourth condition: Nothing on the road of the king is under attack
+        int multiplier = kingSideCastling ? 1 : -1;
+
+        for(int i=1;i<=2;i++){
+            //This is somewhat weird, but we are going to check if this is ok by placing a fake king on a piece that cannot be attacked and checking if anything goes wrong
+            //Truly magnificent
+            //(and crazy ineffective, but it was never meant to be effective)
+            ChessPiece currentPiece = chessBoard[currentRank][currentFile + i * multiplier];
+            chessBoard[currentRank][currentFile + i * multiplier] = new King(new Field(currentRank,currentFile + i * multiplier), move.getPiece().getPlayer() != 0);
+            if(!testMode && !validateKingSafety(move.getPiece().getPlayer())){
+                chessBoard[currentRank][currentFile + i * multiplier] = currentPiece;
+                return false;
+            }
+            chessBoard[currentRank][currentFile + i * multiplier] = currentPiece;
         }
 
         return true;
