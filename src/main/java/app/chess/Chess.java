@@ -201,9 +201,10 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             if(wasThereBefore == null){
                 //Perhaps en passant is possible
                 //If not, we'll return false
-                //TODO: CHECK EN PASSANT
-
-                return false;
+                wasThereBefore = chessBoard[move.getPiece().getPlayer() == 0 ? newRank - 1 : newRank + 1][newFile];
+                if(wasThereBefore == null || !wasThereBefore.enPassantable()){
+                    return false;
+                }
             }
             else{
                 //somebody's here
