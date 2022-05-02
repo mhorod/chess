@@ -172,6 +172,57 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
     private boolean pawnMoveValidation(ChessMove move) {
         //Because pawns have somewhat weird moving possibilities, validation of their moves is inside another function
+        int currentRank = move.getPiece().getPosition().rank();
+        int currentFile = move.getPiece().getPosition().file();
+
+        int newRank = move.getField().rank();
+        int newFile = move.getField().file();
+
+        if(currentFile - newFile == 0){
+            //Going forward is considered first
+
+            //First, let's consider going forward by 2 - the only case where we have to perform this check
+            if(Math.abs(newRank - currentRank) == 2){
+                //We want to check if the path is not obstructed
+                if(!roadNotObstructed(move.getPiece().getPosition(),move.getField())){
+                    //The only type of move whether we have to check if something is on the road is being obstructed
+                    return false;
+                }
+            }
+            //And we can't move forward if the place we want to move to is already taken by ANY piece
+            if(chessBoard[newRank][newFile] != null){
+                return false;
+            }
+        }
+        else{
+            //Now we are considering going to the sides, so there has to be enemy piece involved
+            ChessPiece wasThereBefore = chessBoard[newRank][newFile];
+
+            if(wasThereBefore == null){
+                //Perhaps en passant is possible
+                //If not, we'll return false
+                //TODO: CHECK EN PASSANT
+
+                return false;
+            }
+            else{
+                //somebody's here
+                if(wasThereBefore.getPlayer() != move.getPiece().getPlayer()){
+                    //There's enemy piece to be taken, so we can validate this move
+                    //Except for when the king is under attack
+                    if(wasThereBefore.getKind() == ChessPieceKind.KING){
+                        throw new KingCanBeTaken();
+                    }
+                }
+            }
+        }
+
+        if(!testMode && !validateKingSafety(move)){
+            //We are not in a test mode (where we don't validateKing'sSafety), so we cannot move the pawn
+            //For what "testMode" is, please look at validateKingSafety code
+            return false;
+        }
+
         return true;
     }
 
