@@ -16,6 +16,8 @@ import java.util.List;
 public class Chess implements Game<ChessMove, ChessPiece> {
     public static final int SIZE = 8;
     ChessPiece[][] chessBoard = new ChessPiece[SIZE + 1][SIZE + 1]; //We are adding 1 because we will start counting at 1
+    //This is a little uncommon, but in Chess such numeration is also starting from 1 and it will hopefully create fewer bugs if we stick to this convention
+
     private boolean blackToMove = false;
     private boolean pendingPromotion = false; //In case there is a promotion of a pawn, that move is split into 2 submoves
     private boolean testMode = false; //this is NOT how it should be done, but it's the simplest way
@@ -23,7 +25,6 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     public Chess() {
         initializeBoard();
     }
-    //This is a little uncommon, but in Chess such numeration is also starting from 1 and it will hopefully create fewer bugs if we stick to this convention
 
     public static boolean fieldIsValid(Field toValidate) {
         return toValidate.rank() <= SIZE && toValidate.file() <= SIZE && toValidate.rank() > 0 && toValidate.file() > 0;
