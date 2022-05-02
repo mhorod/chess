@@ -7,9 +7,10 @@ import app.core.game.moves.Move;
 import java.util.List;
 
 /**
- * Player exposed to external controllers such as UI, abstracts out player number and input method
+ * Player exposed to external controllers such as UI, abstracts out player number and input method Override update
+ * method to implement custom behavior
  */
-public abstract class Player<M extends Move<P>, P extends Piece> implements Participant<M, P> {
+public class Player<M extends Move<P>, P extends Piece> implements Participant<M, P> {
     int player;
     Game<M, P> game;
 
@@ -56,5 +57,9 @@ public abstract class Player<M extends Move<P>, P extends Piece> implements Part
         if (game == null)
             throw new UseOfUnconnectedPlayer();
         return game.makeMove(player, move);
+    }
+
+    @Override
+    public void update(int player, M move, List<P> changedPieces) {
     }
 }

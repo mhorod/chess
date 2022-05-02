@@ -1,11 +1,9 @@
 package app.ui;
 
 import app.chess.Chess;
-import app.chess.moves.ChessMove;
-import app.chess.pieces.ChessPiece;
 import app.core.interactor.InteractiveGame;
 import app.ui.board.Board;
-import app.utils.pieceplayer.PiecePlayer;
+import app.utils.pieceplayer.HotSeatPlayer;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -39,18 +37,13 @@ public class App extends Application {
 
         Chess chess = new Chess();
         var game = new InteractiveGame<>(chess);
-        var whitePlayer = new PiecePlayer<ChessMove, ChessPiece>();
-        var blackPlayer = new PiecePlayer<ChessMove, ChessPiece>();
-        game.connectPlayer(0, whitePlayer);
-        game.connectPlayer(1, blackPlayer);
+        var hotSeatPlayer = new HotSeatPlayer<>(game);
 
-        Pane board1 = new Board<>(whitePlayer, 40, style);
-        Pane board2 = new Board<>(blackPlayer, 40, style);
+        Pane board1 = new Board<>(hotSeatPlayer, 40, style);
 
         HBox pane = new HBox();
         pane.setAlignment(Pos.CENTER);
         pane.getChildren().add(board1);
-        pane.getChildren().add(board2);
         pane.setFillHeight(true);
         pane.setSpacing(100);
         Scene scene = new Scene(pane, 1024, 800, true);

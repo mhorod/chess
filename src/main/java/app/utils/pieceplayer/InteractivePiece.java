@@ -3,21 +3,30 @@ package app.utils.pieceplayer;
 import app.core.game.Piece;
 import app.core.game.moves.Move;
 import app.core.game.moves.PieceMove;
+import app.core.interactor.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Interface for moving single piece, to be used with external controllers such as UI
  */
 public class InteractivePiece<M extends Move<P>, P extends Piece> {
     P piece;
-    PiecePlayer<M, P> player;
+    Player<M, P> player;
 
+    /**
+     * @return Controlled game piece
+     */
     public final P getPiece() {
         return piece;
     }
 
+
+    /**
+     * Returns list of available moves. If player is null returns empty list
+     */
     public final List<M> getLegalMoves() {
         if (player == null)
             return new ArrayList<>();
@@ -35,7 +44,7 @@ public class InteractivePiece<M extends Move<P>, P extends Piece> {
         else if (piece != ((PieceMove<?>) move).getPiece())
             throw new IllegalMoveAttempt("Piece specified by the move does not match piece of this");
         else
-            player.movePiece(move);
+            player.makeMove(move);
     }
 
     /**
