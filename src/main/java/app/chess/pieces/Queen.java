@@ -22,7 +22,7 @@ public class Queen extends ChessPiece {
         //Queen can move like a Rook and Bishop, somewhat standing on the same place
         //This means that there is no sense in writing this piece's logic, we might just create a fake rook and fake bishop with the same Field and then basically merge their results
 
-        ChessPiece fakeRook = new Rook(this.getPosition(),false); //We don' care about any other parameter than the position, because pieces don't care about interactions with others when returning potential moves
+        ChessPiece fakeRook = new Rook(this.getPosition(),false); //We don't care about any other parameter than the position, because pieces don't care about interactions with others when returning potential moves
         ChessPiece fakeBishop = new Bishop(this.getPosition(), false);
 
         List<ChessMove> fakePotentialMoves = fakeRook.getPotentialMoves();
