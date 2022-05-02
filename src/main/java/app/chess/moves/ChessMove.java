@@ -16,4 +16,5 @@ public interface ChessMove extends Move<ChessPiece> {
      * @return The instance of piece that is supposed to make a move
      */
     ChessPiece getPiece();
+
 }
