@@ -7,7 +7,7 @@ import app.core.game.*;
 import java.util.*;
 
 public class Pawn extends ChessPiece {
-
+    private boolean movedBy2RanksRecently = false;
     public Pawn(Field position, boolean isBlack) {
         super(position, isBlack);
     }
@@ -44,5 +44,28 @@ public class Pawn extends ChessPiece {
             }
         }
         return potentialMoves;
+    }
+
+    @Override
+    public void move(Field newPosition){
+        if(Math.abs(position.rank() - newPosition.rank()) == 2){
+            movedBy2RanksRecently = true;
+        }
+        position = newPosition;
+        wasMoved = true;
+    }
+
+    @Override
+    public void resetMoved(){
+        wasMoved = false;
+        movedBy2RanksRecently = false;
+    }
+
+    @Override
+    public boolean enPassantable(){
+        if(movedBy2RanksRecently){
+            return true;
+        }
+        else return false;
     }
 }
