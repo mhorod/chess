@@ -1,7 +1,7 @@
 package app.ui.board.state;
 
 
-public abstract class State<P extends app.ui.board.Piece<?, ?>> implements Behavior<P> {
+public abstract class State<P extends app.core.game.Piece> implements Behavior<P> {
     private Machine<P> machine;
 
     final protected void changeState(State<P> newState) {

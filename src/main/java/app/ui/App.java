@@ -2,7 +2,7 @@ package app.ui;
 
 import app.chess.Chess;
 import app.core.interactor.InteractiveGame;
-import app.ui.board.Board;
+import app.ui.board.ChessBoard;
 import app.utils.pieceplayer.HotSeatPlayer;
 import app.utils.pieceplayer.PieceSpectator;
 import javafx.application.Application;
@@ -42,8 +42,8 @@ public class App extends Application {
         var hotSeatPlayer = new HotSeatPlayer<>(game, game);
         var pieceSpectator = new PieceSpectator<>(game, game);
 
-        Pane hotSeatBoard = new Board<>(hotSeatPlayer, 30, style);
-        Pane spectatorBoard = new Board<>(pieceSpectator, 30, style);
+        Pane hotSeatBoard = new ChessBoard(30, style, hotSeatPlayer);
+        Pane spectatorBoard = new ChessBoard(30, style, pieceSpectator);
 
         HBox pane = new HBox();
         pane.setAlignment(Pos.CENTER);

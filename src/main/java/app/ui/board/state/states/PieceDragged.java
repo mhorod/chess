@@ -7,95 +7,48 @@ import app.ui.board.state.State;
 import app.ui.utils.Position;
 import javafx.scene.input.MouseEvent;
 
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class PieceDragged<P extends Piece<?, ?>> extends State<P> {
-    private final Board<?, ?> board;
-    private final List<Field> legalFields;
-    private P selectedPiece;
-    private Field highlightedField;
+public class PieceDragged<P extends app.core.game.Piece> extends State<P> {
+    private final Board<P> board;
+    private final Set<Field> legalFields;
+    private final Piece<?, P> selectedPiece;
 
-    PieceDragged(Board<?, ?> board, P selectedPiece) {
+    PieceDragged(Board<P> board, Piece<?, P> selectedPiece) {
         this.board = board;
         this.selectedPiece = selectedPiece;
         legalFields = Stream.concat(
                 selectedPiece.logical.getLegalMoveFields().keySet().stream(),
                 Stream.of(selectedPiece.logical.getPiece().getPosition())
-        ).toList();
-    }
-
-    PieceDragged(Board<?, ?> board, P selectedPiece, List<Field> legalFields) {
-        this.board = board;
-        this.selectedPiece = selectedPiece;
-        this.legalFields = Stream.concat(
-                legalFields.stream(),
-                Stream.of(selectedPiece.logical.getPiece().getPosition())
-        ).toList();
+        ).collect(Collectors.toSet());
     }
 
 
     @Override
     protected void init() {
-        if (!selectedPiece.isPickedUp())
-            selectedPiece.pickUp();
-        for (Field f : legalFields)
-            if (!f.equals(selectedPiece.logical.getPiece().getPosition()))
-                board.getGraphicalField(f).markAsLegal();
-        for (var piece : board.pieces)
-            if (board.getGraphicalField(piece.logical.getPiece().getPosition()).isLegal()) piece.highlight();
-            else piece.unhighlight();
-
-    }
-
-    @Override
-    protected void cleanUp() {
-        if (selectedPiece != null) selectedPiece.putDown();
-        if (highlightedField != null)
-            board.getGraphicalField(highlightedField).unhighlight();
-        for (Field f : legalFields)
-            board.getGraphicalField(f).toNormal();
-        for (var piece : board.pieces)
-            piece.unhighlight();
+        board.setLegalFields(selectedPiece.logical.getLegalMoveFields().keySet());
+        board.selectPiece(selectedPiece);
     }
 
 
     @Override
-    public void onPieceDrag(P piece, MouseEvent e) {
+    public void onPieceDrag(Piece<?, P> piece, MouseEvent e) {
         selectedPiece.graphical.setCenter(new Position(e.getX(), e.getY()));
-        if (highlightedField != null)
-            board.getGraphicalField(highlightedField).unhighlight();
-        highlightedField = nearestLegal(e.getX(), e.getY());
-        if (highlightedField != null)
-            board.getGraphicalField(highlightedField).highlight();
+        board.setHighlightedField(board.getNearest(legalFields, new Position(e.getX(), e.getY())));
     }
 
     @Override
-    public void onPieceDeleted(P p) {
+    public void onPieceDeleted(Piece<?, P> p) {
         if (p == selectedPiece) changeState(new Normal<>(board));
-        else {
-            var oldPiece = selectedPiece;
-            selectedPiece = null;
-            changeState(new PieceDragged<>(board, oldPiece));
-        }
+        else changeState(new PieceDragged<>(board, selectedPiece));
     }
 
     @Override
-    public void onPieceDrop(P piece) {
-        if (highlightedField != null && !highlightedField.equals(selectedPiece.logical.getPiece().getPosition()))
-            piece.logical.makeMove(highlightedField);
+    public void onPieceDrop(Piece<?, P> piece, MouseEvent e) {
+        var field = board.getNearest(legalFields, new Position(e.getX(), e.getY()));
+        if (field != piece.getPosition()) piece.logical.makeMove(field);
         changeState(new Normal<>(board));
-    }
-
-    private double distance2(Field a, double x, double y) {
-        double deltaX = board.getGraphicalField(a).getCenter().x() - x;
-        double deltaY = board.getGraphicalField(a).getCenter().y() - y;
-        return deltaX * deltaX + deltaY * deltaY;
-    }
-
-    private Field nearestLegal(double realX, double realY) {
-        return legalFields.stream()
-                .min((a, b) -> (int) Math.signum(distance2(a, realX, realY) - distance2(b, realX, realY)))
-                .orElse(null);
     }
 }

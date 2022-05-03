@@ -1,22 +1,23 @@
 package app.ui.board;
 
-import app.chess.pieces.ChessPieceKind;
-import app.ui.ImageManager;
 import app.ui.utils.ColoredImage;
 import app.ui.utils.Position;
 import javafx.animation.FadeTransition;
 import javafx.animation.Transition;
 import javafx.scene.Cursor;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
-public class GraphicalPiece extends ColoredImage {
+public abstract class GraphicalPiece<P extends app.core.game.Piece> extends ColoredImage {
 
-    public GraphicalPiece(ChessPieceKind type, GraphicalField graphicalField, Color color) {
-        super(ImageManager.getPieceImage(type), color);
-        putDown(graphicalField);
+    public GraphicalPiece(Image image, Color color) {
+        super(image, color);
         setCursor(Cursor.HAND);
     }
+
+    public abstract void update(P piece);
+
 
     public void pickUp(GraphicalField graphicalField) {
         toFront();

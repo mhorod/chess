@@ -1,48 +1,47 @@
 package app.ui.board;
 
-import app.chess.pieces.ChessPiece;
+import app.core.game.Field;
 import app.core.game.moves.Move;
-import app.ui.ImageManager;
-import app.ui.board.state.Machine;
+import app.ui.board.state.Behavior;
 import javafx.scene.paint.Color;
 
-public class Piece<M extends Move<P>, P extends ChessPiece> {
-    public final GraphicalPiece graphical;
+public class Piece<M extends Move<P>, P extends app.core.game.Piece> {
+    public final GraphicalPiece<P> graphical;
     public final LogicalPiece<M, P> logical;
-    private final Board<M, P> board;
+    private final Board<P> board;
+    Field previousPosition;
     boolean pickedUp = false;
 
-    Piece(GraphicalPiece graphical, Machine<app.ui.board.Piece<M, P>> stateMachine, Board<M, P> board) {
+    Piece(GraphicalPiece<P> graphical, Behavior<P> behavior, Board<P> board) {
         this.graphical = graphical;
         this.board = board;
         this.logical = new LogicalPiece<>() {
             @Override
             public void update() {
                 putDown();
-                graphical.setImage(ImageManager.getPieceImage(getPiece().getKind()));
-                graphical.setColor(getPiece().getPlayer() == 0 ? board.style.whitePiece : board.style.blackPiece);
-                if (!getPiece().isAlive()) {
-                    graphical.disappear();
-                    stateMachine.onPieceDeleted(Piece.this);
-                }
-                stateMachine.onMove();
+                graphical.update(getPiece());
+                behavior.onMove();
             }
         };
 
         graphical.setOnMousePressed(e -> {
-            if (logical.getPiece().isAlive()) stateMachine.onPieceClick(this);
+            if (logical.getPiece().isAlive()) behavior.onPieceClick(this);
         });
 
         graphical.setOnMouseDragged(e -> {
-            if (logical.getPiece().isAlive()) stateMachine.onPieceDrag(this, e);
+            if (logical.getPiece().isAlive()) behavior.onPieceDrag(this, e);
         });
 
         graphical.setOnMouseReleased(e -> {
-            if (logical.getPiece().isAlive()) stateMachine.onPieceDrop(this);
+            if (logical.getPiece().isAlive()) behavior.onPieceDrop(this, e);
         });
 
-        graphical.setOnMouseEntered(e -> stateMachine.onFieldMouseEntered(logical.getPiece().getPosition()));
+        graphical.setOnMouseEntered(e -> behavior.onFieldMouseEntered(logical.getPiece().getPosition()));
 
+    }
+
+    public Field getPosition() {
+        return logical.getPiece().getPosition();
     }
 
     public boolean isPickedUp() {
@@ -51,12 +50,15 @@ public class Piece<M extends Move<P>, P extends ChessPiece> {
 
     public void putDown() {
         pickedUp = false;
-        graphical.putDown(board.getGraphicalField(logical.getPiece().getPosition()));
+        var position = logical.getPiece().getPosition();
+        graphical.putDown(board.board.getGraphicalField(position));
+        board.movePiece(this, previousPosition, position);
+        previousPosition = position;
     }
 
     public void pickUp() {
         pickedUp = true;
-        graphical.pickUp(board.getGraphicalField(logical.getPiece().getPosition()));
+        graphical.pickUp(board.board.getGraphicalField(logical.getPiece().getPosition()));
     }
 
     public void highlight() {
