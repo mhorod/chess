@@ -65,6 +65,11 @@ public abstract class ChessPiece implements Piece {
         return false;
     }
 
+    public boolean canParticipateInCastling(){
+        //King and Rook should override this method
+        return false;
+    }
+
     public abstract ChessPieceKind getKind();
 
     /**

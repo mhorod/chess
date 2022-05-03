@@ -1,24 +1,28 @@
 package app.core.interactor;
 
-import app.core.game.*;
-import app.core.game.moves.*;
+import app.core.game.Game;
+import app.core.game.Piece;
+import app.core.game.moves.Move;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Wraps game allowing players to interact with each other and notifies participants about events
  */
-public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends Game<M, P>> implements Game<M, P> {
+public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends Game<M, P>> implements Game<M, P>,
+        GameSocket<M, P> {
     G game;
     boolean[] isConnected;
     int connectedPlayers = 0;
 
-    List<Participant<M, P>> participants;
+    List<Spectator<M, P>> spectators;
 
     public InteractiveGame(G game) {
         this.game = game;
         isConnected = new boolean[game.getPlayerCount()];
-        participants = new ArrayList<>();
+        spectators = new ArrayList<>();
     }
 
     /**
@@ -27,6 +31,7 @@ public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends
      * @param playerId id of connected player
      * @param player player to be connected
      */
+    @Override
     public void connectPlayer(int playerId, Player<M, P> player) {
         if (player == null)
             throw new NullPointerException();
@@ -39,7 +44,6 @@ public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends
         connectedPlayers++;
         player.player = playerId;
         player.game = this;
-        participants.add(player);
     }
 
     /**
@@ -47,8 +51,9 @@ public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends
      *
      * @param spectator spectator to be connected
      */
-    public void connectSpectator(Participant<M, P> spectator) {
-        participants.add(spectator);
+    @Override
+    public void connectSpectator(Spectator<M, P> spectator) {
+        spectators.add(spectator);
     }
 
     @Override
@@ -77,8 +82,8 @@ public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends
             throw new IllegalStateException("not all players are connected");
 
         var changedPieces = game.makeMove(player, move);
-        for (var p : participants)
-            p.update(player, move);
+        for (var p : spectators)
+            p.update(player, move, changedPieces);
         return changedPieces;
     }
 
