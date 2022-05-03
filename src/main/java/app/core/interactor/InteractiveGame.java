@@ -16,12 +16,12 @@ public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends
     boolean[] isConnected;
     int connectedPlayers = 0;
 
-    List<Participant<M, P>> participants;
+    List<Spectator<M, P>> spectators;
 
     public InteractiveGame(G game) {
         this.game = game;
         isConnected = new boolean[game.getPlayerCount()];
-        participants = new ArrayList<>();
+        spectators = new ArrayList<>();
     }
 
     /**
@@ -42,7 +42,6 @@ public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends
         connectedPlayers++;
         player.player = playerId;
         player.game = this;
-        participants.add(player);
     }
 
     /**
@@ -50,8 +49,8 @@ public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends
      *
      * @param spectator spectator to be connected
      */
-    public void connectSpectator(Participant<M, P> spectator) {
-        participants.add(spectator);
+    public void connectSpectator(Spectator<M, P> spectator) {
+        spectators.add(spectator);
     }
 
     @Override
@@ -80,7 +79,7 @@ public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends
             throw new IllegalStateException("not all players are connected");
 
         var changedPieces = game.makeMove(player, move);
-        for (var p : participants)
+        for (var p : spectators)
             p.update(player, move, changedPieces);
         return changedPieces;
     }

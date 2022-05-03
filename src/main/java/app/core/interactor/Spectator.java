@@ -6,9 +6,9 @@ import app.core.game.moves.Move;
 import java.util.List;
 
 /**
- * Participant that receives information about moves done by player
+ * Spectator that receives information about moves done by players
  */
-public interface Participant<M extends Move<P>, P extends Piece> {
+public interface Spectator<M extends Move<P>, P extends Piece> {
 
     /**
      * Receive information that player made a move

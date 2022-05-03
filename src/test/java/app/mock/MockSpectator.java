@@ -1,10 +1,13 @@
 package app.mock;
 
-import app.core.interactor.*;
+import app.core.interactor.Spectator;
 
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-public class MockSpectator implements Participant<MockMove, MockPiece> {
+public class MockSpectator implements Spectator<MockMove, MockPiece> {
 
     public List<Map.Entry<Integer, MockMove>> receivedMoves = new ArrayList<>();
 

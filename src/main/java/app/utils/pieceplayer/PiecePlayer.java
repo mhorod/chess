@@ -2,7 +2,7 @@ package app.utils.pieceplayer;
 
 import app.core.game.Piece;
 import app.core.game.moves.Move;
-import app.core.interactor.Participant;
+import app.core.interactor.Spectator;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,9 +11,8 @@ import java.util.function.Supplier;
 
 /**
  * Player wrapper that allows moving with pieces instead moves
- * TODO: Allow extending this class or add listeners to propagate game events
  */
-public abstract class PiecePlayer<M extends Move<P>, P extends Piece> implements Participant<M, P> {
+public abstract class PiecePlayer<M extends Move<P>, P extends Piece> implements Spectator<M, P> {
 
     protected Map<P, InteractivePiece<M, P>> pieces = new HashMap<>();
 
