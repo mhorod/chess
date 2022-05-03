@@ -22,18 +22,33 @@ public class PieceSelected<P extends Piece<?, ?>> extends State<P> {
 
     @Override
     protected void init() {
-        selectedPiece.pickUp();
+        if (!selectedPiece.isPickedUp())
+            selectedPiece.pickUp();
         for (Field f : legalFields)
             board.getGraphicalField(f).markAsLegal();
     }
 
     @Override
     protected void cleanUp() {
-        if (selectedPiece != null) selectedPiece.putDown();
+        if (selectedPiece != null) {
+            selectedPiece.putDown();
+            for (Field f : legalFields)
+                board.getGraphicalField(f).toNormal();
+        }
         if (highlightedField != null)
             board.getGraphicalField(highlightedField).unhighlight();
+
+    }
+
+    @Override
+    public void onMove() {
+        var newLegalFields = selectedPiece.logical.getLegalMoveFields().keySet();
         for (Field f : legalFields)
-            board.getGraphicalField(f).toNormal();
+            if (!newLegalFields.contains(f)) board.getGraphicalField(f).toNormal();
+
+        var oldPiece = selectedPiece;
+        selectedPiece = null;
+        changeState(new PieceSelected<>(board, oldPiece));
     }
 
     @Override
@@ -79,6 +94,6 @@ public class PieceSelected<P extends Piece<?, ?>> extends State<P> {
     @Override
     public void onPieceDrag(P piece, MouseEvent e) {
         selectedPiece = null;
-        changeState(new PieceDragged<>(board, piece));
+        changeState(new PieceDragged<>(board, piece, legalFields));
     }
 }

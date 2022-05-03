@@ -25,9 +25,17 @@ public class PieceDragged<P extends Piece<?, ?>> extends State<P> {
         ).toList();
     }
 
+    PieceDragged(Board<?, ?> board, P selectedPiece, List<Field> legalFields) {
+        this.board = board;
+        this.selectedPiece = selectedPiece;
+        this.legalFields = legalFields;
+    }
+
+
     @Override
     protected void init() {
-        selectedPiece.pickUp();
+        if (!selectedPiece.isPickedUp())
+            selectedPiece.pickUp();
         for (Field f : legalFields)
             if (!f.equals(selectedPiece.logical.getPiece().getPosition()))
                 board.getGraphicalField(f).markAsLegal();
@@ -42,6 +50,7 @@ public class PieceDragged<P extends Piece<?, ?>> extends State<P> {
         for (Field f : legalFields)
             board.getGraphicalField(f).toNormal();
     }
+
 
     @Override
     public void onPieceDrag(P piece, MouseEvent e) {
