@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class Board<M extends app.core.game.moves.Move<P>, P extends ChessPiece> extends Pane {
+    public List<Piece<M, P>> pieces;
     double fieldSize;
     Style style;
     GraphicalField[][] graphicalFields = new GraphicalField[8][8];
@@ -85,7 +86,7 @@ public class Board<M extends app.core.game.moves.Move<P>, P extends ChessPiece> 
         };
 
         player.connectPieces(supplier);
-
+        pieces = supplier.pieces;
 
         for (var p : supplier.pieces) {
             p.logical.update();

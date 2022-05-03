@@ -4,6 +4,7 @@ import app.chess.pieces.ChessPiece;
 import app.core.game.moves.Move;
 import app.ui.ImageManager;
 import app.ui.board.state.Machine;
+import javafx.scene.paint.Color;
 
 public class Piece<M extends Move<P>, P extends ChessPiece> {
     public final GraphicalPiece graphical;
@@ -56,5 +57,13 @@ public class Piece<M extends Move<P>, P extends ChessPiece> {
     public void pickUp() {
         pickedUp = true;
         graphical.pickUp(board.getGraphicalField(logical.getPiece().getPosition()));
+    }
+
+    public void highlight() {
+        graphical.highlight(Color.web("#2ac"));
+    }
+
+    public void unhighlight() {
+        graphical.unhighlight();
     }
 }
