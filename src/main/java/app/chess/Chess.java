@@ -217,9 +217,10 @@ public class Chess implements Game<ChessMove, ChessPiece> {
                 //Perhaps en passant is possible
                 //If not, we'll return false
                 wasThereBefore = chessBoard[move.getPiece().getPlayer() == 0 ? newRank - 1 : newRank + 1][newFile];
-                if(wasThereBefore == null || !wasThereBefore.enPassantable()){
+                if(wasThereBefore == null || !wasThereBefore.enPassantable() || wasThereBefore.getPlayer() == move.getPiece().getPlayer()){
                     return false;
                 }
+
             }
             else{
                 //somebody's here
@@ -229,6 +230,9 @@ public class Chess implements Game<ChessMove, ChessPiece> {
                     if(wasThereBefore.getKind() == ChessPieceKind.KING){
                         throw new KingCanBeTaken();
                     }
+                }
+                else{
+                    return false;
                 }
             }
         }
@@ -585,7 +589,29 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             chessBoard[newRank][newFile] = move.getPiece();
         } else {
             chessBoard[newRank][newFile] = move.getPiece();
+
+            //you'd think that we are done
+            //and you'd be wrong
+            //because en passant exists
+            //to mess with our code
+
+            if(move.getPiece().getKind() == ChessPieceKind.PAWN && oldFile - newFile != 0){
+                //So, there is nothing in there but we are going sideways
+                //This means en passant
+                //So we'll just remove whatever stays in enpassantable place
+                wasHereBefore = chessBoard[oldRank][newFile];
+                if(wasHereBefore == null){
+                    //?????????
+                    throw new IllegalMove();
+                }
+                else{
+                    wasHereBefore.kill();
+                    chessBoard[oldRank][newFile] = null;
+                }
+            }
+
         }
+
 
         chessBoard[oldRank][oldFile] = null;
 
