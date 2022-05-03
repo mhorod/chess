@@ -41,7 +41,7 @@ public class Board<M extends app.core.game.moves.Move<P>, P extends ChessPiece> 
                 else
                     graphicalFields[x][y] = new GraphicalField(style.whiteField, style.whiteFieldCircle, fieldSize,
                             new Position(25 + x * fieldSize + fieldSize / 2, y * fieldSize + fieldSize / 2));
-                final Field field = new Field(8 - y, x + 1);
+                final Field field = new Field(y + 1, 8 - x);
                 graphicalFields[x][y].setOnMousePressed(e -> stateMachine.onFieldClick(field));
                 graphicalFields[x][y].setOnMouseEntered(e -> stateMachine.onFieldMouseEntered(field));
                 grid.add(graphicalFields[x][y], x + 1, y + 1);

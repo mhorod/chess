@@ -9,9 +9,9 @@ import javafx.scene.input.MouseEvent;
 import java.util.List;
 
 public class PieceSelected<P extends Piece<?, ?>> extends State<P> {
-    private final P selectedPiece;
     private final List<Field> legalFields;
     private final Board<?, ?> board;
+    private P selectedPiece;
     private Field highlightedField;
 
     PieceSelected(Board<?, ?> board, P selectedPiece) {
@@ -29,7 +29,7 @@ public class PieceSelected<P extends Piece<?, ?>> extends State<P> {
 
     @Override
     protected void cleanUp() {
-        selectedPiece.graphical.putDown(board.getGraphicalField(selectedPiece.logical.getPiece().getPosition()));
+        if (selectedPiece != null) selectedPiece.putDown();
         if (highlightedField != null)
             board.getGraphicalField(highlightedField).unhighlight();
         for (Field f : legalFields)
@@ -66,6 +66,7 @@ public class PieceSelected<P extends Piece<?, ?>> extends State<P> {
 
     @Override
     public void onPieceDrag(P piece, MouseEvent e) {
+        selectedPiece = null;
         changeState(new PieceDragged<>(board, piece));
     }
 }
