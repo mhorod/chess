@@ -48,6 +48,11 @@ public class PieceDragged<P extends Piece<?, ?>> extends State<P> {
     }
 
     @Override
+    public void onPieceDeleted(P p) {
+        if (p == selectedPiece) changeState(new Normal<>(board));
+    }
+
+    @Override
     public void onPieceDrop(P piece) {
         if (highlightedField != null)
             piece.logical.makeMove(highlightedField);

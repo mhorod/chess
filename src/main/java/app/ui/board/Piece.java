@@ -13,19 +13,31 @@ public class Piece<M extends Move<P>, P extends ChessPiece> {
     Piece(GraphicalPiece graphical, Machine<app.ui.board.Piece<M, P>> stateMachine, Board<M, P> board) {
         this.graphical = graphical;
         this.board = board;
-        graphical.setOnMousePressed(e -> stateMachine.onPieceClick(this));
-        graphical.setOnMouseDragged(e -> stateMachine.onPieceDrag(this, e));
-        graphical.setOnMouseReleased(e -> stateMachine.onPieceDrop(this));
-
         this.logical = new LogicalPiece<>() {
             @Override
             public void update() {
                 putDown();
                 graphical.setImage(ImageManager.getPieceImage(getPiece().getKind()));
                 graphical.setColor(getPiece().getPlayer() == 0 ? board.style.whitePiece : board.style.blackPiece);
-                if (!getPiece().isAlive()) graphical.disappear();
+                if (!getPiece().isAlive()) {
+                    graphical.disappear();
+                    stateMachine.onPieceDeleted(Piece.this);
+                }
             }
         };
+
+        graphical.setOnMousePressed(e -> {
+            if (logical.getPiece().isAlive()) stateMachine.onPieceClick(this);
+        });
+
+        graphical.setOnMouseDragged(e -> {
+            if (logical.getPiece().isAlive()) stateMachine.onPieceDrag(this, e);
+        });
+
+        graphical.setOnMouseReleased(e -> {
+            if (logical.getPiece().isAlive()) stateMachine.onPieceDrop(this);
+        });
+
     }
 
     public void putDown() {
