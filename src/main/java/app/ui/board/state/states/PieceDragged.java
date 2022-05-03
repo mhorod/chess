@@ -8,34 +8,57 @@ import app.ui.utils.Position;
 import javafx.scene.input.MouseEvent;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class PieceDragged<P extends Piece<?, ?>> extends State<P> {
     private final Board<?, ?> board;
-    private final P selectedPiece;
     private final List<Field> legalFields;
+    private P selectedPiece;
     private Field highlightedField;
 
     PieceDragged(Board<?, ?> board, P selectedPiece) {
         this.board = board;
         this.selectedPiece = selectedPiece;
-        legalFields = selectedPiece.logical.getLegalMoveFields().keySet().stream().toList();
+        legalFields = Stream.concat(
+                selectedPiece.logical.getLegalMoveFields().keySet().stream(),
+                Stream.of(selectedPiece.logical.getPiece().getPosition())
+        ).toList();
     }
+
+    PieceDragged(Board<?, ?> board, P selectedPiece, List<Field> legalFields) {
+        this.board = board;
+        this.selectedPiece = selectedPiece;
+        this.legalFields = Stream.concat(
+                legalFields.stream(),
+                Stream.of(selectedPiece.logical.getPiece().getPosition())
+        ).toList();
+    }
+
 
     @Override
     protected void init() {
-        selectedPiece.graphical.pickUp(board.getGraphicalField(selectedPiece.logical.getPiece().getPosition()));
+        if (!selectedPiece.isPickedUp())
+            selectedPiece.pickUp();
         for (Field f : legalFields)
-            board.getGraphicalField(f).markAsLegal();
+            if (!f.equals(selectedPiece.logical.getPiece().getPosition()))
+                board.getGraphicalField(f).markAsLegal();
+        for (var piece : board.pieces)
+            if (board.getGraphicalField(piece.logical.getPiece().getPosition()).isLegal()) piece.highlight();
+            else piece.unhighlight();
+
     }
 
     @Override
     protected void cleanUp() {
-        selectedPiece.graphical.putDown(board.getGraphicalField(selectedPiece.logical.getPiece().getPosition()));
+        if (selectedPiece != null) selectedPiece.putDown();
         if (highlightedField != null)
             board.getGraphicalField(highlightedField).unhighlight();
         for (Field f : legalFields)
             board.getGraphicalField(f).toNormal();
+        for (var piece : board.pieces)
+            piece.unhighlight();
     }
+
 
     @Override
     public void onPieceDrag(P piece, MouseEvent e) {
@@ -48,8 +71,18 @@ public class PieceDragged<P extends Piece<?, ?>> extends State<P> {
     }
 
     @Override
+    public void onPieceDeleted(P p) {
+        if (p == selectedPiece) changeState(new Normal<>(board));
+        else {
+            var oldPiece = selectedPiece;
+            selectedPiece = null;
+            changeState(new PieceDragged<>(board, oldPiece));
+        }
+    }
+
+    @Override
     public void onPieceDrop(P piece) {
-        if (highlightedField != null)
+        if (highlightedField != null && !highlightedField.equals(selectedPiece.logical.getPiece().getPosition()))
             piece.logical.makeMove(highlightedField);
         changeState(new Normal<>(board));
     }

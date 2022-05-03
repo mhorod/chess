@@ -2,6 +2,7 @@ package app.chess;
 
 import app.chess.moves.Castle;
 import app.chess.moves.ChessMove;
+import app.chess.moves.NormalMove;
 import app.chess.pieces.*;
 import app.core.game.Field;
 import app.core.game.Game;
@@ -16,6 +17,8 @@ import java.util.List;
 public class Chess implements Game<ChessMove, ChessPiece> {
     public static final int SIZE = 8;
     ChessPiece[][] chessBoard = new ChessPiece[SIZE + 1][SIZE + 1]; //We are adding 1 because we will start counting at 1
+    //This is a little uncommon, but in Chess such numeration is also starting from 1 and it will hopefully create fewer bugs if we stick to this convention
+
     private boolean blackToMove = false;
     private boolean pendingPromotion = false; //In case there is a promotion of a pawn, that move is split into 2 submoves
     private boolean testMode = false; //this is NOT how it should be done, but it's the simplest way
@@ -23,7 +26,6 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     public Chess() {
         initializeBoard();
     }
-    //This is a little uncommon, but in Chess such numeration is also starting from 1 and it will hopefully create fewer bugs if we stick to this convention
 
     public static boolean fieldIsValid(Field toValidate) {
         return toValidate.rank() <= SIZE && toValidate.file() <= SIZE && toValidate.rank() > 0 && toValidate.file() > 0;
@@ -128,6 +130,24 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         return piecesList;
     }
 
+    private boolean validateKingSafety(int player){
+        //Validates king safety the way that is done in validateKingSafety(ChessMove move) but it doesn't perform any move
+        //Yes, it's duplicating some parts of code, but we will have to live with it for now
+
+        int secondPlayer = player == 0 ? 1 : 0;
+
+        try {
+            testMode = true;
+            getLegalMoves(secondPlayer);
+        } catch (KingCanBeTaken e) {
+            return false;
+        }
+        finally {
+            testMode = false;
+        }
+        return true;
+    }
+
     private boolean validateKingSafety(ChessMove move) {
         int player = move.getPiece().getPlayer();
 
@@ -165,12 +185,60 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         return true;
     }
 
-    private boolean castleValidation(ChessMove move) {
-        return true;
-    }
-
     private boolean pawnMoveValidation(ChessMove move) {
         //Because pawns have somewhat weird moving possibilities, validation of their moves is inside another function
+        int currentRank = move.getPiece().getPosition().rank();
+        int currentFile = move.getPiece().getPosition().file();
+
+        int newRank = move.getField().rank();
+        int newFile = move.getField().file();
+
+        if(currentFile - newFile == 0){
+            //Going forward is considered first
+
+            //First, let's consider going forward by 2 - the only case where we have to perform this check
+            if(Math.abs(newRank - currentRank) == 2){
+                //We want to check if the path is not obstructed
+                if(!roadNotObstructed(move.getPiece().getPosition(),move.getField())){
+                    //The only type of move whether we have to check if something is on the road is being obstructed
+                    return false;
+                }
+            }
+            //And we can't move forward if the place we want to move to is already taken by ANY piece
+            if(chessBoard[newRank][newFile] != null){
+                return false;
+            }
+        }
+        else{
+            //Now we are considering going to the sides, so there has to be enemy piece involved
+            ChessPiece wasThereBefore = chessBoard[newRank][newFile];
+
+            if(wasThereBefore == null){
+                //Perhaps en passant is possible
+                //If not, we'll return false
+                wasThereBefore = chessBoard[move.getPiece().getPlayer() == 0 ? newRank - 1 : newRank + 1][newFile];
+                if(wasThereBefore == null || !wasThereBefore.enPassantable()){
+                    return false;
+                }
+            }
+            else{
+                //somebody's here
+                if(wasThereBefore.getPlayer() != move.getPiece().getPlayer()){
+                    //There's enemy piece to be taken, so we can validate this move
+                    //Except for when the king is under attack
+                    if(wasThereBefore.getKind() == ChessPieceKind.KING){
+                        throw new KingCanBeTaken();
+                    }
+                }
+            }
+        }
+
+        if(!testMode && !validateKingSafety(move)){
+            //We are not in a test mode (where we don't validateKing'sSafety), so we cannot move the pawn
+            //For what "testMode" is, please look at validateKingSafety code
+            return false;
+        }
+
         return true;
     }
 
@@ -207,6 +275,92 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         return true;
     }
 
+    /**
+     *
+     * @param move
+     * @return Assuming that castling is possible, returns the position on which the rook should be located. Makes ABSOLUTELY NO GUARANTEE that castling is legal.
+     */
+    private Field getRookPositionBasedOnCastling(Castle move){
+        final int currentRank = move.getPiece().getPosition().rank();
+        final int currentFile = move.getPiece().getPosition().file();
+
+        final int newRank = move.getField().rank();
+        final int newFile = move.getField().file();
+
+        final boolean kingSideCastling = newFile - currentFile > 0;  //If the file is increasing, this means (both for white and black) that we are castling king side
+
+        final int rookRank = move.getPiece().getPlayer() == 0 ? 1 : 8; //White has rooks on first rank, black on eighth
+        final int rookFile = kingSideCastling ? 8 : 1;
+
+        return new Field(rookRank, rookFile);
+    }
+
+    private boolean validateMove(Castle move) {
+        //There are 6 conditions for castling to be valid and checking for some of them is going to be annoying to say the least
+
+        //First: King cannot be in check
+        if(!testMode && !validateKingSafety(move.getPiece().getPlayer())){
+            return false;
+        }
+
+        //Second: Rook and king haven't moved since beginning of the game
+
+        final int currentRank = move.getPiece().getPosition().rank();
+        final int currentFile = move.getPiece().getPosition().file();
+
+        final int newRank = move.getField().rank();
+        final int newFile = move.getField().file();
+
+        final boolean kingSideCastling = newFile - currentFile > 0;  //If the file is increasing, this means (both for white and black) that we are castling king side
+
+        final int rookRank = move.getPiece().getPlayer() == 0 ? 1 : 8; //White has rooks on first rank, black on eighth
+        final int rookFile = kingSideCastling ? 8 : 1;
+
+        ChessPiece rook = chessBoard[rookRank][rookFile]; //You might ask why I've decided to call that variable "rook" when I have no guarantee that such piece is a rook. Well, I'm checking that in the if that is below
+
+        if(rook == null || !rook.canParticipateInCastling()){
+            //There's no rook to even, you know, castle with
+            //Or something that on that place cannot castle
+            return false;
+        }
+        //You might ask: Why is that sufficient? Well, only rooks and kings can ever participate in castling, and any move invalidates that right.
+        //That pretty much means that whatever is standing on that place has been standing there for all of the game, so it is eligible for castling
+
+        //It'd be great to check what's going on with our king
+        //We have a guarantee that the piece that tries to castle is king, because we are checking that in Castle constructor
+
+        if(!move.getPiece().canParticipateInCastling()){
+            return false;
+        }
+
+        //So, our rook didn't move and our king also didn't
+        //That's perfect, second condition is satisfied
+
+        //Third condition: Road between rook and king is not obstructed
+        if(!roadNotObstructed(move.getPiece().getPosition(), new Field(rookRank,rookFile))){
+            return false;
+        }
+
+        //Fourth condition: Nothing on the road of the king is under attack
+        int multiplier = kingSideCastling ? 1 : -1;
+
+        for(int i=1;i<=2;i++){
+            //This is somewhat weird, but we are going to check if this is ok by placing a fake king on a piece that cannot be attacked and checking if anything goes wrong
+            //Truly magnificent
+            //(and crazy ineffective, but it was never meant to be effective)
+            ChessPiece currentPiece = chessBoard[currentRank][currentFile + i * multiplier];
+            chessBoard[currentRank][currentFile + i * multiplier] = new King(new Field(currentRank,currentFile + i * multiplier), move.getPiece().getPlayer() != 0);
+            if(!testMode && !validateKingSafety(move.getPiece().getPlayer())){
+                chessBoard[currentRank][currentFile + i * multiplier] = currentPiece;
+                return false;
+            }
+            chessBoard[currentRank][currentFile + i * multiplier] = currentPiece;
+        }
+
+        return true;
+    }
+
+
     private boolean validateMove(ChessMove move) {
         Field currentPosition = move.getPiece().getPosition();
         Field newPosition = move.getField();
@@ -215,9 +369,9 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             return pawnMoveValidation(move);
         }
 
-        if (move.getClass() == Castle.class) {
-            //castling is tricky to validate, so I'm going to extract it to another function
-            return castleValidation(move);
+        if(move.getClass() == Castle.class){
+            //That's a dirty way of solving it, but will have to do for now
+            return validateMove((Castle) move);
         }
 
         if (chessBoard[currentPosition.rank()][currentPosition.file()] != move.getPiece()) {
@@ -334,11 +488,54 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         }
     }
 
+    /**
+     * Executes castling under assumption that function calling it made sure that such castling is, indeed, legal
+     * @param move
+     * @return
+     */
+    private List<ChessPiece> castleMove(Castle move){
+        Field whereRookIs = getRookPositionBasedOnCastling(move);
+
+        int rookRank = whereRookIs.rank();
+        int rookFile = whereRookIs.file();
+
+        //Castling can't kill anything, etc.
+        //Just changing positions of 2 pieces, nothing can go wrong
+        //Right?
+
+        ChessPiece king = move.getPiece();
+        int kingRank = king.getPosition().rank(); //Yes, kingRank will be the same as rookRank
+        //In fact, let's just have an additional assertion here
+
+        if(kingRank != rookRank){
+            throw new BoardDiscrepancy();
+        }
+
+        int kingFile = king.getPosition().file();
+
+        ChessPiece rook = chessBoard[rookRank][rookFile];
+
+        int newRookFile = rookFile == 1 ? 4 : 6; //It is just this way
+        //Rank will stay the same, obviously
+
+        chessBoard[rookRank][rookFile] = null;
+        chessBoard[kingRank][kingFile] = null;
+
+        chessBoard[move.getField().rank()][move.getField().file()] = king;
+        king.move(move.getField());
+
+        chessBoard[rookRank][newRookFile] = rook;
+        rook.move(new Field(rookRank, newRookFile));
+
+        return this.getAllPieces();
+    }
+
     @Override
     public List<ChessPiece> makeMove(int player, ChessMove move) {
         if (move.getPiece().getPlayer() != player) {
             throw new PlayerDiscrepancy();
         }
+
 
         //It's better to be sure that the move we get is actually legal
         List<ChessMove> acceptableMoves = this.getLegalMoves(player, move.getPiece());
@@ -346,6 +543,13 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             System.err.println(acceptableMoves);
             System.err.println(move);
             throw new IllegalMove();
+        }
+
+
+        //Now, if castling is involved, I'm going to delegate it to another function because otherwise this will be to messy
+        if(move.getClass() == Castle.class){
+            //I'm sure checking it that way won't cause any issues down the line
+            return castleMove((Castle) move);
         }
 
         if (pendingPromotion) {

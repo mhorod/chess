@@ -60,6 +60,16 @@ public abstract class ChessPiece implements Piece {
         wasMoved = false;
     }
 
+    public boolean enPassantable(){
+        //Pawns should override this method
+        return false;
+    }
+
+    public boolean canParticipateInCastling(){
+        //King and Rook should override this method
+        return false;
+    }
+
     public abstract ChessPieceKind getKind();
 
     /**

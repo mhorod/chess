@@ -40,6 +40,16 @@ public class Machine<P extends Piece<?, ?>> implements Behavior<P> {
         current.onPieceDrop(p);
     }
 
+    @Override
+    public void onPieceDeleted(P p) {
+        current.onPieceDeleted(p);
+    }
+
+    @Override
+    public void onMove() {
+        current.onMove();
+    }
+
     void changeState(State<P> newState) {
         current.cleanUp();
         current = newState;
