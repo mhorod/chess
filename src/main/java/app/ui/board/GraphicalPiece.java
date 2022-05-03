@@ -37,6 +37,7 @@ public class GraphicalPiece extends ColoredImage {
     }
 
     public void disappear() {
+        setCursor(Cursor.DEFAULT);
         var transition = new FadeTransition(Duration.millis(200), this);
         transition.setToValue(0.0);
         transition.setOnFinished(e -> setVisible(false));

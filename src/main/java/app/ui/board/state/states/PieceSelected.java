@@ -36,6 +36,10 @@ public class PieceSelected<P extends Piece<?, ?>> extends State<P> {
             board.getGraphicalField(f).toNormal();
     }
 
+    @Override
+    public void onPieceDeleted(P p) {
+        if (p == selectedPiece) changeState(new Normal<>(board));
+    }
 
     @Override
     public void onPieceClick(P piece) {
