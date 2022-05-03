@@ -11,6 +11,9 @@ public class Rook extends ChessPiece {
         super(position, isBlack);
     }
 
+    boolean wasMovedBefore = false; //Do not confuse with wasMoved of ChessPiece, this is supposed to be changed one time
+    //This field is going to be used to check whether the rook can be involved in castling
+
     @Override
     public ChessPieceKind getKind() {
         return ChessPieceKind.ROOK;
@@ -36,5 +39,16 @@ public class Rook extends ChessPiece {
         }
 
         return potentialMoves;
+    }
+
+    @Override
+    public void move(Field newPosition){
+        wasMovedBefore = true;
+        position = newPosition;
+    }
+
+    @Override
+    public boolean canParticipateInCastling(){
+        return !wasMovedBefore;
     }
 }
