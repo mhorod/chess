@@ -1,11 +1,8 @@
 package app;
 
 import app.core.interactor.InteractiveGame;
-import app.core.interactor.Player;
 import app.mock.MockGame;
 import app.mock.MockInteractivePiece;
-import app.mock.MockMove;
-import app.mock.MockPiece;
 import app.utils.pieceplayer.IllegalMoveAttempt;
 import app.utils.pieceplayer.StandalonePiecePlayer;
 import org.junit.Test;
@@ -20,11 +17,8 @@ public class PiecePlayerTest {
     @Test
     public void cannot_make_move_as_another_piece() {
         var game = new InteractiveGame<>(new MockGame());
-        var p = new Player<MockMove, MockPiece>();
 
-        game.connectPlayer(0, p);
-        var player = new StandalonePiecePlayer<>(p);
-        game.connectSpectator(player);
+        var player = new StandalonePiecePlayer<>(game, 0);
 
         List<MockInteractivePiece> pieces = new ArrayList<>();
 

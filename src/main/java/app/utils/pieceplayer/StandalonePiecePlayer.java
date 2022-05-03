@@ -2,7 +2,9 @@ package app.utils.pieceplayer;
 
 import app.core.game.Piece;
 import app.core.game.moves.Move;
+import app.core.interactor.GameSocket;
 import app.core.interactor.Player;
+import app.utils.pieceplayer.controls.PlayerControls;
 
 import java.util.function.Supplier;
 
@@ -14,8 +16,10 @@ public final class StandalonePiecePlayer<M extends Move<P>, P extends Piece> ext
 
     private final Player<M, P> player;
 
-    public StandalonePiecePlayer(Player<M, P> player) {
-        this.player = player;
+    public StandalonePiecePlayer(GameSocket<M, P> socket, int playerId) {
+        player = new Player<>();
+        socket.connectPlayer(playerId, player);
+        socket.connectSpectator(this);
     }
 
     /**
@@ -26,8 +30,7 @@ public final class StandalonePiecePlayer<M extends Move<P>, P extends Piece> ext
     public void connectPieces(Supplier<? extends InteractivePiece<M, P>> pieceSupplier) {
         for (var piece : player.getAllPieces()) {
             var interactivePiece = pieceSupplier.get();
-            interactivePiece.player = player;
-            interactivePiece.piece = piece;
+            interactivePiece.controls = new PlayerControls<>(piece, player);
             pieces.put(piece, interactivePiece);
         }
     }

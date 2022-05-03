@@ -11,7 +11,8 @@ import java.util.List;
 /**
  * Wraps game allowing players to interact with each other and notifies participants about events
  */
-public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends Game<M, P>> implements Game<M, P> {
+public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends Game<M, P>> implements Game<M, P>,
+        GameSocket<M, P> {
     G game;
     boolean[] isConnected;
     int connectedPlayers = 0;
@@ -30,6 +31,7 @@ public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends
      * @param playerId id of connected player
      * @param player player to be connected
      */
+    @Override
     public void connectPlayer(int playerId, Player<M, P> player) {
         if (player == null)
             throw new NullPointerException();
@@ -49,6 +51,7 @@ public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends
      *
      * @param spectator spectator to be connected
      */
+    @Override
     public void connectSpectator(Spectator<M, P> spectator) {
         spectators.add(spectator);
     }

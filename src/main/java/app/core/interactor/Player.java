@@ -7,8 +7,9 @@ import app.core.game.moves.Move;
 import java.util.List;
 
 /**
- * Player exposed to external controllers such as UI, abstracts out player number and input method Override update
- * method to implement custom behavior
+ * Player exposed to external controllers such as UI, abstracts out player number and input method.
+ * <p>
+ * Override update method to implement custom behavior
  */
 public class Player<M extends Move<P>, P extends Piece> {
     int player;

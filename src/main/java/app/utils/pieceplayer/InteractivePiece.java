@@ -2,49 +2,41 @@ package app.utils.pieceplayer;
 
 import app.core.game.Piece;
 import app.core.game.moves.Move;
-import app.core.game.moves.PieceMove;
-import app.core.interactor.Player;
+import app.utils.pieceplayer.controls.PieceControls;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 /**
- * Interface for moving single piece, to be used with external controllers such as UI
+ * Interface for moving single piece, to be used with external controllers such as UI.
+ * <p>
+ * Override update method to implement custom behavior
  */
 public class InteractivePiece<M extends Move<P>, P extends Piece> {
-    P piece;
-    Player<M, P> player;
+    // Underlying controls that hide implementation details
+    // This way we can still expose InteractivePiece as a class and allow to extend it
+    // while having flexibility to choose between different strategies e.g. completely disallowing moves
+    PieceControls<M, P> controls;
 
     /**
      * @return Controlled game piece
      */
     public final P getPiece() {
-        return piece;
+        return controls.getPiece();
     }
 
-
     /**
-     * Returns list of available moves. If player is null returns empty list
+     * @return List of moves this piece can make
      */
     public final List<M> getLegalMoves() {
-        if (player == null)
-            return new ArrayList<>();
-        else
-            return player.getLegalMoves(piece);
+        return controls.getLegalMoves();
     }
 
     /**
-     * Moves the piece Throws IllegalArgumentException if move is invalid for this piece
-     * TODO: Figure out which move types are allowed
+     * Make a move with this piece
      */
     public final void makeMove(M move) {
-        if (!(move instanceof PieceMove<?>))
-            throw new IllegalMoveAttempt();
-        else if (piece != ((PieceMove<?>) move).getPiece())
-            throw new IllegalMoveAttempt("Piece specified by the move does not match piece of this");
-        else
-            player.makeMove(move);
+        controls.makeMove(move);
     }
 
     /**
