@@ -535,13 +535,12 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         chessBoard[rookRank][newRookFile] = rook;
         rook.move(new Field(rookRank, newRookFile));
 
-        blackToMove = !blackToMove;
-
         return List.of(move.getPiece(), rook);
     }
 
     @Override
     public List<ChessPiece> makeMove(int player, ChessMove move) {
+
         if (move.getPiece().getPlayer() != player) {
             throw new PlayerDiscrepancy();
         }
@@ -554,6 +553,10 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             System.err.println(move);
             throw new IllegalMove();
         }
+
+
+        ///TODO: MAKE IT NOT FAIL WITH PENDING PROMOTION
+        blackToMove = !blackToMove;
 
 
         //Now, if castling is involved, I'm going to delegate it to another function because otherwise this will be to messy
@@ -622,10 +625,6 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         chessBoard[oldRank][oldFile] = null;
 
         move.getPiece().move(move.getField());
-
-        if (!pendingPromotion) {
-            blackToMove = !blackToMove;
-        }
 
         //After executing the move, we can finally return a list informing what's happening on the board
         ArrayList<ChessPiece> changedList = new ArrayList<>();
