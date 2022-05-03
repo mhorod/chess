@@ -1,11 +1,10 @@
 package app.ui;
 
 import app.chess.Chess;
-import app.chess.moves.ChessMove;
-import app.chess.pieces.ChessPiece;
 import app.core.interactor.InteractiveGame;
 import app.ui.board.Board;
-import app.utils.pieceplayer.PiecePlayer;
+import app.utils.pieceplayer.PieceSpectator;
+import app.utils.pieceplayer.StandalonePiecePlayer;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -39,18 +38,20 @@ public class App extends Application {
 
         Chess chess = new Chess();
         var game = new InteractiveGame<>(chess);
-        var whitePlayer = new PiecePlayer<ChessMove, ChessPiece>();
-        var blackPlayer = new PiecePlayer<ChessMove, ChessPiece>();
-        game.connectPlayer(0, whitePlayer);
-        game.connectPlayer(1, blackPlayer);
 
-        Pane board1 = new Board<>(whitePlayer, 40, style);
-        Pane board2 = new Board<>(blackPlayer, 40, style);
+        var whitePiecePlayer = new StandalonePiecePlayer<>(game, 0);
+        var blackPiecePlayer = new StandalonePiecePlayer<>(game, 1);
+        var pieceSpectator = new PieceSpectator<>(game, game);
+
+        Pane whitePlayerBoard = new Board<>(whitePiecePlayer, 30, style);
+        Pane spectatorBoard = new Board<>(pieceSpectator, 30, style);
+        Pane blackPlayerBoard = new Board<>(blackPiecePlayer, 30, style);
 
         HBox pane = new HBox();
         pane.setAlignment(Pos.CENTER);
-        pane.getChildren().add(board1);
-        pane.getChildren().add(board2);
+        pane.getChildren().add(whitePlayerBoard);
+        pane.getChildren().add(spectatorBoard);
+        pane.getChildren().add(blackPlayerBoard);
         pane.setFillHeight(true);
         pane.setSpacing(100);
         Scene scene = new Scene(pane, 1024, 800, true);

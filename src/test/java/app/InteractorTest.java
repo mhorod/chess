@@ -1,12 +1,15 @@
 package app;
 
-import app.core.interactor.*;
+import app.core.interactor.InteractiveGame;
+import app.core.interactor.UseOfUnconnectedPlayer;
 import app.mock.*;
-import org.junit.*;
+import org.junit.Test;
 
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 public class InteractorTest {
 
@@ -39,7 +42,7 @@ public class InteractorTest {
     }
 
     @Test
-    public void spectators_and_players_receive_move_updates() {
+    public void spectators_receive_move_updates() {
         var game = new InteractiveGame<>(new MockGame());
 
         var first_player = new MockPlayer();
@@ -65,8 +68,6 @@ public class InteractorTest {
 
         assertEquals(expected, first_spectator.receivedMoves);
         assertEquals(expected, second_spectator.receivedMoves);
-        assertEquals(expected, first_player.receivedMoves);
-        assertEquals(expected, second_player.receivedMoves);
     }
 
     @Test
