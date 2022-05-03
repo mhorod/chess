@@ -38,9 +38,15 @@ public class Piece<M extends Move<P>, P extends ChessPiece> {
             if (logical.getPiece().isAlive()) stateMachine.onPieceDrop(this);
         });
 
+        graphical.setOnMouseEntered(e -> stateMachine.onFieldMouseEntered(logical.getPiece().getPosition()));
+
     }
 
     public void putDown() {
         graphical.putDown(board.getGraphicalField(logical.getPiece().getPosition()));
+    }
+
+    public void pickUp() {
+        graphical.pickUp(board.getGraphicalField(logical.getPiece().getPosition()));
     }
 }
