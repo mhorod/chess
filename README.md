@@ -10,6 +10,11 @@ Chess made as an assignment project for OOP course 2021/22
 - [x] game skeleton
 - [x] integrating ui with game core
 
+# Screenshots
+
+![s1](s2.png)
+![s2](s1.png)
+
 # Project architecture
 
 ![uml](uml.png)
