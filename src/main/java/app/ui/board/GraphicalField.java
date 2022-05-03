@@ -1,6 +1,7 @@
 package app.ui.board;
 
 import app.ui.utils.Position;
+import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -10,6 +11,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.util.Duration;
 
 public class GraphicalField extends VBox {
     private final Circle indicator;
@@ -54,14 +56,31 @@ public class GraphicalField extends VBox {
     }
 
     public void markAsLegal() {
-        setCursor(Cursor.CLOSED_HAND);
+        if (isLegal) return;
+        indicator.setOpacity(0.0);
         indicator.setVisible(true);
+
+        var transition = new FadeTransition(Duration.millis(200), indicator);
+        transition.setToValue(1.0);
+        transition.setOnFinished(e -> {
+            indicator.setOpacity(1.0);
+            indicator.setVisible(true);
+        });
+        transition.play();
+
+        setCursor(Cursor.CLOSED_HAND);
         isLegal = true;
     }
 
     public void toNormal() {
         setCursor(Cursor.DEFAULT);
-        indicator.setVisible(false);
+        var transition = new FadeTransition(Duration.millis(200), indicator);
+        transition.setToValue(0.0);
+        transition.setOnFinished(e -> {
+            indicator.setVisible(false);
+        });
+        transition.play();
+
         isLegal = false;
     }
 }

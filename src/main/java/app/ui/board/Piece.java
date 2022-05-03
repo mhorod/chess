@@ -9,6 +9,7 @@ public class Piece<M extends Move<P>, P extends ChessPiece> {
     public final GraphicalPiece graphical;
     public final LogicalPiece<M, P> logical;
     private final Board<M, P> board;
+    boolean pickedUp = false;
 
     Piece(GraphicalPiece graphical, Machine<app.ui.board.Piece<M, P>> stateMachine, Board<M, P> board) {
         this.graphical = graphical;
@@ -23,6 +24,7 @@ public class Piece<M extends Move<P>, P extends ChessPiece> {
                     graphical.disappear();
                     stateMachine.onPieceDeleted(Piece.this);
                 }
+                stateMachine.onMove();
             }
         };
 
@@ -42,11 +44,17 @@ public class Piece<M extends Move<P>, P extends ChessPiece> {
 
     }
 
+    public boolean isPickedUp() {
+        return pickedUp;
+    }
+
     public void putDown() {
+        pickedUp = false;
         graphical.putDown(board.getGraphicalField(logical.getPiece().getPosition()));
     }
 
     public void pickUp() {
+        pickedUp = true;
         graphical.pickUp(board.getGraphicalField(logical.getPiece().getPosition()));
     }
 }

@@ -22,4 +22,8 @@ public interface Behavior<P extends Piece<?, ?>> {
 
     default void onPieceDeleted(P p) {
     }
+
+    default void onMove() {
+
+    }
 }
