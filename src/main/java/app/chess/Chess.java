@@ -465,6 +465,10 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     public List<ChessMove> getLegalMoves(int player, ChessPiece piece) {
         //Please note that this function is not particularly effective and was never meant to be.
 
+        if(!testMode && (piece.getPlayer() == 1) != blackToMove){
+            return Collections.emptyList();
+        }
+
         if (piece.getPlayer() != player) {
             return Collections.emptyList();
         }
@@ -530,6 +534,8 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
         chessBoard[rookRank][newRookFile] = rook;
         rook.move(new Field(rookRank, newRookFile));
+
+        blackToMove = !blackToMove;
 
         return this.getAllPieces();
     }
@@ -618,7 +624,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         move.getPiece().move(move.getField());
 
         if (!pendingPromotion) {
-            player = player == 0 ? 1 : 0;
+            blackToMove = !blackToMove;
         }
 
         //After executing the move, we can finally return a list informing what's happening on the board
