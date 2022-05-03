@@ -28,7 +28,10 @@ public class PieceDragged<P extends Piece<?, ?>> extends State<P> {
     PieceDragged(Board<?, ?> board, P selectedPiece, List<Field> legalFields) {
         this.board = board;
         this.selectedPiece = selectedPiece;
-        this.legalFields = legalFields;
+        this.legalFields = Stream.concat(
+                legalFields.stream(),
+                Stream.of(selectedPiece.logical.getPiece().getPosition())
+        ).toList();
     }
 
 
@@ -39,6 +42,9 @@ public class PieceDragged<P extends Piece<?, ?>> extends State<P> {
         for (Field f : legalFields)
             if (!f.equals(selectedPiece.logical.getPiece().getPosition()))
                 board.getGraphicalField(f).markAsLegal();
+        for (var piece : board.pieces)
+            if (board.getGraphicalField(piece.logical.getPiece().getPosition()).isLegal()) piece.highlight();
+            else piece.unhighlight();
 
     }
 
@@ -49,6 +55,8 @@ public class PieceDragged<P extends Piece<?, ?>> extends State<P> {
             board.getGraphicalField(highlightedField).unhighlight();
         for (Field f : legalFields)
             board.getGraphicalField(f).toNormal();
+        for (var piece : board.pieces)
+            piece.unhighlight();
     }
 
 

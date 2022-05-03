@@ -26,6 +26,9 @@ public class PieceSelected<P extends Piece<?, ?>> extends State<P> {
             selectedPiece.pickUp();
         for (Field f : legalFields)
             board.getGraphicalField(f).markAsLegal();
+        for (var piece : board.pieces)
+            if (board.getGraphicalField(piece.logical.getPiece().getPosition()).isLegal()) piece.highlight();
+            else piece.unhighlight();
     }
 
     @Override
@@ -37,6 +40,9 @@ public class PieceSelected<P extends Piece<?, ?>> extends State<P> {
         }
         if (highlightedField != null)
             board.getGraphicalField(highlightedField).unhighlight();
+
+        for (var piece : board.pieces)
+            piece.unhighlight();
 
     }
 
