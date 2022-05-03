@@ -537,7 +537,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
         blackToMove = !blackToMove;
 
-        return this.getAllPieces();
+        return List.of(move.getPiece(), rook);
     }
 
     @Override
@@ -628,7 +628,13 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         }
 
         //After executing the move, we can finally return a list informing what's happening on the board
-        return this.getAllPieces();
+        ArrayList<ChessPiece> changedList = new ArrayList<>();
+        changedList.add(move.getPiece());
+        if(wasHereBefore!=null){
+            changedList.add(wasHereBefore);
+        }
+
+        return changedList;
     }
 
     @Override
