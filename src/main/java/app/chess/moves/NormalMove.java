@@ -34,7 +34,7 @@ public class NormalMove extends PieceMove<ChessPiece> implements ChessMove {
 
     @Override
     public String toString(){
-        return this.getField().rank() + " " + this.getField().file() + " " + this.getPiece().getKind();
+        return (char)('A' + this.getField().file() -1) + "" + this.getField().rank() + " " + this.getPiece().getKind();
     }
 
 
