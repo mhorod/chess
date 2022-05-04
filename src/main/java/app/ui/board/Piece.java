@@ -30,15 +30,18 @@ public class Piece<M extends Move<P>, P extends ChessPiece> {
         };
 
         graphical.setOnMousePressed(e -> {
-            if (logical.getPiece().isAlive()) stateMachine.onPieceClick(this);
+            if (logical.getPiece().isAlive())
+                stateMachine.onPieceClick(this);
         });
 
         graphical.setOnMouseDragged(e -> {
-            if (logical.getPiece().isAlive()) stateMachine.onPieceDrag(this, e);
+            if (logical.getPiece().isAlive())
+                stateMachine.onPieceDrag(this, e);
         });
 
         graphical.setOnMouseReleased(e -> {
-            if (logical.getPiece().isAlive()) stateMachine.onPieceDrop(this);
+            if (logical.getPiece().isAlive())
+                stateMachine.onPieceDrop(this);
         });
 
         graphical.setOnMouseEntered(e -> stateMachine.onFieldMouseEntered(logical.getPiece().getPosition()));
@@ -60,7 +63,7 @@ public class Piece<M extends Move<P>, P extends ChessPiece> {
     }
 
     public void highlight() {
-        graphical.highlight(Color.web("#2ac"));
+        graphical.highlight(Color.web("#38a7d6"));
     }
 
     public void unhighlight() {

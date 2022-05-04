@@ -29,8 +29,8 @@ public class App extends Application {
                 borderBlack = Color.web("#75234f");
 
                 borderText = Color.color(0.9, 0.9, 0.9);
-                whiteFieldCircle = Color.web("#FF5CE1");
-                blackFieldCircle = Color.web("#F0F0F0");
+                whiteFieldCircle = Color.web("#00bbfa");
+                blackFieldCircle = Color.web("#47e0ff");
                 font = Font.loadFont(App.class.getResource("/fonts/regular.otf").toExternalForm(), 20);
             }
         };
@@ -42,8 +42,8 @@ public class App extends Application {
         var hotSeatPlayer = new HotSeatPlayer<>(game, game);
         var pieceSpectator = new PieceSpectator<>(game, game);
 
-        Pane hotSeatBoard = new Board<>(hotSeatPlayer, 30, style);
-        Pane spectatorBoard = new Board<>(pieceSpectator, 30, style);
+        Pane hotSeatBoard = new Board<>(hotSeatPlayer, 40, style);
+        Pane spectatorBoard = new Board<>(pieceSpectator, 40, style);
 
         HBox pane = new HBox();
         pane.setAlignment(Pos.CENTER);
