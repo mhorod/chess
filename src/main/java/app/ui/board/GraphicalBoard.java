@@ -4,9 +4,9 @@ import app.core.game.Field;
 import app.ui.Style;
 import app.ui.board.state.Behavior;
 import app.ui.utils.Position;
+import javafx.geometry.Insets;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 
 public abstract class GraphicalBoard<P extends app.core.game.Piece> extends Pane {
     public final Style style;
@@ -35,6 +35,10 @@ public abstract class GraphicalBoard<P extends app.core.game.Piece> extends Pane
             }
         }
 
+        var cornerRadius = fieldSize / 5;
+
+        graphicalFields[7][0].setBackground(new Background(new BackgroundFill(style.blackField, new CornerRadii(0, cornerRadius, 0, 0, false), Insets.EMPTY)));
+
         for (int y = 0; y < 8; y++) {
             Label label;
             String text = String.valueOf(y + 1);
@@ -42,6 +46,12 @@ public abstract class GraphicalBoard<P extends app.core.game.Piece> extends Pane
                 label = new Label(getLeftLabel(y), style.font, style.borderBlack, style.borderText);
             else
                 label = new Label(getLeftLabel(y), style.font, style.borderWhite, style.borderText);
+
+            if (y == 0)
+                label.setBackground(new Background(new BackgroundFill(style.borderBlack, new CornerRadii(cornerRadius, 0, 0, 0, false), Insets.EMPTY)));
+            if (y == 7)
+                label.setBackground(new Background(new BackgroundFill(style.borderWhite, new CornerRadii(0, 0, 0, cornerRadius, false), Insets.EMPTY)));
+
             grid.add(label, 0, y + 1);
         }
 
@@ -52,6 +62,11 @@ public abstract class GraphicalBoard<P extends app.core.game.Piece> extends Pane
                 label = new Label(getBottomLabel(x), style.font, style.borderBlack, style.borderText);
             else
                 label = new Label(getBottomLabel(x), style.font, style.borderWhite, style.borderText);
+
+            if (x == 0)
+                label.setBackground(new Background(new BackgroundFill(style.borderWhite, new CornerRadii(0, 0, 0, cornerRadius, false), Insets.EMPTY)));
+            if (x == 7)
+                label.setBackground(new Background(new BackgroundFill(style.borderBlack, new CornerRadii(0, 0, cornerRadius, 0, false), Insets.EMPTY)));
             grid.add(label, x + 1, 9);
         }
 
