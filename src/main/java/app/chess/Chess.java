@@ -2,8 +2,9 @@ package app.chess;
 
 import app.chess.moves.Castle;
 import app.chess.moves.ChessMove;
-import app.chess.moves.NormalMove;
-import app.chess.pieces.*;
+import app.chess.pieces.AbstractChessPiece;
+import app.chess.pieces.ChessPieceKind;
+import app.chess.pieces.King;
 import app.core.game.Field;
 import app.core.game.Game;
 
@@ -14,123 +15,43 @@ import java.util.List;
 /**
  * TODO: Extend Game with appropriate types and implement chess logic
  */
-public class Chess implements Game<ChessMove, ChessPiece> {
+public class Chess implements Game<ChessMove, AbstractChessPiece> {
     public static final int SIZE = 8;
-    ChessPiece[][] chessBoard = new ChessPiece[SIZE + 1][SIZE + 1]; //We are adding 1 because we will start counting at 1
-    //This is a little uncommon, but in Chess such numeration is also starting from 1 and it will hopefully create fewer bugs if we stick to this convention
-
+    AbstractChessPiece[][] board;
     private boolean blackToMove = false;
     private boolean pendingPromotion = false; //In case there is a promotion of a pawn, that move is split into 2 submoves
     private boolean testMode = false; //this is NOT how it should be done, but it's the simplest way
 
-    public Chess() {
-        initializeBoard();
+    public Chess(Board board) {
+        this.board = board.pieces;
     }
 
     public static boolean fieldIsValid(Field toValidate) {
         return toValidate.rank() <= SIZE && toValidate.file() <= SIZE && toValidate.rank() > 0 && toValidate.file() > 0;
     }
 
-    private void initializePawns() {
-        final int whitePawnRank = 2;
-        final int blackPawnRank = 7;
-
-        for (int i = 1; i <= SIZE; i++) {
-            chessBoard[whitePawnRank][i] = new Pawn(new Field(whitePawnRank, i), false);
-            chessBoard[blackPawnRank][i] = new Pawn(new Field(blackPawnRank, i), true);
-        }
-    }
-
-    private void initializeBoard() {
-        //Well, we're going to have to hard-code pieces initial placement here
-        //Yes, writing code this repetitive is painful, but somebody has to do it
-
-        /*
-         * 8 r n b q k b n r
-         * 7 p p p p p p p p
-         * 6
-         * 5
-         * 4
-         * 3
-         * 2 P P P P P P P P
-         * 1 R N B Q K B N R
-         *   1 2 3 4 5 6 7 8
-         */
-
-        initializePawns();
-
-        final int whiteRank = 1;
-        final int blackRank = 8;
-
-        //Initializing rooks
-
-        //White
-        chessBoard[whiteRank][1] = new Rook(new Field(whiteRank, 1), false);
-        chessBoard[whiteRank][8] = new Rook(new Field(whiteRank, 8), false);
-
-        //Black
-        chessBoard[blackRank][1] = new Rook(new Field(blackRank, 1), true);
-        chessBoard[blackRank][8] = new Rook(new Field(blackRank, 8), true);
-
-        //Initializing knights
-
-        //White
-        chessBoard[whiteRank][2] = new Knight(new Field(whiteRank, 2), false);
-        chessBoard[whiteRank][7] = new Knight(new Field(whiteRank, 7), false);
-
-        //Black
-        chessBoard[blackRank][2] = new Knight(new Field(blackRank, 2), true);
-        chessBoard[blackRank][7] = new Knight(new Field(blackRank, 7), true);
-
-        //Initializing bishops
-
-        //White
-        chessBoard[whiteRank][3] = new Bishop(new Field(whiteRank, 3), false);
-        chessBoard[whiteRank][6] = new Bishop(new Field(whiteRank, 6), false);
-
-        //Black
-        chessBoard[blackRank][3] = new Bishop(new Field(blackRank, 3), true);
-        chessBoard[blackRank][6] = new Bishop(new Field(blackRank, 6), true);
-
-        //Queens
-
-        //White
-        chessBoard[whiteRank][4] = new Queen(new Field(whiteRank, 4), false);
-
-        //Black
-        chessBoard[blackRank][4] = new Queen(new Field(blackRank, 4), true);
-
-        //Kings
-
-        //White
-        chessBoard[whiteRank][5] = new King(new Field(whiteRank, 5), false);
-
-        //Black
-        chessBoard[blackRank][5] = new King(new Field(blackRank, 5), true);
-
-    }
 
     /**
      * @param checkPlayer Whether to return pieces of only one player
-     * @param player      Player whose pieces should be returned
+     * @param player Player whose pieces should be returned
      * @return All pieces on board that satisfact the given criteria
      */
-    private List<ChessPiece> getMatchingPieces(boolean checkPlayer, int player) {
-        ArrayList<ChessPiece> piecesList = new ArrayList<>();
+    private List<AbstractChessPiece> getMatchingPieces(boolean checkPlayer, int player) {
+        ArrayList<AbstractChessPiece> piecesList = new ArrayList<>();
 
         for (int rank = 1; rank <= SIZE; rank++) {
             for (int file = 1; file <= SIZE; file++) {
-                ChessPiece currentPiece = chessBoard[rank][file];
+                AbstractChessPiece currentPiece = board[rank][file];
                 if (currentPiece != null && (currentPiece.getPlayer() == player || !checkPlayer)) {
                     //If checkPlayer is false, the second condition is always true
-                    piecesList.add(chessBoard[rank][file]);
+                    piecesList.add(board[rank][file]);
                 }
             }
         }
         return piecesList;
     }
 
-    private boolean validateKingSafety(int player){
+    private boolean validateKingSafety(int player) {
         //Validates king safety the way that is done in validateKingSafety(ChessMove move) but it doesn't perform any move
         //Yes, it's duplicating some parts of code, but we will have to live with it for now
 
@@ -141,8 +62,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             getLegalMoves(secondPlayer);
         } catch (KingCanBeTaken e) {
             return false;
-        }
-        finally {
+        } finally {
             testMode = false;
         }
         return true;
@@ -167,10 +87,10 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         int rank = move.getField().rank();
         int file = move.getField().file();
 
-        ChessPiece whatWasThere = chessBoard[rank][file]; //So that we can
+        AbstractChessPiece whatWasThere = board[rank][file]; //So that we can
 
-        chessBoard[rank][file] = move.getPiece(); //Now we "move" the figure
-        chessBoard[previousRank][previousFile] = null;
+        board[rank][file] = move.getPiece(); //Now we "move" the figure
+        board[previousRank][previousFile] = null;
 
         try {
             testMode = true;
@@ -180,8 +100,8 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         } finally {
             testMode = false;
             //We revert the state of the board to the previous status
-            chessBoard[previousRank][previousFile] = move.getPiece();
-            chessBoard[rank][file] = whatWasThere;
+            board[previousRank][previousFile] = move.getPiece();
+            board[rank][file] = whatWasThere;
         }
         return true;
 
@@ -195,51 +115,49 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         int newRank = move.getField().rank();
         int newFile = move.getField().file();
 
-        if(currentFile - newFile == 0){
+        if (currentFile - newFile == 0) {
             //Going forward is considered first
 
             //First, let's consider going forward by 2 - the only case where we have to perform this check
-            if(Math.abs(newRank - currentRank) == 2){
+            if (Math.abs(newRank - currentRank) == 2) {
                 //We want to check if the path is not obstructed
-                if(!roadNotObstructed(move.getPiece().getPosition(),move.getField())){
+                if (!roadNotObstructed(move.getPiece().getPosition(), move.getField())) {
                     //The only type of move whether we have to check if something is on the road is being obstructed
                     return false;
                 }
             }
             //And we can't move forward if the place we want to move to is already taken by ANY piece
-            if(chessBoard[newRank][newFile] != null){
+            if (board[newRank][newFile] != null) {
                 return false;
             }
-        }
-        else{
+        } else {
             //Now we are considering going to the sides, so there has to be enemy piece involved
-            ChessPiece wasThereBefore = chessBoard[newRank][newFile];
+            AbstractChessPiece wasThereBefore = board[newRank][newFile];
 
-            if(wasThereBefore == null){
+            if (wasThereBefore == null) {
                 //Perhaps en passant is possible
                 //If not, we'll return false
-                wasThereBefore = chessBoard[move.getPiece().getPlayer() == 0 ? newRank - 1 : newRank + 1][newFile];
-                if(wasThereBefore == null || !wasThereBefore.enPassantable() || wasThereBefore.getPlayer() == move.getPiece().getPlayer()){
+                wasThereBefore = board[move.getPiece().getPlayer() == 0 ? newRank - 1 : newRank + 1][newFile];
+                if (wasThereBefore == null || !wasThereBefore.enPassantable() || wasThereBefore.getPlayer() == move.getPiece()
+                                                                                                                   .getPlayer()) {
                     return false;
                 }
 
-            }
-            else{
+            } else {
                 //somebody's here
-                if(wasThereBefore.getPlayer() != move.getPiece().getPlayer()){
+                if (wasThereBefore.getPlayer() != move.getPiece().getPlayer()) {
                     //There's enemy piece to be taken, so we can validate this move
                     //Except for when the king is under attack
-                    if(wasThereBefore.getKind() == ChessPieceKind.KING){
+                    if (wasThereBefore.getKind() == ChessPieceKind.KING) {
                         throw new KingCanBeTaken();
                     }
-                }
-                else{
+                } else {
                     return false;
                 }
             }
         }
 
-        if(!testMode && !validateKingSafety(move)){
+        if (!testMode && !validateKingSafety(move)) {
             //We are not in a test mode (where we don't validateKing'sSafety), so we cannot move the pawn
             //For what "testMode" is, please look at validateKingSafety code
             return false;
@@ -272,7 +190,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
             //System.out.println(iterRank + " " + iterFile);
 
-            if (chessBoard[iterRank][iterFile] != null) {
+            if (board[iterRank][iterFile] != null) {
                 //Something's on our way, that means that the move is invalid
                 return false;
             }
@@ -282,11 +200,11 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     }
 
     /**
-     *
      * @param move
-     * @return Assuming that castling is possible, returns the position on which the rook should be located. Makes ABSOLUTELY NO GUARANTEE that castling is legal.
+     * @return Assuming that castling is possible, returns the position on which the rook should be located. Makes
+     *         ABSOLUTELY NO GUARANTEE that castling is legal.
      */
-    private Field getRookPositionBasedOnCastling(Castle move){
+    private Field getRookPositionBasedOnCastling(Castle move) {
         final int currentRank = move.getPiece().getPosition().rank();
         final int currentFile = move.getPiece().getPosition().file();
 
@@ -305,7 +223,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         //There are 6 conditions for castling to be valid and checking for some of them is going to be annoying to say the least
 
         //First: King cannot be in check
-        if(!testMode && !validateKingSafety(move.getPiece().getPlayer())){
+        if (!testMode && !validateKingSafety(move.getPiece().getPlayer())) {
             return false;
         }
 
@@ -322,9 +240,9 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         final int rookRank = move.getPiece().getPlayer() == 0 ? 1 : 8; //White has rooks on first rank, black on eighth
         final int rookFile = kingSideCastling ? 8 : 1;
 
-        ChessPiece rook = chessBoard[rookRank][rookFile]; //You might ask why I've decided to call that variable "rook" when I have no guarantee that such piece is a rook. Well, I'm checking that in the if that is below
+        AbstractChessPiece rook = board[rookRank][rookFile]; //You might ask why I've decided to call that variable "rook" when I have no guarantee that such piece is a rook. Well, I'm checking that in the if that is below
 
-        if(rook == null || !rook.canParticipateInCastling()){
+        if (rook == null || !rook.canParticipateInCastling()) {
             //There's no rook to even, you know, castle with
             //Or something that on that place cannot castle
             return false;
@@ -335,7 +253,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         //It'd be great to check what's going on with our king
         //We have a guarantee that the piece that tries to castle is king, because we are checking that in Castle constructor
 
-        if(!move.getPiece().canParticipateInCastling()){
+        if (!move.getPiece().canParticipateInCastling()) {
             return false;
         }
 
@@ -343,24 +261,25 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         //That's perfect, second condition is satisfied
 
         //Third condition: Road between rook and king is not obstructed
-        if(!roadNotObstructed(move.getPiece().getPosition(), new Field(rookRank,rookFile))){
+        if (!roadNotObstructed(move.getPiece().getPosition(), new Field(rookRank, rookFile))) {
             return false;
         }
 
         //Fourth condition: Nothing on the road of the king is under attack
         int multiplier = kingSideCastling ? 1 : -1;
 
-        for(int i=1;i<=2;i++){
+        for (int i = 1; i <= 2; i++) {
             //This is somewhat weird, but we are going to check if this is ok by placing a fake king on a piece that cannot be attacked and checking if anything goes wrong
             //Truly magnificent
             //(and crazy ineffective, but it was never meant to be effective)
-            ChessPiece currentPiece = chessBoard[currentRank][currentFile + i * multiplier];
-            chessBoard[currentRank][currentFile + i * multiplier] = new King(new Field(currentRank,currentFile + i * multiplier), move.getPiece().getPlayer() != 0);
-            if(!testMode && !validateKingSafety(move.getPiece().getPlayer())){
-                chessBoard[currentRank][currentFile + i * multiplier] = currentPiece;
+            AbstractChessPiece currentPiece = board[currentRank][currentFile + i * multiplier];
+            board[currentRank][currentFile + i * multiplier] = new King(
+                    new Field(currentRank, currentFile + i * multiplier), move.getPiece().getPlayer() != 0);
+            if (!testMode && !validateKingSafety(move.getPiece().getPlayer())) {
+                board[currentRank][currentFile + i * multiplier] = currentPiece;
                 return false;
             }
-            chessBoard[currentRank][currentFile + i * multiplier] = currentPiece;
+            board[currentRank][currentFile + i * multiplier] = currentPiece;
         }
 
         return true;
@@ -375,14 +294,14 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             return pawnMoveValidation(move);
         }
 
-        if(move.getClass() == Castle.class){
+        if (move.getClass() == Castle.class) {
             //That's a dirty way of solving it, but will have to do for now
             return validateMove((Castle) move);
         }
 
-        if (chessBoard[currentPosition.rank()][currentPosition.file()] != move.getPiece()) {
+        if (board[currentPosition.rank()][currentPosition.file()] != move.getPiece()) {
             //We've got a discrepancy in the data, as move references other piece than it should be referencing
-            System.err.println(chessBoard[currentPosition.rank()][currentPosition.file()]);
+            System.err.println(board[currentPosition.rank()][currentPosition.file()]);
             System.err.println(move.getPiece());
             System.err.println(move.getPiece().getPosition());
 
@@ -401,7 +320,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         }
 
 
-        ChessPiece figureOnNewPosition = chessBoard[newPosition.rank()][newPosition.file()];
+        AbstractChessPiece figureOnNewPosition = board[newPosition.rank()][newPosition.file()];
 
         if (figureOnNewPosition != null && figureOnNewPosition.getPlayer() == move.getPiece().getPlayer()) {
             //On the position we'd like to move into stands allied figure (thus, we cannot take it and the move is invalid)
@@ -429,12 +348,12 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     }
 
     @Override
-    public List<ChessPiece> getPieces(int player) {
+    public List<AbstractChessPiece> getPieces(int player) {
         return getMatchingPieces(true, player);
     }
 
     @Override
-    public List<ChessPiece> getAllPieces() {
+    public List<AbstractChessPiece> getAllPieces() {
         return getMatchingPieces(false, 0);
     }
 
@@ -452,11 +371,11 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             return getPromotionMoves(player);
         }
 
-        List<ChessPiece> playersPieces = getPieces(player);
+        List<AbstractChessPiece> playersPieces = getPieces(player);
 
         List<ChessMove> allPlayersLegalMoves = new ArrayList<>();
 
-        for (ChessPiece currentPiece : playersPieces) {
+        for (AbstractChessPiece currentPiece : playersPieces) {
             List<ChessMove> someLegalMoves = getLegalMoves(player, currentPiece);
             allPlayersLegalMoves.addAll(someLegalMoves);
         }
@@ -465,10 +384,10 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     }
 
     @Override
-    public List<ChessMove> getLegalMoves(int player, ChessPiece piece) {
+    public List<ChessMove> getLegalMoves(int player, AbstractChessPiece piece) {
         //Please note that this function is not particularly effective and was never meant to be.
 
-        if(!testMode && (piece.getPlayer() == 1) != blackToMove){
+        if (!testMode && (piece.getPlayer() == 1) != blackToMove) {
             return Collections.emptyList();
         }
 
@@ -501,10 +420,11 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
     /**
      * Executes castling under assumption that function calling it made sure that such castling is, indeed, legal
+     *
      * @param move
      * @return
      */
-    private List<ChessPiece> castleMove(Castle move){
+    private List<AbstractChessPiece> castleMove(Castle move) {
         Field whereRookIs = getRookPositionBasedOnCastling(move);
 
         int rookRank = whereRookIs.rank();
@@ -514,35 +434,35 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         //Just changing positions of 2 pieces, nothing can go wrong
         //Right?
 
-        ChessPiece king = move.getPiece();
+        AbstractChessPiece king = move.getPiece();
         int kingRank = king.getPosition().rank(); //Yes, kingRank will be the same as rookRank
         //In fact, let's just have an additional assertion here
 
-        if(kingRank != rookRank){
+        if (kingRank != rookRank) {
             throw new BoardDiscrepancy();
         }
 
         int kingFile = king.getPosition().file();
 
-        ChessPiece rook = chessBoard[rookRank][rookFile];
+        AbstractChessPiece rook = board[rookRank][rookFile];
 
         int newRookFile = rookFile == 1 ? 4 : 6; //It is just this way
         //Rank will stay the same, obviously
 
-        chessBoard[rookRank][rookFile] = null;
-        chessBoard[kingRank][kingFile] = null;
+        board[rookRank][rookFile] = null;
+        board[kingRank][kingFile] = null;
 
-        chessBoard[move.getField().rank()][move.getField().file()] = king;
+        board[move.getField().rank()][move.getField().file()] = king;
         king.move(move.getField());
 
-        chessBoard[rookRank][newRookFile] = rook;
+        board[rookRank][newRookFile] = rook;
         rook.move(new Field(rookRank, newRookFile));
 
         return List.of(move.getPiece(), rook);
     }
 
     @Override
-    public List<ChessPiece> makeMove(int player, ChessMove move) {
+    public List<AbstractChessPiece> makeMove(int player, ChessMove move) {
 
         if (move.getPiece().getPlayer() != player) {
             throw new PlayerDiscrepancy();
@@ -563,7 +483,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
 
         //Now, if castling is involved, I'm going to delegate it to another function because otherwise this will be to messy
-        if(move.getClass() == Castle.class){
+        if (move.getClass() == Castle.class) {
             //I'm sure checking it that way won't cause any issues down the line
             return castleMove((Castle) move);
         }
@@ -591,7 +511,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         int oldRank = move.getPiece().getPosition().rank();
         int oldFile = move.getPiece().getPosition().file();
 
-        ChessPiece wasHereBefore = chessBoard[newRank][newFile];
+        AbstractChessPiece wasHereBefore = board[newRank][newFile];
 
         if (wasHereBefore != null && wasHereBefore.getPlayer() == player) {
             throw new IllegalMove(); //This shouldn't even be possible because we've validated that already, but just to be sure
@@ -599,41 +519,40 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
         if (wasHereBefore != null) {
             wasHereBefore.kill();
-            chessBoard[newRank][newFile] = move.getPiece();
+            board[newRank][newFile] = move.getPiece();
         } else {
-            chessBoard[newRank][newFile] = move.getPiece();
+            board[newRank][newFile] = move.getPiece();
 
             //you'd think that we are done
             //and you'd be wrong
             //because en passant exists
             //to mess with our code
 
-            if(move.getPiece().getKind() == ChessPieceKind.PAWN && oldFile - newFile != 0){
+            if (move.getPiece().getKind() == ChessPieceKind.PAWN && oldFile - newFile != 0) {
                 //So, there is nothing in there but we are going sideways
                 //This means en passant
                 //So we'll just remove whatever stays in enpassantable place
-                wasHereBefore = chessBoard[oldRank][newFile];
-                if(wasHereBefore == null){
+                wasHereBefore = board[oldRank][newFile];
+                if (wasHereBefore == null) {
                     //?????????
                     throw new IllegalMove();
-                }
-                else{
+                } else {
                     wasHereBefore.kill();
-                    chessBoard[oldRank][newFile] = null;
+                    board[oldRank][newFile] = null;
                 }
             }
 
         }
 
 
-        chessBoard[oldRank][oldFile] = null;
+        board[oldRank][oldFile] = null;
 
         move.getPiece().move(move.getField());
 
         //After executing the move, we can finally return a list informing what's happening on the board
-        ArrayList<ChessPiece> changedList = new ArrayList<>();
+        ArrayList<AbstractChessPiece> changedList = new ArrayList<>();
         changedList.add(move.getPiece());
-        if(wasHereBefore!=null){
+        if (wasHereBefore != null) {
             changedList.add(wasHereBefore);
         }
 

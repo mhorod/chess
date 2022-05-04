@@ -1,6 +1,7 @@
 package app.ui;
 
 import app.chess.Chess;
+import app.chess.ChessBoard;
 import app.core.interactor.InteractiveGame;
 import app.ui.board.Board;
 import app.utils.pieceplayer.HotSeatPlayer;
@@ -36,7 +37,7 @@ public class App extends Application {
         };
 
 
-        Chess chess = new Chess();
+        Chess chess = new Chess(new ChessBoard());
         var game = new InteractiveGame<>(chess);
 
         var hotSeatPlayer = new HotSeatPlayer<>(game, game);
