@@ -10,11 +10,12 @@ public class Piece<M extends Move<P>, P extends app.core.game.Piece> {
     public final LogicalPiece<M, P> logical;
     private final Board<P> board;
     Field previousPosition;
-    boolean pickedUp = false;
 
-    Piece(GraphicalPiece<P> graphical, Behavior<P> behavior, Board<P> board) {
+    Piece(GraphicalPiece<P> graphical, Behavior<P> behavior, Board<P> board, P piece) {
         this.graphical = graphical;
         this.board = board;
+        putDown(piece);
+        
         this.logical = new LogicalPiece<>() {
             @Override
             public void update() {
@@ -44,20 +45,18 @@ public class Piece<M extends Move<P>, P extends app.core.game.Piece> {
         return logical.getPiece().getPosition();
     }
 
-    public boolean isPickedUp() {
-        return pickedUp;
+    public void putDown() {
+        putDown(logical.getPiece());
     }
 
-    public void putDown() {
-        pickedUp = false;
-        var position = logical.getPiece().getPosition();
+    private void putDown(P piece) {
+        var position = piece.getPosition();
         graphical.putDown(board.board.getGraphicalField(position));
         board.movePiece(this, previousPosition, position);
         previousPosition = position;
     }
 
     public void pickUp() {
-        pickedUp = true;
         graphical.pickUp(board.board.getGraphicalField(logical.getPiece().getPosition()));
     }
 

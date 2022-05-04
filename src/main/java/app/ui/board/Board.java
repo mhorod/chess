@@ -24,8 +24,7 @@ public class Board<P extends app.core.game.Piece> {
         List<Piece<M, P>> pieces = new ArrayList<>();
         player.connectPieces((p) -> {
             var graphical = supplier.apply(p);
-            var piece = new Piece<M, P>(graphical, behavior, this);
-            graphical.putDown(board.getGraphicalField(p.getPosition()));
+            var piece = new Piece<M, P>(graphical, behavior, this, p);
             pieces.add(piece);
             return piece.logical;
         });
