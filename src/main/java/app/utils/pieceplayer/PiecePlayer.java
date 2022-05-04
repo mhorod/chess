@@ -7,7 +7,7 @@ import app.core.interactor.Spectator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 /**
  * Player wrapper that allows moving with pieces instead moves
@@ -25,6 +25,8 @@ public abstract class PiecePlayer<M extends Move<P>, P extends Piece> implements
 
     /**
      * Connects underlying game pieces to supplied interactors
+     *
+     * @param newPiece constructor of InteractivePiece that takes P as argument
      */
-    public abstract void connectPieces(Supplier<? extends InteractivePiece<M, P>> pieceSupplier);
+    public abstract void connectPieces(Function<P, ? extends InteractivePiece<M, P>> newPiece);
 }

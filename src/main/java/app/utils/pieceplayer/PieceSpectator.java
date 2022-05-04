@@ -6,7 +6,7 @@ import app.core.game.moves.Move;
 import app.core.interactor.GameSocket;
 import app.utils.pieceplayer.controls.NoControls;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 
 public final class PieceSpectator<M extends Move<P>, P extends Piece> extends PiecePlayer<M, P> {
@@ -20,12 +20,10 @@ public final class PieceSpectator<M extends Move<P>, P extends Piece> extends Pi
 
     /**
      * Connects all game pieces to supplied interactive pieces
-     *
-     * @param pieceSupplier supplier of interactive pieces
      */
-    public void connectPieces(Supplier<? extends InteractivePiece<M, P>> pieceSupplier) {
+    public void connectPieces(Function<P, ? extends InteractivePiece<M, P>> newPiece) {
         for (var piece : game.getAllPieces()) {
-            var interactivePiece = pieceSupplier.get();
+            var interactivePiece = newPiece.apply(piece);
             interactivePiece.controls = new NoControls<>(piece);
             pieces.put(piece, interactivePiece);
         }

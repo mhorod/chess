@@ -6,73 +6,42 @@ import app.ui.board.Piece;
 import app.ui.board.state.State;
 import javafx.scene.input.MouseEvent;
 
-import java.util.List;
+import java.util.Set;
 
-public class PieceSelected<P extends Piece<?, ?>> extends State<P> {
-    private final List<Field> legalFields;
-    private final Board<?, ?> board;
-    private P selectedPiece;
-    private Field highlightedField;
+public class PieceSelected<P extends app.core.game.Piece> extends State<P> {
+    private final Set<Field> legalFields;
+    private final Board<P> board;
+    private final Piece<?, P> selectedPiece;
 
-    PieceSelected(Board<?, ?> board, P selectedPiece) {
+    PieceSelected(Board<P> board, Piece<?, P> selectedPiece) {
         this.board = board;
         this.selectedPiece = selectedPiece;
-        legalFields = selectedPiece.logical.getLegalMoveFields().keySet().stream().toList();
+        legalFields = selectedPiece.logical.getLegalMoveFields().keySet();
     }
 
     @Override
     protected void init() {
-        if (!selectedPiece.isPickedUp())
-            selectedPiece.pickUp();
-        for (Field f : legalFields)
-            board.getGraphicalField(f).markAsLegal();
-        for (var piece : board.pieces)
-            if (board.getGraphicalField(piece.logical.getPiece().getPosition()).isLegal()) piece.highlight();
-            else piece.unhighlight();
-    }
-
-    @Override
-    protected void cleanUp() {
-        if (selectedPiece != null) {
-            selectedPiece.putDown();
-            for (Field f : legalFields)
-                board.getGraphicalField(f).toNormal();
-        }
-        if (highlightedField != null)
-            board.getGraphicalField(highlightedField).unhighlight();
-
-        for (var piece : board.pieces)
-            piece.unhighlight();
-
+        board.selectPiece(selectedPiece);
+        board.setLegalFields(legalFields);
     }
 
     @Override
     public void onMove() {
-        var newLegalFields = selectedPiece.logical.getLegalMoveFields().keySet();
-        for (Field f : legalFields)
-            if (!newLegalFields.contains(f)) board.getGraphicalField(f).toNormal();
-
-        var oldPiece = selectedPiece;
-        selectedPiece = null;
-        changeState(new PieceSelected<>(board, oldPiece));
+        board.setLegalFields(selectedPiece.logical.getLegalMoveFields().keySet());
+        changeState(new PieceSelected<>(board, selectedPiece));
     }
 
     @Override
-    public void onPieceDeleted(P p) {
+    public void onPieceDeleted(Piece<?, P> p) {
         if (p == selectedPiece) changeState(new Normal<>(board));
-        else {
-            var oldPiece = selectedPiece;
-            selectedPiece = null;
-            changeState(new PieceSelected<>(board, oldPiece));
-        }
+        else changeState(new PieceSelected<>(board, selectedPiece));
     }
 
     @Override
-    public void onPieceClick(P piece) {
+    public void onPieceClick(Piece<?, P> piece) {
         if (piece != selectedPiece) {
-            var field = piece.logical.getPiece().getPosition();
-            if (board.getGraphicalField(field).isLegal()) {
-                selectedPiece.logical.makeMove(field);
+            if (selectedPiece.logical.getLegalMoveFields().containsKey(piece.getPosition())) {
+                selectedPiece.logical.makeMove(piece.getPosition());
                 changeState(new Normal<>(board));
             } else changeState(new PieceSelected<>(board, piece));
         } else changeState(new Normal<>(board));
@@ -80,26 +49,18 @@ public class PieceSelected<P extends Piece<?, ?>> extends State<P> {
 
     @Override
     public void onFieldClick(Field field) {
-        var graphicalField = board.getGraphicalField(field);
-        if (graphicalField.isLegal()) selectedPiece.logical.makeMove(field);
+        if (selectedPiece.logical.getLegalMoveFields().containsKey(field))
+            selectedPiece.logical.makeMove(field);
         changeState(new Normal<>(board));
     }
 
     @Override
     public void onFieldMouseEntered(Field field) {
-        if (highlightedField != null)
-            board.getGraphicalField(highlightedField).unhighlight();
-
-        var graphicalField = board.getGraphicalField(field);
-        if (graphicalField.isLegal()) {
-            graphicalField.highlight();
-            highlightedField = field;
-        }
+        board.setHighlightedField(field);
     }
 
     @Override
-    public void onPieceDrag(P piece, MouseEvent e) {
-        selectedPiece = null;
-        changeState(new PieceDragged<>(board, piece, legalFields));
+    public void onPieceDrag(Piece<?, P> piece, MouseEvent e) {
+        changeState(new PieceDragged<>(board, piece));
     }
 }
