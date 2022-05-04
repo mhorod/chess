@@ -1,11 +1,11 @@
 package app.ui;
 
-import app.chess.Chess;
-import app.chess.pieces.ChessPiece;
+import app.checkers.Checkers;
+import app.checkers.CheckersPiece;
 import app.core.interactor.InteractiveGame;
 import app.ui.board.boards.InvertedBoard;
 import app.ui.board.boards.NormalBoard;
-import app.ui.chess.ChessConnector;
+import app.ui.checkers.CheckersConnector;
 import app.utils.pieceplayer.HotSeatPlayer;
 import app.utils.pieceplayer.PieceSpectator;
 import javafx.application.Application;
@@ -38,17 +38,17 @@ public class App extends Application {
         };
 
 
-        Chess chess = new Chess();
-        var game = new InteractiveGame<>(chess);
+        var checkers = new Checkers();
+        var game = new InteractiveGame<>(checkers);
 
         var hotSeatPlayer = new HotSeatPlayer<>(game, game);
         var pieceSpectator = new PieceSpectator<>(game, game);
-        
-        var hotSeatBoard = new NormalBoard<ChessPiece>(40, style);
-        ChessConnector.connect(hotSeatBoard, hotSeatPlayer);
 
-        var spectatorBoard = new InvertedBoard<ChessPiece>(40, style);
-        ChessConnector.connect(spectatorBoard, pieceSpectator);
+        var hotSeatBoard = new NormalBoard<CheckersPiece>(40, style);
+        CheckersConnector.connect(hotSeatBoard, hotSeatPlayer);
+
+        var spectatorBoard = new InvertedBoard<CheckersPiece>(40, style);
+        CheckersConnector.connect(spectatorBoard, pieceSpectator);
 
         HBox pane = new HBox();
         pane.setAlignment(Pos.CENTER);

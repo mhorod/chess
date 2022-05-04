@@ -54,6 +54,10 @@ public class Board<P extends app.core.game.Piece> {
         board.getGraphicalField(field).unhighlight();
     }
 
+    public void removePiece(Field f) {
+        pieces.remove(f);
+    }
+
     public void setLegalFields(Set<Field> legalFields) {
         for (var field : this.legalFields)
             if (!legalFields.contains(field)) unmarkAsLegal(field);
