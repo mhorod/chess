@@ -1,15 +1,17 @@
 package app.ui;
 
 import app.chess.Chess;
+import app.chess.pieces.ChessPiece;
 import app.core.interactor.InteractiveGame;
-import app.ui.board.ChessBoard;
+import app.ui.board.boards.InvertedBoard;
+import app.ui.board.boards.NormalBoard;
+import app.ui.chess.ChessConnector;
 import app.utils.pieceplayer.HotSeatPlayer;
 import app.utils.pieceplayer.PieceSpectator;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -42,8 +44,11 @@ public class App extends Application {
         var hotSeatPlayer = new HotSeatPlayer<>(game, game);
         var pieceSpectator = new PieceSpectator<>(game, game);
 
-        Pane hotSeatBoard = new ChessBoard(30, style, hotSeatPlayer);
-        Pane spectatorBoard = new ChessBoard(30, style, pieceSpectator);
+        var hotSeatBoard = new NormalBoard<ChessPiece>(40, style);
+        ChessConnector.connect(hotSeatBoard, hotSeatPlayer);
+
+        var spectatorBoard = new InvertedBoard<ChessPiece>(40, style);
+        ChessConnector.connect(spectatorBoard, pieceSpectator);
 
         HBox pane = new HBox();
         pane.setAlignment(Pos.CENTER);

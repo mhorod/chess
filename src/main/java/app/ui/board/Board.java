@@ -18,7 +18,7 @@ public class Board<P extends app.core.game.Piece> {
     GraphicalBoard<P> board;
     Piece<?, P> selectedPiece;
 
-    <M extends Move<P>> Board(PiecePlayer<M, P> player, GraphicalBoard<P> board, Supplier<GraphicalPiece<P>> supplier) {
+    public <M extends Move<P>> Board(PiecePlayer<M, P> player, GraphicalBoard<P> board, Supplier<GraphicalPiece<P>> supplier) {
         behavior = new Machine<>(this);
         this.board = board;
         List<Piece<M, P>> pieces = new ArrayList<>();
