@@ -38,6 +38,7 @@ public class King extends AbstractChessPiece {
                     Field potentialField = new Field(currentRank + rankModifier, currentFile + fileModifier);
                     if (Chess.fieldIsValid(potentialField)) {
                         potentialMoves.add(new NormalMove(this, potentialField));
+
                     }
                 }
             }
@@ -57,6 +58,7 @@ public class King extends AbstractChessPiece {
                 Field potentialField = new Field(currentRank, currentFile + 2 * multiplier);
                 if (Chess.fieldIsValid(potentialField)) {
                     potentialMoves.add(new Castle(this, potentialField));
+
                 }
             }
         }

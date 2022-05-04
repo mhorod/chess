@@ -25,12 +25,11 @@ public class Bishop extends AbstractChessPiece {
 
         int initialRank = this.getPosition().rank();
         int initialFile = this.getPosition().file();
-        //Not the cleanest implementation, but will do
+        // Not the cleanest implementation, but will do
         for (int rankVector = -1; rankVector <= 1; rankVector += 2) {
             for (int fileVector = -1; fileVector <= 1; fileVector += 2) {
                 for (int howManyTimes = 1; howManyTimes <= Chess.SIZE; howManyTimes++) {
-                    Field potentialField = new Field(initialRank + rankVector * howManyTimes,
-                                                     initialFile + fileVector * howManyTimes);
+                    Field potentialField = new Field(initialRank + rankVector * howManyTimes, initialFile + fileVector * howManyTimes);
                     if (Chess.fieldIsValid(potentialField)) {
                         potentialMoves.add(new NormalMove(this, potentialField));
                     }

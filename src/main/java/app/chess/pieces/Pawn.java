@@ -45,6 +45,7 @@ public class Pawn extends AbstractChessPiece {
             Field whereToGo = new Field(currentRank + multiplier, currentFile + fileModifier);
             if (Chess.fieldIsValid(whereToGo)) {
                 potentialMoves.add(new NormalMove(this, whereToGo));
+
             }
         }
         return potentialMoves;

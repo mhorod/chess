@@ -26,9 +26,7 @@ public class Chess implements Game<ChessMove, AbstractChessPiece> {
         this.board = board.pieces;
     }
 
-    public static boolean fieldIsValid(Field toValidate) {
-        return toValidate.rank() <= SIZE && toValidate.file() <= SIZE && toValidate.rank() > 0 && toValidate.file() > 0;
-    }
+
 
 
     /**

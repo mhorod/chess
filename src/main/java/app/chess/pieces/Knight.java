@@ -54,6 +54,7 @@ public class Knight extends AbstractChessPiece {
                 Field potentialField = new Field(currentRank + vectorOne * firstMultiplier,
                                                  currentFile + vectorTwo * secondMultiplier);
                 if (Chess.fieldIsValid(potentialField)) {
+
                     potentialMoves.add(new NormalMove(this, potentialField));
                 }
             }
