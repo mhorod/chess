@@ -1,10 +1,10 @@
 package app.chess.moves;
 
-import app.chess.pieces.AbstractChessPiece;
+import app.chess.ChessPiece;
 import app.core.game.Field;
 import app.core.game.moves.Move;
 
-public interface ChessMove extends Move<AbstractChessPiece> {
+public interface ChessMove extends Move<ChessPiece> {
     /**
      * @return The field on which the piece should be after making the move
      */
@@ -13,6 +13,6 @@ public interface ChessMove extends Move<AbstractChessPiece> {
     /**
      * @return The instance of piece that is supposed to make a move
      */
-    AbstractChessPiece getPiece();
+    ChessPiece getPiece();
 
 }

@@ -1,11 +1,11 @@
 package app.chess.moves;
 
-import app.chess.pieces.AbstractChessPiece;
+import app.chess.ChessPiece;
 import app.core.game.Field;
 import app.core.game.moves.PieceMove;
 
-public class NormalMove extends PieceMove<AbstractChessPiece> implements ChessMove {
-    public NormalMove(AbstractChessPiece piece, Field field) {
+public class NormalMove extends PieceMove<ChessPiece> implements ChessMove {
+    public NormalMove(ChessPiece piece, Field field) {
         super(piece, field);
     }
 

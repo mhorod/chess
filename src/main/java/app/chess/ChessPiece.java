@@ -1,21 +1,24 @@
-package app.chess.pieces;
+package app.chess;
 
 import app.chess.moves.ChessMove;
+import app.chess.pieces.ChessPieceColor;
+import app.chess.pieces.ChessPieceKind;
 import app.core.game.Field;
+import app.core.game.Piece;
 
 import java.util.List;
 
 /**
  * Internal game implementation of a chess piece
  */
-public abstract class AbstractChessPiece implements ChessPiece {
+public abstract class ChessPiece implements Piece {
 
-    boolean wasMoved = false;
-    boolean isBlack;
-    boolean isAlive = true; //Defaults to true, who would like to create a dead chess piece anyways
-    Field position;
+    protected boolean wasMoved = false;
+    protected boolean isBlack;
+    protected boolean isAlive = true; //Defaults to true, who would like to create a dead chess piece anyways
+    protected Field position;
 
-    protected AbstractChessPiece(Field position, boolean isBlack) {
+    public ChessPiece(Field position, boolean isBlack) {
 
         this.position = position;
 
@@ -45,11 +48,18 @@ public abstract class AbstractChessPiece implements ChessPiece {
         return isBlack ? 1 : 0;
     }
 
-    public boolean wasMoved() {
-        return wasMoved;
+    public abstract ChessPieceKind getKind();
+
+    public ChessPieceColor getColor() {
+        return isBlack ? ChessPieceColor.BLACK : ChessPieceColor.WHITE;
     }
 
-    public void kill() {
+    @Override
+    public String toString() {
+        return "" + getColor() + " " + getKind() + " at " + getPosition();
+    }
+
+    void kill() {
         isAlive = false;
     }
 
@@ -72,11 +82,6 @@ public abstract class AbstractChessPiece implements ChessPiece {
         return false;
     }
 
-    public abstract ChessPieceKind getKind();
-
-    public ChessPieceColor getColor() {
-        return isBlack ? ChessPieceColor.BLACK : ChessPieceColor.WHITE;
-    }
 
     /**
      * @return A list of ChessMoves that are potentially valid (i.e. the caller needs to check if king's safety is ok
@@ -84,10 +89,6 @@ public abstract class AbstractChessPiece implements ChessPiece {
      */
     public abstract List<ChessMove> getPotentialMoves();
 
-    @Override
-    public String toString() {
-        return "" + getColor() + " " + getKind() + " at " + getPosition();
-    }
 
     static class IncorrectPiecePlacement extends RuntimeException {
     }

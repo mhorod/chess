@@ -1,6 +1,5 @@
 package app.chess;
 
-import app.chess.pieces.AbstractChessPiece;
 import app.chess.pieces.ChessPieceColor;
 import app.chess.pieces.ChessPieceFactory;
 import app.chess.pieces.ChessPieceKind;
@@ -11,10 +10,10 @@ import app.core.game.Field;
  */
 public class Board {
     protected int size;
-    AbstractChessPiece[][] pieces;
+    ChessPiece[][] pieces;
 
     public Board(int size) {
-        pieces = new AbstractChessPiece[size][size];
+        pieces = new ChessPiece[size][size];
     }
 
     /**

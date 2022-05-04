@@ -1,12 +1,13 @@
 package app.chess.pieces;
 
+import app.chess.ChessPiece;
 import app.core.game.Field;
 
 /**
  * Factory to easily create piece from kind and color
  */
 public class ChessPieceFactory {
-    public static AbstractChessPiece newPiece(
+    public static ChessPiece newPiece(
             Field field, ChessPieceKind kind, ChessPieceColor color
     ) {
         boolean isBlack = color == ChessPieceColor.BLACK;
