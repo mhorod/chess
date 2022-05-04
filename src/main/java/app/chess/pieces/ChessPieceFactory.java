@@ -6,7 +6,7 @@ import app.core.game.Field;
  * Factory to easily create piece from kind and color
  */
 public class ChessPieceFactory {
-    public static ChessPiece newPiece(
+    public static AbstractChessPiece newPiece(
             Field field, ChessPieceKind kind, ChessPieceColor color
     ) {
         boolean isBlack = color == ChessPieceColor.BLACK;

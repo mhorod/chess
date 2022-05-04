@@ -1,12 +1,12 @@
 package app.ui.board;
 
-import app.chess.pieces.ChessPiece;
+import app.chess.pieces.AbstractChessPiece;
 import app.core.game.moves.Move;
 import app.ui.ImageManager;
 import app.ui.board.state.Machine;
 import javafx.scene.paint.Color;
 
-public class Piece<M extends Move<P>, P extends ChessPiece> {
+public class Piece<M extends Move<P>, P extends AbstractChessPiece> {
     public final GraphicalPiece graphical;
     public final LogicalPiece<M, P> logical;
     private final Board<M, P> board;
