@@ -1,5 +1,6 @@
 package app.chess.pieces;
 
+import app.chess.Chess;
 import app.chess.moves.*;
 import app.core.game.*;
 
@@ -7,6 +8,7 @@ import java.util.*;
 
 public abstract class ChessPiece implements Piece {
 
+    static final int SIZE = Chess.SIZE;
     static class IncorrectPiecePlacement extends RuntimeException{}
     boolean wasMoved = false;
     boolean isBlack;
@@ -68,6 +70,10 @@ public abstract class ChessPiece implements Piece {
     public boolean canParticipateInCastling(){
         //King and Rook should override this method
         return false;
+    }
+
+    public static boolean fieldIsValid(Field toValidate) {
+        return toValidate.rank() <= SIZE && toValidate.file() <= SIZE && toValidate.rank() > 0 && toValidate.file() > 0;
     }
 
     public abstract ChessPieceKind getKind();

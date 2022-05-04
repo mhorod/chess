@@ -33,7 +33,7 @@ public class King extends ChessPiece {
                 if(rankModifier != 0 || fileModifier != 0){
                     //Because move that doesn't move is not the greatest move, I'd say
                     Field potentialField = new Field(currentRank + rankModifier, currentFile + fileModifier);
-                    if(Chess.fieldIsValid(potentialField)){
+                    if(fieldIsValid(potentialField)){
                         potentialMoves.add(new NormalMove(this,potentialField));
                     }
                 }
@@ -52,7 +52,7 @@ public class King extends ChessPiece {
         for(int multiplier = -1; multiplier <= 1; multiplier++){
             if(multiplier!=0){
                 Field potentialField = new Field(currentRank, currentFile + 2 * multiplier);
-                if(Chess.fieldIsValid(potentialField)){
+                if(fieldIsValid(potentialField)){
                     potentialMoves.add(new Castle(this,potentialField));
                 }
             }

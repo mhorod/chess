@@ -39,7 +39,7 @@ public class Pawn extends ChessPiece {
         for(int fileModifier = -1; fileModifier <= 1; fileModifier++){
             //Moves that go 1 forward
             Field whereToGo = new Field(currentRank + multiplier, currentFile + fileModifier);
-            if(Chess.fieldIsValid(whereToGo)){
+            if(fieldIsValid(whereToGo)){
                 potentialMoves.add(new NormalMove(this,whereToGo));
             }
         }

@@ -28,7 +28,7 @@ public class Bishop extends ChessPiece {
             for(int fileVector = -1; fileVector <= 1; fileVector+=2){
                 for(int howManyTimes = 1; howManyTimes <= Chess.SIZE; howManyTimes++){
                     Field potentialField = new Field(initialRank + rankVector * howManyTimes, initialFile + fileVector * howManyTimes);
-                    if(Chess.fieldIsValid(potentialField)){
+                    if(fieldIsValid(potentialField)){
                         potentialMoves.add(new NormalMove(this, potentialField));
                     }
                 }

@@ -27,9 +27,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         initializeBoard();
     }
 
-    public static boolean fieldIsValid(Field toValidate) {
-        return toValidate.rank() <= SIZE && toValidate.file() <= SIZE && toValidate.rank() > 0 && toValidate.file() > 0;
-    }
+
 
     private void initializePawns() {
         final int whitePawnRank = 2;

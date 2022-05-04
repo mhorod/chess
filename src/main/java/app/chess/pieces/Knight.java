@@ -50,7 +50,7 @@ public class Knight extends ChessPiece {
                 int secondMultiplier = (bitmask & 1) == 0 ? 1 : -1;
 
                 Field potentialField = new Field(currentRank + vectorOne * firstMultiplier, currentFile + vectorTwo * secondMultiplier);
-                if(Chess.fieldIsValid(potentialField)){
+                if(fieldIsValid(potentialField)){
                     potentialMoves.add(new NormalMove(this, potentialField));
                 }
             }
