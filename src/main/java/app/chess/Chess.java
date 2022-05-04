@@ -149,6 +149,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     }
 
     private boolean validateKingSafety(ChessMove move) {
+
         int player = move.getPiece().getPlayer();
 
         int secondPlayer = player == 0 ? 1 : 0; //We want to look at the board from the perspective of the second player, asking whether he can take the king now
@@ -183,6 +184,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             chessBoard[rank][file] = whatWasThere;
         }
         return true;
+
     }
 
     private boolean pawnMoveValidation(ChessMove move) {
@@ -444,6 +446,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     public List<ChessMove> getLegalMoves(int player) {
 
         if (pendingPromotion) {
+            if(true)throw new BoardDiscrepancy();
             //Promotion is this funny case where we should create entirely different branch
             pendingPromotion = false;
             return getPromotionMoves(player);
@@ -573,12 +576,13 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         resetWasMoved(); //Because things will be overwritten
 
         //Given the fact that this move is legal, we can simply execute it now
-        if (move.getField().rank() == SIZE || move.getField().rank() == 1) {
+        if (move.getPiece().getKind() == ChessPieceKind.PAWN && (move.getField().rank() == SIZE || move.getField().rank() == 1) ) {
             //That's funny because it will result in a pawn promotion
             if (pendingPromotion) {
                 throw new RuntimeException("This shouldn't even be mathematically possible");
             }
-            pendingPromotion = true;
+            ///TODO: IMPLEMENT PROMOTION
+            //pendingPromotion = true;
         }
 
         int newRank = move.getField().rank();
