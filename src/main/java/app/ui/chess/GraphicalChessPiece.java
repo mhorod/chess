@@ -1,7 +1,6 @@
 package app.ui.chess;
 
 import app.chess.pieces.ChessPiece;
-import app.chess.pieces.ChessPieceKind;
 import app.ui.ImageManager;
 import app.ui.board.GraphicalPiece;
 import javafx.scene.paint.Color;
@@ -9,8 +8,8 @@ import javafx.scene.paint.Color;
 public class GraphicalChessPiece extends GraphicalPiece<ChessPiece> {
     private final Color white, black;
 
-    public GraphicalChessPiece(ChessPieceKind type, Color white, Color black) {
-        super(ImageManager.getPieceImage(type), white);
+    public GraphicalChessPiece(ChessPiece piece, Color white, Color black) {
+        super(ImageManager.getPieceImage(piece.getKind()), piece.getPlayer() == 0 ? white : black);
         this.white = white;
         this.black = black;
     }

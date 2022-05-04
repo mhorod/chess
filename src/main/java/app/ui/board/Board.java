@@ -8,7 +8,7 @@ import app.ui.utils.Position;
 import app.utils.pieceplayer.PiecePlayer;
 
 import java.util.*;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 public class Board<P extends app.core.game.Piece> {
     public final Behavior<P> behavior;
@@ -18,24 +18,22 @@ public class Board<P extends app.core.game.Piece> {
     GraphicalBoard<P> board;
     Piece<?, P> selectedPiece;
 
-    public <M extends Move<P>> Board(PiecePlayer<M, P> player, GraphicalBoard<P> board, Supplier<GraphicalPiece<P>> supplier) {
+    public <M extends Move<P>> Board(PiecePlayer<M, P> player, GraphicalBoard<P> board, Function<P, GraphicalPiece<P>> supplier) {
         behavior = new Machine<>(this);
         this.board = board;
         List<Piece<M, P>> pieces = new ArrayList<>();
-        player.connectPieces(() -> {
-            var piece = new Piece<M, P>(supplier.get(), behavior, this);
+        player.connectPieces((p) -> {
+            var graphical = supplier.apply(p);
+            var piece = new Piece<M, P>(graphical, behavior, this);
+            graphical.putDown(board.getGraphicalField(p.getPosition()));
             pieces.add(piece);
             return piece.logical;
         });
-        pieces.forEach((piece) -> {
-            piece.logical.update();
-            board.add(piece.graphical);
-        });
+        pieces.forEach((piece) -> board.add(piece.graphical));
         board.connectBehavior(behavior);
     }
 
     private void markAsLegal(Field field) {
-        System.out.println(field);
         if (pieces.containsKey(field))
             pieces.get(field).highlight();
         else

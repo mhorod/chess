@@ -62,7 +62,7 @@ public class Piece<M extends Move<P>, P extends app.core.game.Piece> {
     }
 
     public void highlight() {
-        graphical.highlight(Color.web("#2ac"));
+        graphical.highlight(Color.web("#38a7d6"));
     }
 
     public void unhighlight() {

@@ -1,7 +1,6 @@
 package app.ui.chess;
 
 import app.chess.pieces.ChessPiece;
-import app.chess.pieces.ChessPieceKind;
 import app.core.game.moves.Move;
 import app.ui.board.Board;
 import app.ui.board.GraphicalBoard;
@@ -12,7 +11,7 @@ public class ChessConnector {
         new Board<>(
                 player,
                 graphicalBoard,
-                () -> new GraphicalChessPiece(ChessPieceKind.KING, graphicalBoard.style.whitePiece, graphicalBoard.style.blackPiece)
+                (piece) -> new GraphicalChessPiece(piece, graphicalBoard.style.whitePiece, graphicalBoard.style.blackPiece)
         );
     }
 }
