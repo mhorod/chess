@@ -10,7 +10,7 @@ import app.utils.pieceplayer.controls.PlayerControls;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 /**
  * Creates and controls all game players at once allowing to connect pieces only once
@@ -37,10 +37,10 @@ public class HotSeatPlayer<M extends Move<P>, P extends Piece> extends PiecePlay
     }
 
     @Override
-    public void connectPieces(Supplier<? extends InteractivePiece<M, P>> pieceSupplier) {
+    public void connectPieces(Function<P, ? extends InteractivePiece<M, P>> newPiece) {
         for (var player : players) {
             for (var piece : player.getPieces()) {
-                var interactivePiece = pieceSupplier.get();
+                var interactivePiece = newPiece.apply(piece);
                 interactivePiece.controls = new PlayerControls<>(piece, player);
                 pieces.put(piece, interactivePiece);
             }

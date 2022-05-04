@@ -6,7 +6,7 @@ import app.core.interactor.GameSocket;
 import app.core.interactor.Player;
 import app.utils.pieceplayer.controls.PlayerControls;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 
 /**
@@ -22,14 +22,10 @@ public final class StandalonePiecePlayer<M extends Move<P>, P extends Piece> ext
         socket.connectSpectator(this);
     }
 
-    /**
-     * Connects all game pieces to supplied interactive pieces
-     *
-     * @param pieceSupplier supplier of interactive pieces
-     */
-    public void connectPieces(Supplier<? extends InteractivePiece<M, P>> pieceSupplier) {
+    @Override
+    public void connectPieces(Function<P, ? extends InteractivePiece<M, P>> newPiece) {
         for (var piece : player.getAllPieces()) {
-            var interactivePiece = pieceSupplier.get();
+            var interactivePiece = newPiece.apply(piece);
             interactivePiece.controls = new PlayerControls<>(piece, player);
             pieces.put(piece, interactivePiece);
         }

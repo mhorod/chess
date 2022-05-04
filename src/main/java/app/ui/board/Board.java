@@ -38,10 +38,12 @@ public class Board<M extends app.core.game.moves.Move<P>, P extends ChessPiece> 
             for (int y = 0; y < 8; y++) {
                 if ((x + y) % 2 == 0)
                     graphicalFields[x][y] = new GraphicalField(style.blackField, style.blackFieldCircle, fieldSize,
-                            new Position(25 + x * fieldSize + fieldSize / 2, y * fieldSize + fieldSize / 2));
+                                                               new Position(25 + x * fieldSize + fieldSize / 2,
+                                                                            y * fieldSize + fieldSize / 2));
                 else
                     graphicalFields[x][y] = new GraphicalField(style.whiteField, style.whiteFieldCircle, fieldSize,
-                            new Position(25 + x * fieldSize + fieldSize / 2, y * fieldSize + fieldSize / 2));
+                                                               new Position(25 + x * fieldSize + fieldSize / 2,
+                                                                            y * fieldSize + fieldSize / 2));
                 final Field field = new Field(y + 1, 8 - x);
                 graphicalFields[x][y].setOnMousePressed(e -> stateMachine.onFieldClick(field));
                 graphicalFields[x][y].setOnMouseEntered(e -> stateMachine.onFieldMouseEntered(field));
@@ -79,13 +81,15 @@ public class Board<M extends app.core.game.moves.Move<P>, P extends ChessPiece> 
             final List<Piece<M, P>> pieces = new ArrayList<>();
 
             public InteractivePiece<M, P> get() {
-                var piece = new Piece<>(new GraphicalPiece(ChessPieceKind.KING, graphicalFields[0][0], black), stateMachine, board);
+                var piece = new Piece<>(new GraphicalPiece(ChessPieceKind.KING, graphicalFields[0][0], black),
+                                        stateMachine, board);
                 pieces.add(piece);
                 return piece.logical;
             }
         };
 
-        player.connectPieces(supplier);
+        // TODO: Replace supplier with constructor
+        // player.connectPieces(supplier);
         pieces = supplier.pieces;
 
         for (var p : supplier.pieces) {

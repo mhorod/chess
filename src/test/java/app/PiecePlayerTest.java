@@ -22,7 +22,7 @@ public class PiecePlayerTest {
 
         List<MockInteractivePiece> pieces = new ArrayList<>();
 
-        player.connectPieces(() -> {
+        player.connectPieces((p) -> {
             var piece = new MockInteractivePiece();
             pieces.add(piece);
             return piece;
