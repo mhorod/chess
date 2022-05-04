@@ -1,6 +1,7 @@
 package app.chess.pieces;
 
 import app.chess.Chess;
+import app.chess.ChessPiece;
 import app.chess.moves.ChessMove;
 import app.chess.moves.NormalMove;
 import app.core.game.Field;
@@ -8,7 +9,7 @@ import app.core.game.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Knight extends AbstractChessPiece {
+public class Knight extends ChessPiece {
     public Knight(Field position, boolean isBlack) {
         super(position, isBlack);
     }

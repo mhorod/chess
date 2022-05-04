@@ -1,6 +1,6 @@
 package app.ui.board;
 
-import app.chess.pieces.AbstractChessPiece;
+import app.chess.ChessPiece;
 import app.chess.pieces.ChessPieceKind;
 import app.core.game.Field;
 import app.ui.Style;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class Board<M extends app.core.game.moves.Move<P>, P extends AbstractChessPiece> extends Pane {
+public class Board<M extends app.core.game.moves.Move<P>, P extends ChessPiece> extends Pane {
     public List<Piece<M, P>> pieces;
     double fieldSize;
     Style style;

@@ -1,6 +1,7 @@
 package app.chess.pieces;
 
 import app.chess.Chess;
+import app.chess.ChessPiece;
 import app.chess.moves.ChessMove;
 import app.chess.moves.NormalMove;
 import app.core.game.Field;
@@ -8,7 +9,7 @@ import app.core.game.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Rook extends AbstractChessPiece {
+public class Rook extends ChessPiece {
     boolean wasMovedBefore = false; //Do not confuse with wasMoved of ChessPiece, this is supposed to be changed one time
 
     public Rook(Field position, boolean isBlack) {
