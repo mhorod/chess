@@ -1,16 +1,15 @@
 package app.chess.moves;
 
-import app.chess.pieces.*;
-import app.core.game.*;
-import app.core.game.moves.*;
+import app.chess.ChessPiece;
+import app.chess.pieces.ChessPieceKind;
+import app.core.game.Field;
+import app.core.game.moves.PieceMove;
 
 public class Castle extends PieceMove<ChessPiece> implements ChessMove {
-    static class OnlyKingCanCastle extends RuntimeException{}
-
     public Castle(ChessPiece piece, Field field) {
         super(piece, field);
 
-        if(piece.getKind() != ChessPieceKind.KING){
+        if (piece.getKind() != ChessPieceKind.KING) {
             throw new OnlyKingCanCastle();
         }
     }
@@ -21,21 +20,23 @@ public class Castle extends PieceMove<ChessPiece> implements ChessMove {
     }
 
     @Override
-    public boolean equals(Object o){
-        if(o == null){
+    public boolean equals(Object o) {
+        if (o == null) {
             return false;
         }
-        if (o.getClass() != Castle.class){
+        if (o.getClass() != Castle.class) {
             return false;
         }
 
         var converted = (Castle) o;
 
-        if(converted.getField().rank() != this.getField().rank()){
+        if (converted.getField().rank() != this.getField().rank()) {
             return false;
-        }
-        else {
+        } else {
             return converted.getField().file() == this.getField().file() && converted.getPiece() == this.getPiece();
         }
+    }
+
+    static class OnlyKingCanCastle extends RuntimeException {
     }
 }

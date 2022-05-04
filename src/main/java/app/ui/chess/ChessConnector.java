@@ -1,6 +1,6 @@
 package app.ui.chess;
 
-import app.chess.pieces.ChessPiece;
+import app.chess.ChessPiece;
 import app.core.game.moves.Move;
 import app.ui.board.Board;
 import app.ui.board.GraphicalBoard;

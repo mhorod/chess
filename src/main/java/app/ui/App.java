@@ -1,7 +1,8 @@
 package app.ui;
 
 import app.chess.Chess;
-import app.chess.pieces.ChessPiece;
+import app.chess.ChessBoard;
+import app.chess.ChessPiece;
 import app.core.interactor.InteractiveGame;
 import app.ui.board.boards.InvertedBoard;
 import app.ui.board.boards.NormalBoard;
@@ -38,12 +39,12 @@ public class App extends Application {
         };
 
 
-        Chess chess = new Chess();
+        Chess chess = new Chess(new ChessBoard());
         var game = new InteractiveGame<>(chess);
 
         var hotSeatPlayer = new HotSeatPlayer<>(game, game);
         var pieceSpectator = new PieceSpectator<>(game, game);
-        
+
         var hotSeatBoard = new NormalBoard<ChessPiece>(40, style);
         ChessConnector.connect(hotSeatBoard, hotSeatPlayer);
 

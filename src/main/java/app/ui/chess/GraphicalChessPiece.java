@@ -1,6 +1,6 @@
 package app.ui.chess;
 
-import app.chess.pieces.ChessPiece;
+import app.chess.ChessPiece;
 import app.ui.ImageManager;
 import app.ui.board.GraphicalPiece;
 import javafx.scene.paint.Color;

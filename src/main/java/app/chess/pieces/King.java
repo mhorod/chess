@@ -1,10 +1,14 @@
 package app.chess.pieces;
 
-import app.chess.*;
-import app.chess.moves.*;
-import app.core.game.*;
+import app.chess.Chess;
+import app.chess.ChessPiece;
+import app.chess.moves.Castle;
+import app.chess.moves.ChessMove;
+import app.chess.moves.NormalMove;
+import app.core.game.Field;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class King extends ChessPiece {
 
@@ -28,13 +32,13 @@ public class King extends ChessPiece {
         int currentFile = this.getPosition().file();
 
         //We will need two loops that account for every possible move king can make (except for the one where that piece stays in its place)
-        for(int rankModifier = -1; rankModifier <= 1; rankModifier++){
-            for(int fileModifier = -1; fileModifier <= 1; fileModifier++){
-                if(rankModifier != 0 || fileModifier != 0){
+        for (int rankModifier = -1; rankModifier <= 1; rankModifier++) {
+            for (int fileModifier = -1; fileModifier <= 1; fileModifier++) {
+                if (rankModifier != 0 || fileModifier != 0) {
                     //Because move that doesn't move is not the greatest move, I'd say
                     Field potentialField = new Field(currentRank + rankModifier, currentFile + fileModifier);
-                    if(Chess.fieldIsValid(potentialField)){
-                        potentialMoves.add(new NormalMove(this,potentialField));
+                    if (Chess.fieldIsValid(potentialField)) {
+                        potentialMoves.add(new NormalMove(this, potentialField));
                     }
                 }
             }
@@ -49,11 +53,11 @@ public class King extends ChessPiece {
         //Because there are only 2 possible castlings, I'm not going to write a loop for that
 
         //...just kidding!
-        for(int multiplier = -1; multiplier <= 1; multiplier++){
-            if(multiplier!=0){
+        for (int multiplier = -1; multiplier <= 1; multiplier++) {
+            if (multiplier != 0) {
                 Field potentialField = new Field(currentRank, currentFile + 2 * multiplier);
-                if(Chess.fieldIsValid(potentialField)){
-                    potentialMoves.add(new Castle(this,potentialField));
+                if (Chess.fieldIsValid(potentialField)) {
+                    potentialMoves.add(new Castle(this, potentialField));
                 }
             }
         }
@@ -62,13 +66,13 @@ public class King extends ChessPiece {
     }
 
     @Override
-    public void move(Field newPosition){
+    public void move(Field newPosition) {
         wasMovedBefore = true;
         position = newPosition;
     }
 
     @Override
-    public boolean canParticipateInCastling(){
+    public boolean canParticipateInCastling() {
         return !wasMovedBefore;
     }
 

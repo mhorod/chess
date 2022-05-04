@@ -1,10 +1,12 @@
 package app.chess.pieces;
 
-import app.chess.*;
-import app.chess.moves.*;
-import app.core.game.*;
+import app.chess.ChessPiece;
+import app.chess.moves.ChessMove;
+import app.chess.moves.NormalMove;
+import app.core.game.Field;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Queen extends ChessPiece {
 
@@ -22,8 +24,9 @@ public class Queen extends ChessPiece {
         //Queen can move like a Rook and Bishop, somewhat standing on the same place
         //This means that there is no sense in writing this piece's logic, we might just create a fake rook and fake bishop with the same Field and then basically merge their results
 
-        ChessPiece fakeRook = new Rook(this.getPosition(),false); //We don't care about any other parameter than the position, because pieces don't care about interactions with others when returning potential moves
-        ChessPiece fakeBishop = new Bishop(this.getPosition(), false);
+        //We don't care about any other parameter than the position, because pieces don't care about interactions with others when returning potential moves
+        var fakeRook = new Rook(this.getPosition(), false);
+        var fakeBishop = new Bishop(this.getPosition(), false);
 
         List<ChessMove> fakePotentialMoves = fakeRook.getPotentialMoves();
         fakePotentialMoves.addAll(fakeBishop.getPotentialMoves());
@@ -33,11 +36,11 @@ public class Queen extends ChessPiece {
 
         ArrayList<ChessMove> potentialMoves = new ArrayList<>();
 
-        for(ChessMove fakePotentialMove : fakePotentialMoves){
+        for (ChessMove fakePotentialMove : fakePotentialMoves) {
             ChessMove legitimatePotentialMove = new NormalMove(this, fakePotentialMove.getField());
             potentialMoves.add(legitimatePotentialMove);
         }
-        
+
         return potentialMoves;
     }
 }

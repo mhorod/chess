@@ -1,13 +1,17 @@
 package app.chess.pieces;
 
-import app.chess.*;
-import app.chess.moves.*;
-import app.core.game.*;
+import app.chess.Chess;
+import app.chess.ChessPiece;
+import app.chess.moves.ChessMove;
+import app.chess.moves.NormalMove;
+import app.core.game.Field;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Pawn extends ChessPiece {
     private boolean movedBy2RanksRecently = false;
+
     public Pawn(Field position, boolean isBlack) {
         super(position, isBlack);
     }
@@ -31,24 +35,25 @@ public class Pawn extends ChessPiece {
         int currentRank = this.getPosition().rank();
         int currentFile = this.getPosition().file();
 
-        if(currentRank == twoMovesForwardRank){
+        if (currentRank == twoMovesForwardRank) {
             Field whereToGo = new Field(currentRank + 2 * multiplier, currentFile);
-            potentialMoves.add(new NormalMove(this, whereToGo)); //no Field validation is needed in this case (because if you go 2 forward then, you are on a rank that guarantees that you won't get out of range)
+            potentialMoves.add(new NormalMove(this,
+                                              whereToGo)); //no Field validation is needed in this case (because if you go 2 forward then, you are on a rank that guarantees that you won't get out of range)
         }
 
-        for(int fileModifier = -1; fileModifier <= 1; fileModifier++){
+        for (int fileModifier = -1; fileModifier <= 1; fileModifier++) {
             //Moves that go 1 forward
             Field whereToGo = new Field(currentRank + multiplier, currentFile + fileModifier);
-            if(Chess.fieldIsValid(whereToGo)){
-                potentialMoves.add(new NormalMove(this,whereToGo));
+            if (Chess.fieldIsValid(whereToGo)) {
+                potentialMoves.add(new NormalMove(this, whereToGo));
             }
         }
         return potentialMoves;
     }
 
     @Override
-    public void move(Field newPosition){
-        if(Math.abs(position.rank() - newPosition.rank()) == 2){
+    public void move(Field newPosition) {
+        if (Math.abs(position.rank() - newPosition.rank()) == 2) {
             movedBy2RanksRecently = true;
         }
         position = newPosition;
@@ -56,16 +61,16 @@ public class Pawn extends ChessPiece {
     }
 
     @Override
-    public void resetMoved(){
+    public void resetMoved() {
         wasMoved = false;
         movedBy2RanksRecently = false;
     }
 
     @Override
-    public boolean enPassantable(){
-        if(movedBy2RanksRecently){
+    public boolean enPassantable() {
+        if (movedBy2RanksRecently) {
             return true;
-        }
-        else return false;
+        } else
+            return false;
     }
 }

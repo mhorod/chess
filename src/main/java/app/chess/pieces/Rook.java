@@ -1,17 +1,20 @@
 package app.chess.pieces;
 
-import app.chess.*;
-import app.chess.moves.*;
-import app.core.game.*;
+import app.chess.Chess;
+import app.chess.ChessPiece;
+import app.chess.moves.ChessMove;
+import app.chess.moves.NormalMove;
+import app.core.game.Field;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Rook extends ChessPiece {
+    boolean wasMovedBefore = false; //Do not confuse with wasMoved of ChessPiece, this is supposed to be changed one time
+
     public Rook(Field position, boolean isBlack) {
         super(position, isBlack);
     }
-
-    boolean wasMovedBefore = false; //Do not confuse with wasMoved of ChessPiece, this is supposed to be changed one time
     //This field is going to be used to check whether the rook can be involved in castling
 
     @Override
@@ -27,8 +30,8 @@ public class Rook extends ChessPiece {
 
         ArrayList<ChessMove> potentialMoves = new ArrayList<>();
 
-        for(int i = 1; i <= Chess.SIZE; i++){
-            Field fieldOnTheSameFile = new Field(i,currentPosition.file());
+        for (int i = 1; i <= Chess.SIZE; i++) {
+            Field fieldOnTheSameFile = new Field(i, currentPosition.file());
             Field fieldOnTheSameRank = new Field(currentPosition.rank(), i);
 
             ChessMove moveOnTheSameFile = new NormalMove(this, fieldOnTheSameFile);
@@ -42,13 +45,13 @@ public class Rook extends ChessPiece {
     }
 
     @Override
-    public void move(Field newPosition){
+    public void move(Field newPosition) {
         wasMovedBefore = true;
         position = newPosition;
     }
 
     @Override
-    public boolean canParticipateInCastling(){
+    public boolean canParticipateInCastling() {
         return !wasMovedBefore;
     }
 }
