@@ -1,18 +1,13 @@
 package app.ui;
 
-import app.chess.Chess;
-import app.chess.ChessBoard;
-import app.chess.ChessPiece;
-import app.core.interactor.InteractiveGame;
-import app.ui.board.boards.InvertedBoard;
-import app.ui.board.boards.NormalBoard;
-import app.ui.chess.ChessConnector;
-import app.utils.pieceplayer.HotSeatPlayer;
-import app.utils.pieceplayer.PieceSpectator;
+import app.ui.views.MainMenu;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -38,26 +33,30 @@ public class App extends Application {
             }
         };
 
+        var container = new VBox();
+        container.setBackground(Background.EMPTY);
+        container.setFillWidth(true);
+        container.setAlignment(Pos.CENTER);
 
-        Chess chess = new Chess(new ChessBoard());
-        var game = new InteractiveGame<>(chess);
+        container.getChildren().add(new MainMenu(new GameContainer() {
+            @Override
+            public void changeView(Node node) {
+                container.getChildren().clear();
+                container.getChildren().add(node);
+            }
 
-        var hotSeatPlayer = new HotSeatPlayer<>(game, game);
-        var pieceSpectator = new PieceSpectator<>(game, game);
+            @Override
+            public void exit() {
+                Platform.exit();
+            }
 
-        var hotSeatBoard = new NormalBoard<ChessPiece>(40, style);
-        ChessConnector.connect(hotSeatBoard, hotSeatPlayer);
+            @Override
+            public Style getStyle() {
+                return style;
+            }
+        }));
 
-        var spectatorBoard = new InvertedBoard<ChessPiece>(40, style);
-        ChessConnector.connect(spectatorBoard, pieceSpectator);
-
-        HBox pane = new HBox();
-        pane.setAlignment(Pos.CENTER);
-        pane.getChildren().add(hotSeatBoard);
-        pane.getChildren().add(spectatorBoard);
-        pane.setFillHeight(true);
-        pane.setSpacing(100);
-        Scene scene = new Scene(pane, 1024, 800, true);
+        Scene scene = new Scene(container, 1024, 800);
         scene.setFill(Color.web("#222"));
         stage.setScene(scene);
         stage.setTitle("Epic chess");
