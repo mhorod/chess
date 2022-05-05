@@ -2,7 +2,14 @@
 
 Chess made as an assignment project for OOP course 2021/22
 
-## Roadmap
+## Installation
+Project is built with ![Maven](https://maven.apache.org/)
+
+1. Clone the repository
+2. In the directory containing `pom.xml` run `mvn clean javafx:run`
+3. Alternatively you can run `app.Main` class from your IDE
+
+## Changelog
 
 ### 5-05-2022 goals [Completed]
 
