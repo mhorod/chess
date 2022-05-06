@@ -32,13 +32,12 @@ public class App extends Application {
                 font = Font.loadFont(App.class.getResource("/fonts/regular.otf").toExternalForm(), 20);
             }
         };
-
         var container = new VBox();
         container.setBackground(Background.EMPTY);
-        container.setFillWidth(true);
+        container.setFillWidth(false);
         container.setAlignment(Pos.CENTER);
 
-        container.getChildren().add(new MainMenu(new GameContainer() {
+        var mainMenu = new MainMenu(new GameContainer() {
             @Override
             public void changeView(Node node) {
                 container.getChildren().clear();
@@ -54,10 +53,14 @@ public class App extends Application {
             public Style getStyle() {
                 return style;
             }
-        }));
+        });
+        container.getChildren().add(mainMenu);
 
         Scene scene = new Scene(container, 1024, 800);
-        scene.setFill(Color.web("#222"));
+        scene.setFill(style.whiteField);
+        scene.setOnMouseMoved(e -> {
+            mainMenu.updateMousePosition(e.getSceneX(), e.getSceneY());
+        });
         stage.setScene(scene);
         stage.setTitle("Epic chess");
         stage.show();
