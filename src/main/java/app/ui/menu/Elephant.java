@@ -70,10 +70,12 @@ public class Elephant extends Pane {
         Point2D start;
         double squishY = 0;
         double squishFraction;
+        boolean flipped;
 
         public JumpTransition(double speed, Point2D target) {
             this.target = target;
             this.start = new Point2D(Elephant.this.getTranslateX(), Elephant.this.getTranslateY());
+            this.flipped = target.getX() < start.getX();
             var time = 0.2 + Math.abs(target.getX() - start.getX()) / speed;
             squishFraction = 0.2 / time;
             setCycleDuration(Duration.seconds(time));
@@ -81,6 +83,8 @@ public class Elephant extends Pane {
             setOnFinished(e -> {
                 setTranslateX(target.getX());
                 setTranslateY(target.getY());
+                setScaleX(1);
+                setScaleY(1);
             });
         }
 
@@ -102,7 +106,7 @@ public class Elephant extends Pane {
 
         void setSquish(double squish) {
             setScaleY(squish);
-            setScaleX(2 - squish);
+            setScaleX((flipped ? -1 : 1) * (2 - squish));
             squishY = 100 * (1 - squish);
         }
 

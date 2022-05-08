@@ -8,28 +8,32 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
+
 public class MenuContainer extends VBox {
-    View currentView;
     Style style;
     Elephant elephant;
-    HBox views = new HBox();
+    HBox viewsContainer = new HBox();
     Pane pane = new Pane();
+    ArrayList<View> views = new ArrayList<>();
 
     public MenuContainer(Style style) {
         this.style = style;
-        pane.getChildren().add(views);
+        pane.getChildren().add(viewsContainer);
         getChildren().add(pane);
         setFillWidth(true);
 
     }
 
     public void changeView(View view) {
+        var currentView = views.isEmpty() ? null : views.get(views.size() - 1);
+        views.add(view);
 
         var content = view.getContent();
-        views.getChildren().add(content);
+        viewsContainer.getChildren().add(content);
 
 
-        if (elephant == null) {
+        if (elephant == null || currentView == null) {
             elephant = new Elephant(style.whitePiece, view.getSpaceForElephant());
             pane.getChildren().add(elephant);
         } else {
@@ -39,7 +43,7 @@ public class MenuContainer extends VBox {
         elephant.moveTo(view.getSpaceForElephant());
 
         var scroll = new TranslateTransition(Duration.millis(500), pane);
-        scroll.setToX(getWidth() / 2 - views.getWidth() + content.getLayoutBounds().getWidth() / 2);
+        scroll.setToX(getWidth() / 2 - viewsContainer.getWidth() + content.getLayoutBounds().getWidth() / 2);
         scroll.play();
 
 
@@ -52,11 +56,25 @@ public class MenuContainer extends VBox {
         transition.setToX(0);
 
         transition.play();
-        currentView = view;
     }
 
     public void exit() {
         Platform.exit();
+    }
+
+    public void goBack() {
+        var lastView = views.get(views.size() - 1);
+        var newView = views.get(views.size() - 2);
+
+        viewsContainer.getChildren().remove(lastView.getContent());
+        newView.getSpaceForElephant().grow();
+        layout();
+        elephant.moveTo(newView.getSpaceForElephant());
+        newView.getSpaceForElephant().smoothGrow();
+        var scroll = new TranslateTransition(Duration.millis(500), pane);
+        scroll.setToX(getWidth() / 2 - viewsContainer.getWidth() + newView.getContent().getLayoutBounds().getWidth() / 2);
+        scroll.play();
+        views.remove(views.size() - 1);
     }
 
     public Style getGameStyle() {

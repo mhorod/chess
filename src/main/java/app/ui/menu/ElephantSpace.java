@@ -12,8 +12,13 @@ public class ElephantSpace extends Pane {
     }
 
     public void grow() {
+        setMinWidth(100);
+    }
+
+    public void smoothGrow() {
         new GrowTransition(Duration.millis(500)).play();
     }
+
 
     public void smoothShrink() {
         new ShrinkTransition(Duration.millis(500)).play();

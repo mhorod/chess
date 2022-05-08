@@ -23,7 +23,7 @@ public class PlayMenu extends VBox implements View {
         content.getChildren().add(new Menu(new String[]{"ALONE", "WITH FRIENDS", "RETURN"}, new Runnable[]{
                 () -> container.changeView(new PlayMenu(container)),
                 () -> container.changeView(new PlayMenu(container)),
-                () -> container.changeView(new MainMenu(container))
+                container::goBack
         }, container.getGameStyle()));
         getChildren().add(content);
         setAlignment(Pos.CENTER);
