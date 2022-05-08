@@ -77,6 +77,10 @@ public class MenuContainer extends VBox {
         views.remove(views.size() - 1);
     }
 
+    public void updateMousePosition(double mouseX, double mouseY) {
+        elephant.update(mouseX, mouseY);
+    }
+
     public Style getGameStyle() {
         return style;
     }

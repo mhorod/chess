@@ -42,6 +42,7 @@ public class App extends Application {
 
         container.getChildren().add(menu);
         container.setAlignment(Pos.CENTER);
+        container.setOnMouseMoved(e -> menu.updateMousePosition(e.getSceneX(), e.getSceneY()));
         Scene scene = new Scene(container, 1024, 800);
         scene.setFill(style.whiteField);
         stage.setScene(scene);

@@ -17,11 +17,12 @@ public class Elephant extends Pane {
     Circle outerEye = new Circle(10);
     double eyeX = 0.34, eyeY = 0.29;
     ElephantSpace currentSpace;
+    boolean flipped = false;
+    double mouseX, mouseY;
 
     public Elephant(Color color, ElephantSpace currentSpace) {
         this.currentSpace = currentSpace;
         var piece = new ColoredImage(ImageManager.getPieceImageHQ(ChessPieceKind.BISHOP), color);
-        System.out.println(piece.getImage());
         piece.setFitWidth(100);
         piece.setPreserveRatio(true);
         piece.setViewport(new Rectangle2D(30 * 4, 0, 72 * 4, 512));
@@ -54,13 +55,13 @@ public class Elephant extends Pane {
     }
 
     public void update(double mouseX, double mouseY) {
+        this.mouseX = mouseX;
+        this.mouseY = mouseY;
         var mousePos = sceneToLocal(mouseX, mouseY);
-        var eyePos = new Point2D(getWidth() * eyeX, getHeight() * eyeY);
+        var eyePos = new Point2D(outerEye.getCenterX(), outerEye.getCenterY());
         var dir = mousePos.subtract(eyePos);
         if (dir.magnitude() > 5)
             dir = dir.normalize().multiply(5);
-        outerEye.setCenterX(getWidth() * eyeX);
-        outerEye.setCenterY(getHeight() * eyeY);
         eye.setCenterX(eyePos.getX() + dir.getX());
         eye.setCenterY(eyePos.getY() + dir.getY());
     }
@@ -70,12 +71,11 @@ public class Elephant extends Pane {
         Point2D start;
         double squishY = 0;
         double squishFraction;
-        boolean flipped;
 
         public JumpTransition(double speed, Point2D target) {
             this.target = target;
             this.start = new Point2D(Elephant.this.getTranslateX(), Elephant.this.getTranslateY());
-            this.flipped = target.getX() < start.getX();
+            flipped = target.getX() < start.getX();
             var time = 0.2 + Math.abs(target.getX() - start.getX()) / speed;
             squishFraction = 0.2 / time;
             setCycleDuration(Duration.seconds(time));
@@ -85,6 +85,8 @@ public class Elephant extends Pane {
                 setTranslateY(target.getY());
                 setScaleX(1);
                 setScaleY(1);
+                update(mouseX, mouseY);
+                flipped = false;
             });
         }
 
@@ -100,8 +102,8 @@ public class Elephant extends Pane {
                 var x = start.getX() + (target.getX() - start.getX()) * fraction;
                 setTranslateX(x);
                 setTranslateY(calculateY(x) + squishY);
-
             }
+            update(mouseX, mouseY);
         }
 
         void setSquish(double squish) {
