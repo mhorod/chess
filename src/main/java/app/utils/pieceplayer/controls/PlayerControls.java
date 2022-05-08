@@ -26,7 +26,7 @@ public class PlayerControls<M extends Move<P>, P extends Piece> extends PieceCon
     public void makeMove(M move) {
         if (!(move instanceof PieceMove<?>))
             throw new IllegalMoveAttempt();
-        else if (piece != ((PieceMove<?>) move).getPiece())
+        else if (!piece.equals(((PieceMove<?>) move).getPiece()))
             throw new IllegalMoveAttempt("Piece specified by the move does not match piece of this");
         else
             player.makeMove(move);

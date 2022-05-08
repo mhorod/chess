@@ -7,11 +7,10 @@ import app.ui.board.GraphicalBoard;
 import app.utils.pieceplayer.PiecePlayer;
 
 public class ChessConnector {
-    public static void connect(GraphicalBoard<ChessPiece> graphicalBoard, PiecePlayer<? extends Move<ChessPiece>, ChessPiece> player) {
-        new Board<>(
-                player,
-                graphicalBoard,
-                (piece) -> new GraphicalChessPiece(piece, graphicalBoard.style.whitePiece, graphicalBoard.style.blackPiece)
-        );
+    public static void connect(
+            GraphicalBoard<ChessPiece> graphicalBoard, PiecePlayer<? extends Move<ChessPiece>, ChessPiece> player
+    ) {
+        new Board<>(player, graphicalBoard, (piece) -> new GraphicalChessPiece(piece, graphicalBoard.style.whitePiece,
+                                                                               graphicalBoard.style.blackPiece));
     }
 }

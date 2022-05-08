@@ -1,7 +1,7 @@
 package app.chess.pieces;
 
+import app.chess.AbstractChessPiece;
 import app.chess.Chess;
-import app.chess.ChessPiece;
 import app.chess.moves.Castle;
 import app.chess.moves.ChessMove;
 import app.chess.moves.NormalMove;
@@ -10,7 +10,7 @@ import app.core.game.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class King extends ChessPiece {
+public class King extends AbstractChessPiece {
 
     boolean wasMovedBefore = false; //Do not confuse with wasMoved of ChessPiece, this is supposed to be changed one time
     //This field is going to be used to check whether king can castle
@@ -38,7 +38,7 @@ public class King extends ChessPiece {
                     //Because move that doesn't move is not the greatest move, I'd say
                     Field potentialField = new Field(currentRank + rankModifier, currentFile + fileModifier);
                     if (Chess.fieldIsValid(potentialField)) {
-                        potentialMoves.add(new NormalMove(this, potentialField));
+                        potentialMoves.add(new NormalMove(this.wrap(), potentialField));
                     }
                 }
             }
@@ -57,7 +57,7 @@ public class King extends ChessPiece {
             if (multiplier != 0) {
                 Field potentialField = new Field(currentRank, currentFile + 2 * multiplier);
                 if (Chess.fieldIsValid(potentialField)) {
-                    potentialMoves.add(new Castle(this, potentialField));
+                    potentialMoves.add(new Castle(this.wrap(), potentialField));
                 }
             }
         }

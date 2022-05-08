@@ -1,7 +1,7 @@
 package app.chess.pieces;
 
+import app.chess.AbstractChessPiece;
 import app.chess.Chess;
-import app.chess.ChessPiece;
 import app.chess.moves.ChessMove;
 import app.chess.moves.NormalMove;
 import app.core.game.Field;
@@ -9,7 +9,7 @@ import app.core.game.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Rook extends ChessPiece {
+public class Rook extends AbstractChessPiece {
     boolean wasMovedBefore = false; //Do not confuse with wasMoved of ChessPiece, this is supposed to be changed one time
 
     public Rook(Field position, boolean isBlack) {
@@ -34,8 +34,8 @@ public class Rook extends ChessPiece {
             Field fieldOnTheSameFile = new Field(i, currentPosition.file());
             Field fieldOnTheSameRank = new Field(currentPosition.rank(), i);
 
-            ChessMove moveOnTheSameFile = new NormalMove(this, fieldOnTheSameFile);
-            ChessMove moveOnTheSameRank = new NormalMove(this, fieldOnTheSameRank);
+            ChessMove moveOnTheSameFile = new NormalMove(this.wrap(), fieldOnTheSameFile);
+            ChessMove moveOnTheSameRank = new NormalMove(this.wrap(), fieldOnTheSameRank);
 
             potentialMoves.add(moveOnTheSameFile);
             potentialMoves.add(moveOnTheSameRank);
