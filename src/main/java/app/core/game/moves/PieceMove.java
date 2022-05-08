@@ -1,6 +1,5 @@
 package app.core.game.moves;
 
-import app.chess.moves.NormalMove;
 import app.core.game.Field;
 import app.core.game.Piece;
 
@@ -33,7 +32,7 @@ public class PieceMove<P extends Piece> implements Move<P> {
         } else if (o.getClass() != getClass()) {
             return false;
         } else {
-            var converted = (NormalMove) o;
+            var converted = (PieceMove<?>) o;
             return piece.equals(converted.piece) && field.equals(converted.field);
         }
     }
