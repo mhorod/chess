@@ -7,4 +7,6 @@ module app {
     exports app;
     exports app.ui;
     opens app.ui to javafx.fxml;
+    exports app.ui.menu;
+    opens app.ui.menu to javafx.fxml;
 }

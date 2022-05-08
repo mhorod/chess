@@ -1,12 +1,11 @@
 package app.ui;
 
+import app.ui.menu.MenuContainer;
 import app.ui.views.MainMenu;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -33,34 +32,18 @@ public class App extends Application {
             }
         };
         var container = new VBox();
-        container.setBackground(Background.EMPTY);
-        container.setFillWidth(false);
-        container.setAlignment(Pos.CENTER);
+        var menu = new MenuContainer(style);
 
-        var mainMenu = new MainMenu(new GameContainer() {
-            @Override
-            public void changeView(Node node) {
-                container.getChildren().clear();
-                container.getChildren().add(node);
-            }
-
-            @Override
-            public void exit() {
-                Platform.exit();
-            }
-
-            @Override
-            public Style getStyle() {
-                return style;
-            }
+        var mainMenu = new MainMenu(menu);
+        Platform.runLater(() -> {
+            menu.changeView(mainMenu);
         });
-        container.getChildren().add(mainMenu);
 
+
+        container.getChildren().add(menu);
+        container.setAlignment(Pos.CENTER);
         Scene scene = new Scene(container, 1024, 800);
         scene.setFill(style.whiteField);
-        scene.setOnMouseMoved(e -> {
-            mainMenu.updateMousePosition(e.getSceneX(), e.getSceneY());
-        });
         stage.setScene(scene);
         stage.setTitle("Epic chess");
         stage.show();

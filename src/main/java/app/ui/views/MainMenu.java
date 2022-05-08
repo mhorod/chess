@@ -1,54 +1,42 @@
 package app.ui.views;
 
-import app.ui.GameContainer;
 import app.ui.ImageManager;
-import app.ui.View;
-import app.ui.menu.DerpyButton;
-import app.ui.menu.GogglingPiece;
+import app.ui.menu.*;
 import app.ui.utils.ColoredImage;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class MainMenu extends VBox implements View {
-    GameContainer container;
-    GogglingPiece piece;
+    MenuContainer container;
+    Elephant piece;
+    ElephantSpace elephantSpace;
 
-    public MainMenu(GameContainer container) {
+    public MainMenu(MenuContainer container) {
         super();
         this.container = container;
 
-        var play = new DerpyButton("PLAY", container.getStyle().whitePiece);
-        play.setOnMouseClicked(e -> {
-            container.changeView(new ChessHotseat(container));
-        });
-        var settings = new DerpyButton("SETTINGS", container.getStyle().whitePiece);
-        var exit = new DerpyButton("EXIT", container.getStyle().whitePiece);
-        exit.setOnMouseClicked(e -> {
-            container.exit();
-        });
-        var menu = new VBox();
-        menu.setAlignment(Pos.CENTER_LEFT);
-        menu.setSpacing(5);
-
-        menu.getChildren().add(play);
-        menu.getChildren().add(settings);
-        menu.getChildren().add(exit);
+        var menu = new Menu(new String[]{"PLAY", "SETTINGS", "EXIT"}, new Runnable[]{
+                () -> container.changeView(new PlayMenu(container)),
+                this::doNothing,
+                Platform::exit
+        }, container.getGameStyle());
 
         var content = new HBox();
         content.setSpacing(30);
         content.setAlignment(Pos.CENTER);
 
-        piece = new GogglingPiece(container.getStyle().whitePiece);
-        setOnMouseMoved(e -> piece.update(e.getSceneX(), e.getSceneY()));
-        content.getChildren().add(piece);
+        elephantSpace = new ElephantSpace();
+        content.getChildren().add(elephantSpace);
         content.getChildren().add(menu);
 
 
-        var logo = new ColoredImage(ImageManager.logo, container.getStyle().blackPiece);
+        var logo = new ColoredImage(ImageManager.logo, container.getGameStyle().blackPiece);
         logo.setFitWidth(200);
         logo.setPreserveRatio(true);
 
@@ -66,8 +54,16 @@ public class MainMenu extends VBox implements View {
         //setBackground(new Background(new BackgroundFill(container.getStyle().whiteField, new CornerRadii(10), Insets.EMPTY)));
     }
 
+    void doNothing() {
+    }
+
     @Override
-    public void updateMousePosition(double mouseX, double mouseY) {
-        piece.update(mouseX, mouseY);
+    public ElephantSpace getSpaceForElephant() {
+        return elephantSpace;
+    }
+
+    @Override
+    public Node getContent() {
+        return this;
     }
 }
