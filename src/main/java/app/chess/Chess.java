@@ -81,7 +81,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         int rank = move.getField().rank();
         int file = move.getField().file();
 
-        var whatWasThere = board[rank][file]; //So that we can
+        var whatWasThere = board[rank][file];
 
         board[rank][file] = move.getPiece(); //Now we "move" the figure
         board[previousRank][previousFile] = null;
