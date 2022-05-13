@@ -4,6 +4,7 @@ import app.chess.moves.Castle;
 import app.chess.moves.ChessMove;
 import app.chess.pieces.ChessPieceFactory;
 import app.chess.pieces.ChessPieceKind;
+import app.chess.utils.*;
 import app.core.game.Field;
 import app.core.game.Game;
 
@@ -13,9 +14,6 @@ import java.util.List;
 
 import static app.chess.pieces.ChessPieceKind.KING;
 
-/**
- * TODO: Extend Game with appropriate types and implement chess logic
- */
 public class Chess implements Game<ChessMove, ChessPiece> {
     public static final int SIZE = 8;
     ChessPiece[][] board;
@@ -121,7 +119,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             //First, let's consider going forward by 2 - the only case where we have to perform this check
             if (Math.abs(newRank - currentRank) == 2) {
                 //We want to check if the path is not obstructed
-                if (!roadNotObstructed(move.getPiece().getPosition(), move.getField())) {
+                if (!Utils.roadNotObstructed(move.getPiece().getPosition(), move.getField(),board)) {
                     //The only type of move whether we have to check if something is on the road is being obstructed
                     return false;
                 }
@@ -164,39 +162,6 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             return false;
         }
 
-        return true;
-    }
-
-    private boolean roadNotObstructed(Field currentPosition, Field newPosition) {
-        //First, we will validate the path itself (not including the last spot)
-        //Because of that, we don't calculate the knight as it sort of "jumps"
-
-        int rankDelta = newPosition.rank() - currentPosition.rank();
-        int fileDelta = newPosition.file() - currentPosition.file();
-
-        if (rankDelta == 0 && fileDelta == 0) {
-            //You can't move on a field on which you already are
-            return false;
-        }
-
-        int rankVector = Integer.compare(rankDelta, 0);
-        int fileVector = Integer.compare(fileDelta, 0);
-
-        int iterRank = currentPosition.rank();
-        int iterFile = currentPosition.file();
-
-        while (iterRank + rankVector != newPosition.rank() || iterFile + fileVector != newPosition.file()) {
-            iterRank += rankVector;
-            iterFile += fileVector;
-
-            //System.out.println(iterRank + " " + iterFile);
-
-            if (board[iterRank][iterFile] != null) {
-                //Something's on our way, that means that the move is invalid
-                return false;
-            }
-
-        }
         return true;
     }
 
@@ -262,7 +227,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         //That's perfect, second condition is satisfied
 
         //Third condition: Road between rook and king is not obstructed
-        if (!roadNotObstructed(move.getPiece().getPosition(), new Field(rookRank, rookFile))) {
+        if (!Utils.roadNotObstructed(move.getPiece().getPosition(), new Field(rookRank, rookFile), board)) {
             return false;
         }
 
@@ -316,7 +281,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
         if (move.getPiece().getKind() != ChessPieceKind.KNIGHT) {
             //This function doesn't care about knights movement, checks only "transit"
-            if (!roadNotObstructed(currentPosition, newPosition)) {
+            if (!Utils.roadNotObstructed(currentPosition, newPosition,board)) {
                 return false;
             }
         }
