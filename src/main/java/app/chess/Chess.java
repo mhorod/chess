@@ -218,6 +218,9 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             //Truly magnificent
             //(and crazy ineffective, but it was never meant to be effective)
             var currentPiece = board[currentRank][currentFile + i * multiplier];
+            if(currentPiece == null){
+                continue;
+            }
             var field = new Field(currentRank, currentFile + i * multiplier);
             board[field.rank()][field.file()] = ChessPieceFactory.newPiece(field, KING, currentPiece.getColor());
 
