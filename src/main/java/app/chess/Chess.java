@@ -25,10 +25,6 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         this.board = board.pieces;
     }
 
-    public static boolean fieldIsValid(Field toValidate) {
-        return toValidate.rank() <= SIZE && toValidate.file() <= SIZE && toValidate.rank() > 0 && toValidate.file() > 0;
-    }
-
     /**
      * @param checkPlayer Whether to return pieces of only one player
      * @param player Player whose pieces should be returned
@@ -163,26 +159,6 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         }
 
         return true;
-    }
-
-    /**
-     * @param move
-     * @return Assuming that castling is possible, returns the position on which the rook should be located. Makes
-     *         ABSOLUTELY NO GUARANTEE that castling is legal.
-     */
-    private Field getRookPositionBasedOnCastling(Castle move) {
-        final int currentRank = move.getPiece().getPosition().rank();
-        final int currentFile = move.getPiece().getPosition().file();
-
-        final int newRank = move.getField().rank();
-        final int newFile = move.getField().file();
-
-        final boolean kingSideCastling = newFile - currentFile > 0;  //If the file is increasing, this means (both for white and black) that we are castling king side
-
-        final int rookRank = move.getPiece().getPlayer() == 0 ? 1 : 8; //White has rooks on first rank, black on eighth
-        final int rookFile = kingSideCastling ? 8 : 1;
-
-        return new Field(rookRank, rookFile);
     }
 
     private boolean validateMove(Castle move) {
@@ -393,7 +369,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
      * @return
      */
     private List<ChessPiece> castleMove(Castle move) {
-        Field whereRookIs = getRookPositionBasedOnCastling(move);
+        Field whereRookIs = Utils.getRookPositionBasedOnCastling(move, board);
 
         int rookRank = whereRookIs.rank();
         int rookFile = whereRookIs.file();

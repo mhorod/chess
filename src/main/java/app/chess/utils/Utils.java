@@ -1,6 +1,9 @@
 package app.chess.utils;
 import app.chess.*;
+import app.chess.moves.*;
 import app.core.game.*;
+
+import static app.chess.Chess.SIZE;
 
 public final class Utils {
     private Utils(){
@@ -36,4 +39,29 @@ public final class Utils {
         }
         return true;
     }
+
+    /**
+     * @param move
+     * @return Assuming that castling is possible, returns the position on which the rook should be located. Makes
+     *         ABSOLUTELY NO GUARANTEE that castling is legal.
+     */
+    public static Field getRookPositionBasedOnCastling(Castle move, ChessPiece[][] board) {
+        final int currentRank = move.getPiece().getPosition().rank();
+        final int currentFile = move.getPiece().getPosition().file();
+
+        final int newRank = move.getField().rank();
+        final int newFile = move.getField().file();
+
+        final boolean kingSideCastling = newFile - currentFile > 0;  //If the file is increasing, this means (both for white and black) that we are castling king side
+
+        final int rookRank = move.getPiece().getPlayer() == 0 ? 1 : 8; //White has rooks on first rank, black on eighth
+        final int rookFile = kingSideCastling ? 8 : 1;
+
+        return new Field(rookRank, rookFile);
+    }
+
+    public static boolean fieldIsValid(Field toValidate) {
+        return toValidate.rank() <= SIZE && toValidate.file() <= SIZE && toValidate.rank() > 0 && toValidate.file() > 0;
+    }
+
 }

@@ -4,6 +4,7 @@ import app.chess.AbstractChessPiece;
 import app.chess.Chess;
 import app.chess.moves.ChessMove;
 import app.chess.moves.NormalMove;
+import app.chess.utils.*;
 import app.core.game.Field;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class Knight extends AbstractChessPiece {
 
                 Field potentialField = new Field(currentRank + vectorOne * firstMultiplier,
                                                  currentFile + vectorTwo * secondMultiplier);
-                if (Chess.fieldIsValid(potentialField)) {
+                if (Utils.fieldIsValid(potentialField)) {
                     potentialMoves.add(new NormalMove(this.wrap(), potentialField));
                 }
             }
