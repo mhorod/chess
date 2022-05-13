@@ -1,57 +1,48 @@
 package app.chess;
 
-import app.chess.moves.ChessMove;
+
 import app.chess.pieces.ChessPieceColor;
 import app.chess.pieces.ChessPieceKind;
 import app.core.game.Field;
 import app.core.game.Piece;
 
-import java.util.List;
-
 /**
- * Internal game implementation of a chess piece
+ * Provides all information about chess piece
  */
-public abstract class ChessPiece implements Piece {
+public final class ChessPiece implements Piece {
+    AbstractChessPiece piece;
 
-    protected boolean wasMoved = false;
-    protected boolean isBlack;
-    protected boolean isAlive = true; //Defaults to true, who would like to create a dead chess piece anyways
-    protected Field position;
-
-    public ChessPiece(Field position, boolean isBlack) {
-
-        this.position = position;
-
-        this.isBlack = isBlack;
-
-        int rank = position.rank();
-        int file = position.file();
-
-        if (rank > 8 || rank < 1 || file > 8 || file < 1) { //A quick validation to check whether arguments supplied here are correct
-            throw new IncorrectPiecePlacement();
-        }
-
+    public ChessPiece(AbstractChessPiece piece) {
+        this.piece = piece;
     }
 
     @Override
     public Field getPosition() {
-        return position;
+        return piece.getPosition();
     }
 
     @Override
     public boolean isAlive() {
-        return isAlive;
+        return piece.isAlive();
     }
 
     @Override
     public int getPlayer() {
-        return isBlack ? 1 : 0;
+        return piece.getPlayer();
     }
 
-    public abstract ChessPieceKind getKind();
+    /**
+     * @return kind of the piece - pawn, rook, etc.
+     */
+    public ChessPieceKind getKind() {
+        return piece.getKind();
+    }
 
+    /**
+     * @return color of the piece - black or white
+     */
     public ChessPieceColor getColor() {
-        return isBlack ? ChessPieceColor.BLACK : ChessPieceColor.WHITE;
+        return piece.getColor();
     }
 
     @Override
@@ -59,37 +50,27 @@ public abstract class ChessPiece implements Piece {
         return "" + getColor() + " " + getKind() + " at " + getPosition();
     }
 
-    void kill() {
-        isAlive = false;
-    }
-
-    public void move(Field newPosition) {
-        position = newPosition;
-        wasMoved = true;
-    }
-
-    public void resetMoved() {
-        wasMoved = false;
-    }
-
-    public boolean enPassantable() {
-        //Pawns should override this method
-        return false;
-    }
-
-    public boolean canParticipateInCastling() {
-        //King and Rook should override this method
-        return false;
-    }
-
-
     /**
-     * @return A list of ChessMoves that are potentially valid (i.e. the caller needs to check if king's safety is ok
-     *         and whether path to the given field isn't obstructed
+     * Unwraps stored AbstractChessPiece for internal chess usage
+     *
+     * @return underlying chess piece
      */
-    public abstract List<ChessMove> getPotentialMoves();
+    AbstractChessPiece unwrap() {
+        return piece;
+    }
 
+    @Override
+    public boolean equals(Object other) {
+        if (other == null)
+            return false;
+        else if (other.getClass() != getClass())
+            return false;
+        else
+            return piece == ((ChessPiece) other).piece;
+    }
 
-    static class IncorrectPiecePlacement extends RuntimeException {
+    @Override
+    public int hashCode() {
+        return piece.hashCode();
     }
 }

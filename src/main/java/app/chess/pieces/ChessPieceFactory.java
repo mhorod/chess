@@ -11,7 +11,7 @@ public class ChessPieceFactory {
             Field field, ChessPieceKind kind, ChessPieceColor color
     ) {
         boolean isBlack = color == ChessPieceColor.BLACK;
-        return switch (kind) {
+        var piece = switch (kind) {
             case PAWN -> new Pawn(field, isBlack);
             case KNIGHT -> new Knight(field, isBlack);
             case BISHOP -> new Bishop(field, isBlack);
@@ -19,5 +19,6 @@ public class ChessPieceFactory {
             case QUEEN -> new Queen(field, isBlack);
             case KING -> new King(field, isBlack);
         };
+        return piece.wrap();
     }
 }

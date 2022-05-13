@@ -1,7 +1,7 @@
 package app.chess.pieces;
 
+import app.chess.AbstractChessPiece;
 import app.chess.Chess;
-import app.chess.ChessPiece;
 import app.chess.moves.ChessMove;
 import app.chess.moves.NormalMove;
 import app.core.game.Field;
@@ -9,7 +9,7 @@ import app.core.game.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Bishop extends ChessPiece {
+public class Bishop extends AbstractChessPiece {
 
     public Bishop(Field position, boolean isBlack) {
         super(position, isBlack);
@@ -33,7 +33,7 @@ public class Bishop extends ChessPiece {
                     Field potentialField = new Field(initialRank + rankVector * howManyTimes,
                                                      initialFile + fileVector * howManyTimes);
                     if (Chess.fieldIsValid(potentialField)) {
-                        potentialMoves.add(new NormalMove(this, potentialField));
+                        potentialMoves.add(new NormalMove(this.wrap(), potentialField));
                     }
                 }
             }

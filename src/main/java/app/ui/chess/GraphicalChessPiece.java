@@ -18,6 +18,7 @@ public class GraphicalChessPiece extends GraphicalPiece<ChessPiece> {
     public void update(ChessPiece piece) {
         setImage(ImageManager.getPieceImage(piece.getKind()));
         setColor(piece.getPlayer() == 0 ? white : black);
-        if (!piece.isAlive()) disappear();
+        if (!piece.isAlive())
+            disappear();
     }
 }
