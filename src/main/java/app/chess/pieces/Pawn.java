@@ -1,7 +1,6 @@
 package app.chess.pieces;
 
 import app.chess.AbstractChessPiece;
-import app.chess.Chess;
 import app.chess.moves.ChessMove;
 import app.chess.moves.NormalMove;
 import app.chess.utils.*;

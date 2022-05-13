@@ -4,6 +4,7 @@ import app.chess.moves.Castle;
 import app.chess.moves.ChessMove;
 import app.chess.pieces.ChessPieceFactory;
 import app.chess.pieces.ChessPieceKind;
+import app.chess.rules.*;
 import app.chess.utils.*;
 import app.core.game.Field;
 import app.core.game.Game;
@@ -20,6 +21,8 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     private boolean blackToMove = false;
     private boolean pendingPromotion = false; //In case there is a promotion of a pawn, that move is split into 2 submoves
     private boolean testMode = false; //this is NOT how it should be done, but it's the simplest way
+
+    private final Validator validator = new StandardValidator();
 
     public Chess(Board board) {
         this.board = board.pieces;

@@ -1,5 +1,6 @@
 package app.chess;
 
+import app.chess.*;
 import app.chess.moves.ChessMove;
 import app.chess.pieces.ChessPieceColor;
 import app.chess.pieces.ChessPieceKind;
