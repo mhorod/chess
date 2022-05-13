@@ -5,6 +5,7 @@ import app.chess.Chess;
 import app.chess.moves.Castle;
 import app.chess.moves.ChessMove;
 import app.chess.moves.NormalMove;
+import app.chess.utils.*;
 import app.core.game.Field;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class King extends AbstractChessPiece {
                 if (rankModifier != 0 || fileModifier != 0) {
                     //Because move that doesn't move is not the greatest move, I'd say
                     Field potentialField = new Field(currentRank + rankModifier, currentFile + fileModifier);
-                    if (Chess.fieldIsValid(potentialField)) {
+                    if (Utils.fieldIsValid(potentialField)) {
                         potentialMoves.add(new NormalMove(this.wrap(), potentialField));
                     }
                 }
@@ -56,7 +57,7 @@ public class King extends AbstractChessPiece {
         for (int multiplier = -1; multiplier <= 1; multiplier++) {
             if (multiplier != 0) {
                 Field potentialField = new Field(currentRank, currentFile + 2 * multiplier);
-                if (Chess.fieldIsValid(potentialField)) {
+                if (Utils.fieldIsValid(potentialField)) {
                     potentialMoves.add(new Castle(this.wrap(), potentialField));
                 }
             }
