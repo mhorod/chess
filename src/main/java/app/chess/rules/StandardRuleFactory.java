@@ -14,6 +14,7 @@ public class StandardRuleFactory implements RuleFactory{
 
         //Pawns
         rules.add(new PawnGoingForwardCantTakePieces());
+        rules.add(new PawnGoingSidewaysNeedsToTakeSomething());
 
         return rules;
     }
