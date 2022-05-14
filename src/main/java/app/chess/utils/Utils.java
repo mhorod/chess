@@ -146,6 +146,22 @@ public final class Utils {
         return !fieldIsUnderAttack(enemyPlayer,kingLocation,board);
     }
 
+    public static ChessPiece findPawnThatCanBePromoted(int player, ChessPiece[][] board){
+        var allPieces = Utils.getMatchingPieces(true, player, board);
+        final int promotionRank = player == 0 ? 8 : 1;
+        Field where = null;
+        for(var piece : allPieces){
+            if(piece.getKind() == ChessPieceKind.PAWN && piece.getPosition().rank() == promotionRank){
+                //That's the piece we want, so we will remember the Field on which it stands
+                where = piece.getPosition();
+            }
+        }
+        if(where == null){
+            throw new BoardDiscrepancy();
+        }
+        return getPieceByField(where, board);
+    }
+
     static class ThereIsNoKingOnBoard extends RuntimeException{}
     public static class BoardDiscrepancy extends RuntimeException{}
 }

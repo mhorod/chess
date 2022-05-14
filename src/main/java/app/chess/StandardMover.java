@@ -14,8 +14,6 @@ class StandardMover implements Mover {
     public List<ChessPiece> makeMove(int player, ChessMove move, ChessPiece[][] board, StateManager manager) {
         //Note: If somehow we get here move that isn't legal, we get an undefined behaviour.
 
-        ///TODO: MAKE IT NOT FAIL WITH PENDING PROMOTION
-        manager.switchCurrentPlayer();
 
 
         //Now, if castling is involved, I'm going to delegate it to another function because otherwise this will be too messy
@@ -25,8 +23,10 @@ class StandardMover implements Mover {
         }
 
         if (manager.thereIsPromotionPending()) {
-            ///TODO: IMPLEMENT PROMOTION
+            Utils.putPieceOnBoard(move.getPiece(),move.getField(),board);
             manager.markPromotionAsDone();
+            manager.switchCurrentPlayer();
+            return Collections.singletonList(move.getPiece());
         }
 
         resetWasMoved(board); //Because things will be overwritten
@@ -35,7 +35,10 @@ class StandardMover implements Mover {
         if (move.getPiece().getKind() == ChessPieceKind.PAWN && (move.getField().rank() == SIZE || move.getField()
                                                                                                        .rank() == 1)) {
             //That's funny because it will result in a pawn promotion
-            ///TODO: IMPLEMENT PROMOTION
+            manager.waitForPromotion();
+        }
+        else{
+            manager.switchCurrentPlayer();
         }
 
         int newRank = move.getField().rank();
