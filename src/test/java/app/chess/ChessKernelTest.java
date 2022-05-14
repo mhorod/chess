@@ -1,4 +1,5 @@
 package app.chess;
+import app.chess.moves.*;
 import app.chess.pieces.*;
 import app.core.game.*;
 import org.junit.Test;
@@ -141,14 +142,43 @@ public class ChessKernelTest {
 
         var legalMoves = g1.getLegalMoves(1);
 
+        boolean moveWasMade = false;
+
         for(var move :legalMoves){
             if(move.getPiece().getPosition().rank() == 4){
+                moveWasMade = true;
                 g1.makeMove(1,move); //Mate by en passant
             }
         }
 
+        if(!moveWasMade){
+            fail("Couldn't play en passant!");
+        }
+
         assertEquals(0,g1.getLegalMoves(0).size());
 
+    }
+
+    @Test
+    public void castle_mate(){
+        var g1 = new Chess(FENConverter.parseFen("nrrkrrnn/qqp1ppqq/2p5/2P1p3/4p3/8/2P5/R3K3 w Q - 0 1"));
+
+        var legalMoves = g1.getLegalMoves(0);
+
+        boolean moveWasMade = false;
+
+        for(var move : legalMoves){
+            if(move.getClass() == Castle.class){
+                moveWasMade = true;
+                g1.makeMove(0,move);
+            }
+        }
+
+        if(!moveWasMade){
+            fail("Couldn't castle!");
+        }
+
+        assertEquals(0, g1.getLegalMoves(1).size()); //It's a mate
     }
 
 }
