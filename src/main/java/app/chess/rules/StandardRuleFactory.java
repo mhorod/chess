@@ -1,5 +1,7 @@
 package app.chess.rules;
 
+import app.chess.rules.ruleset.*;
+
 import java.util.*;
 
 public class StandardRuleFactory implements RuleFactory{
@@ -8,6 +10,10 @@ public class StandardRuleFactory implements RuleFactory{
         List<Rule> rules = new ArrayList<>();
 
         rules.add(new RoadCannotBeObstructed());
+
+
+        //Pawns
+        rules.add(new PawnGoingForwardCantTakePieces());
 
         return rules;
     }

@@ -323,41 +323,19 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
         List<ChessPiece> playersPieces = getPieces(player);
 
-        List<ChessMove> allPlayersLegalMoves = new ArrayList<>();
+        List<ChessMove> allLegalMoves = new ArrayList<>();
 
         for (var currentPiece : playersPieces) {
-            List<ChessMove> someLegalMoves = getLegalMoves(player, currentPiece);
-            allPlayersLegalMoves.addAll(someLegalMoves);
+            List<ChessMove> someLegalMoves = validator.getLegalMoves(currentPiece, board);
+            allLegalMoves.addAll(someLegalMoves);
         }
 
-        return allPlayersLegalMoves;
+        return allLegalMoves;
     }
 
     @Override
     public List<ChessMove> getLegalMoves(int player, ChessPiece piece) {
-        //Please note that this function is not particularly effective and was never meant to be.
-
-        if (!testMode && (piece.getPlayer() == 1) != blackToMove) {
-            return Collections.emptyList();
-        }
-
-        if (piece.getPlayer() != player) {
-            return Collections.emptyList();
-        }
-
-        List<ChessMove> potentialMoves = piece.unwrap().getPotentialMoves();
-        List<ChessMove> legalMoves = new ArrayList<>();
-
-        for (ChessMove potentialMove : potentialMoves) {
-            //System.out.println("Validating " + potentialMove);
-            if (validateMove(potentialMove)) {
-                //System.out.println("Validation for " + potentialMove + " OK");
-                legalMoves.add(potentialMove);
-            }
-            //System.out.println("End of validation " + potentialMove);
-        }
-
-        return legalMoves;
+        return validator.getLegalMoves(piece,board);
     }
 
     private void resetWasMoved() {

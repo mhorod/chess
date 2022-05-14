@@ -64,4 +64,8 @@ public final class Utils {
         return toValidate.rank() <= SIZE && toValidate.file() <= SIZE && toValidate.rank() > 0 && toValidate.file() > 0;
     }
 
+    public static ChessPiece getPieceByField(Field field, ChessPiece[][] board){
+        return board[field.rank()][field.file()];
+    }
+
 }
