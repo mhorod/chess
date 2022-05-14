@@ -7,14 +7,10 @@ import java.util.*;
 public class StandardRuleFactory implements RuleFactory{
     @Override
     public List<Rule> getRules() {
-        List<Rule> rules = new ArrayList<>();
+        List<Rule> rules = new KingsSafetyDisabledRuleFactory().getRules();
 
-        rules.add(new RoadCannotBeObstructed());
-
-
-        //Pawns
-        rules.add(new PawnGoingForwardCantTakePieces());
-        rules.add(new PawnGoingSidewaysNeedsToTakeSomething());
+        //We also enable king's safety
+        rules.add(new YourKingCannotBeCheckedAfterYourMove());
 
         return rules;
     }

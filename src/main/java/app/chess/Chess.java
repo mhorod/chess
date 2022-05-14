@@ -28,25 +28,8 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         this.board = board.pieces;
     }
 
-    /**
-     * @param checkPlayer Whether to return pieces of only one player
-     * @param player Player whose pieces should be returned
-     * @return All pieces on board that satisfact the given criteria
-     */
-    private List<ChessPiece> getMatchingPieces(boolean checkPlayer, int player) {
-        ArrayList<ChessPiece> piecesList = new ArrayList<>();
 
-        for (int rank = 1; rank <= SIZE; rank++) {
-            for (int file = 1; file <= SIZE; file++) {
-                ChessPiece currentPiece = board[rank][file];
-                if (currentPiece != null && (currentPiece.getPlayer() == player || !checkPlayer)) {
-                    //If checkPlayer is false, the second condition is always true
-                    piecesList.add(board[rank][file]);
-                }
-            }
-        }
-        return piecesList;
-    }
+
 
     private boolean validateKingSafety(int player) {
         //Validates king safety the way that is done in validateKingSafety(ChessMove move) but it doesn't perform any move
@@ -298,12 +281,12 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
     @Override
     public List<ChessPiece> getPieces(int player) {
-        return getMatchingPieces(true, player);
+        return Utils.getMatchingPieces(true, player, board);
     }
 
     @Override
     public List<ChessPiece> getAllPieces() {
-        return getMatchingPieces(false, 0);
+        return Utils.getMatchingPieces(false, 0, board);
     }
 
     private List<ChessMove> getPromotionMoves(int player) {
