@@ -1,20 +1,16 @@
 package app.chess.rules.ruleset;
 
-import app.chess.*;
-import app.chess.moves.*;
-import app.chess.pieces.*;
-import app.chess.utils.*;
-import app.core.game.*;
+import app.chess.ChessPiece;
+import app.chess.moves.ChessMove;
+import app.chess.utils.Utils;
+import app.core.game.Field;
 
-import static app.chess.pieces.ChessPieceKind.KING;
-
-public class NothingOnTheRoadOfTheKingIsUnderAttack extends CastlingRules{
+public class NothingOnTheRoadOfTheKingIsUnderAttack extends CastlingRules {
 
     @Override
     public boolean validate(ChessMove move, ChessPiece[][] board) {
-        if(!canBeAppliedTo(move)){
+        if (!canBeAppliedTo(move))
             return true;
-        }
 
         final int currentRank = move.getPiece().getPosition().rank();
         final int currentFile = move.getPiece().getPosition().file();
@@ -28,7 +24,7 @@ public class NothingOnTheRoadOfTheKingIsUnderAttack extends CastlingRules{
 
         for (int i = 1; i <= 2; i++) {
             Field toValidate = new Field(currentRank, currentFile + i * multiplier);
-            if(Utils.fieldIsUnderAttack(enemyPlayer, toValidate, board)){
+            if (Utils.fieldIsUnderAttack(enemyPlayer, toValidate, board)) {
                 return false;
             }
         }

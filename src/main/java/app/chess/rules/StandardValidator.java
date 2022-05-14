@@ -1,34 +1,21 @@
 package app.chess.rules;
 
-import app.chess.*;
-import app.chess.moves.*;
+import app.chess.ChessPiece;
+import app.chess.moves.ChessMove;
 
-import java.util.*;
+import java.util.List;
 
 public class StandardValidator implements Validator {
-    private final RuleFactory factory = new StandardRuleFactory();
+    private final Rules factory = new StandardRules();
     private final List<Rule> defaultRules = factory.getRules();
+
     @Override
     public List<ChessMove> getLegalMoves(ChessPiece piece, ChessPiece[][] board, List<Rule> rules) {
-
-        List<ChessMove> legalMoves = new ArrayList<>();
-
-        for(var potentialMove : RulesPieceConverter.convert(piece).getPotentialMoves()){
-            boolean badMove = false;
-
-            for(var rule : rules){
-                if(!rule.validate(potentialMove,board)){
-                    badMove = true;
-                    break;
-                }
-            }
-
-            if(!badMove){
-                legalMoves.add(potentialMove);
-            }
-        }
-
-        return legalMoves;
+        return RulesPieceConverter.convert(piece)
+                                  .getPotentialMoves()
+                                  .stream()
+                                  .filter(move -> rules.stream().allMatch(rule -> rule.validate(move, board)))
+                                  .toList();
     }
 
     @Override

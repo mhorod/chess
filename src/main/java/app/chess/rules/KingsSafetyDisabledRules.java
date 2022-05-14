@@ -1,10 +1,14 @@
 package app.chess.rules;
 
-import app.chess.rules.ruleset.*;
+import app.chess.rules.ruleset.FriendlyFireIsDisallowed;
+import app.chess.rules.ruleset.PawnGoingForwardCantTakePieces;
+import app.chess.rules.ruleset.PawnGoingSidewaysNeedsToTakeSomething;
+import app.chess.rules.ruleset.RoadCannotBeObstructed;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class KingsSafetyDisabledRuleFactory implements RuleFactory{
+public class KingsSafetyDisabledRules implements Rules {
     @Override
     public List<Rule> getRules() {
         //Validates only basic stuff, used by Utils to check if a field is under attack

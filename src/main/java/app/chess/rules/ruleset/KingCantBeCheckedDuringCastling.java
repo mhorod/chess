@@ -1,17 +1,16 @@
 package app.chess.rules.ruleset;
 
-import app.chess.*;
-import app.chess.moves.*;
-import app.chess.rules.*;
-import app.chess.utils.*;
+import app.chess.ChessPiece;
+import app.chess.moves.ChessMove;
+import app.chess.utils.Utils;
 
 public class KingCantBeCheckedDuringCastling extends CastlingRules {
 
     @Override
     public boolean validate(ChessMove move, ChessPiece[][] board) {
-        if(!canBeAppliedTo(move)){
+        if (!canBeAppliedTo(move))
             return true;
-        }
-        return Utils.kingIsSafe(move.getPiece().getPlayer(),board);
+        else
+            return Utils.kingIsSafe(move.getPiece().getPlayer(), board);
     }
 }

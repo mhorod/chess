@@ -2,12 +2,15 @@ package app.chess.rules;
 
 import app.chess.rules.ruleset.*;
 
-import java.util.*;
+import java.util.List;
 
-public class StandardRuleFactory implements RuleFactory{
+/**
+ * Default rules used in standard chess
+ */
+public class StandardRules implements Rules {
     @Override
     public List<Rule> getRules() {
-        List<Rule> rules = new KingsSafetyDisabledRuleFactory().getRules();
+        List<Rule> rules = new KingsSafetyDisabledRules().getRules();
 
         //We also enable king's safety
         rules.add(new YourKingCannotBeCheckedAfterYourMove());

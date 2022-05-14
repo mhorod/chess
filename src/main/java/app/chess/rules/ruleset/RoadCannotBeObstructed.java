@@ -1,34 +1,28 @@
 package app.chess.rules.ruleset;
 
-import app.chess.*;
-import app.chess.moves.*;
-import app.chess.pieces.*;
-import app.chess.rules.*;
-import app.chess.utils.*;
+import app.chess.ChessPiece;
+import app.chess.moves.Castle;
+import app.chess.moves.ChessMove;
+import app.chess.pieces.ChessPieceKind;
+import app.chess.rules.Rule;
+import app.chess.utils.Utils;
 
 public class RoadCannotBeObstructed implements Rule {
     @Override
     public boolean canBeAppliedTo(ChessMove move) {
-        if (move.getClass() == Castle.class){
-            //Castling has its own validation
+        //Knights don't care
+        if (move.getClass() == Castle.class)
             return false;
-        }
-        else if (move.getPiece().getKind() == ChessPieceKind.KNIGHT){
-            //Knights don't care
-            return false;
-        }
-        else{
-            return true;
-        }
+        else
+            return move.getPiece().getKind() != ChessPieceKind.KNIGHT;
     }
 
     @Override
     public boolean validate(ChessMove move, ChessPiece[][] board) {
 
-        if(!canBeAppliedTo(move)){
+        if (!canBeAppliedTo(move))
             return true;
-        }
 
-        return Utils.roadNotObstructed(move.getPiece().getPosition(),move.getField(),board);
+        return Utils.roadNotObstructed(move.getPiece().getPosition(), move.getField(), board);
     }
 }
