@@ -1,7 +1,11 @@
 package app.chess.utils;
 import app.chess.*;
 import app.chess.moves.*;
+import app.chess.pieces.*;
+import app.chess.rules.*;
 import app.core.game.*;
+
+import java.util.*;
 
 import static app.chess.Chess.SIZE;
 
@@ -68,4 +72,80 @@ public final class Utils {
         return board[field.rank()][field.file()];
     }
 
+    /**
+     * Puts the piece on a given piece on board, WITHOUT changing any data about piece location (inside the piece).
+     * Should be used with caution.
+     * @returns Piece that was already on a given field
+     */
+    public static ChessPiece putPieceOnBoard (ChessPiece who, Field field, ChessPiece[][] board){
+        var wasThereBefore = getPieceByField(field,board);
+        board[field.rank()][field.file()] = who;
+        return wasThereBefore;
+    }
+
+    /**
+     * @param checkPlayer Whether to return pieces of only one player
+     * @param player Player whose pieces should be returned
+     * @return All pieces on board that satisfact the given criteria
+     */
+    public static List<ChessPiece> getMatchingPieces(boolean checkPlayer, int player, ChessPiece[][] board) {
+        ArrayList<ChessPiece> piecesList = new ArrayList<>();
+
+        for (int rank = 1; rank <= SIZE; rank++) {
+            for (int file = 1; file <= SIZE; file++) {
+                ChessPiece currentPiece = board[rank][file];
+                if (currentPiece != null && (currentPiece.getPlayer() == player || !checkPlayer)) {
+                    //If checkPlayer is false, the second condition is always true
+                    piecesList.add(board[rank][file]);
+                }
+            }
+        }
+        return piecesList;
+    }
+
+    public static boolean fieldIsUnderAttack(int byWho, Field field, ChessPiece[][] board){
+        List<ChessPiece> playerPieces = getMatchingPieces(true, byWho, board);
+        Validator validator = new StandardValidator();
+        var ruleset = new KingsSafetyDisabledRuleFactory().getRules();
+
+        for(var piece : playerPieces){
+            List<ChessMove> movesForPiece = validator.getLegalMoves(piece, board, ruleset);
+            for(var move : movesForPiece){
+                if(move.getField().rank() == field.rank() && move.getField().file() == field.file()){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static Field getKingsPosition(int player, ChessPiece[][] board){
+        //Assumption is that there is only one king of each colour on board, which is a pretty reasonable assumption may I say
+        //Also please note that we have to iterate over board this way, because I don't want to rely on internal piece position tracking
+        //Why you might ask?
+        //Well, it boils down to the implementation of the YourKingCannotBeCheckedAfterYourMove rule, which only moves a figure on board
+        //Without actually, ya know, modifying its internal state
+        //Took me an hour to debug and I don't want to talk about it.
+
+        for(int i=1;i<=SIZE;i++){
+            for(int j=1;j<=SIZE;j++){
+                if(board[i][j] != null && board[i][j].getKind() == ChessPieceKind.KING && board[i][j].getPlayer()==player){
+                    return new Field(i,j);
+                }
+            }
+        }
+        //Something weird had to happen
+        throw new ThereIsNoKingOnBoard();
+    }
+
+    public static boolean kingIsSafe(int whose, ChessPiece[][] board){
+        Field kingLocation = getKingsPosition(whose, board);
+        int enemyPlayer = whose == 0 ? 1 : 0;
+
+        return !fieldIsUnderAttack(enemyPlayer,kingLocation,board);
+    }
+
+    static class ThereIsNoKingOnBoard extends RuntimeException{}
+    public static class BoardDiscrepancy extends RuntimeException{}
 }

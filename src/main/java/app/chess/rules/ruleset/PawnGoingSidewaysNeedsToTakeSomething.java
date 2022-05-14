@@ -48,11 +48,7 @@ public class PawnGoingSidewaysNeedsToTakeSomething implements Rule {
         } else {
             //somebody's here
             if (wasThereBefore.getPlayer() != move.getPiece().getPlayer()) {
-                //There's enemy piece to be taken, so we can validate this move
-                //Except for when the king is under attack
-                if (wasThereBefore.getKind() == KING) {
-                    throw new KingCanBeTaken();
-                }
+                //There's enemy piece to be taken, so nothing wrong with that
             } else {
                 return false;
             }
