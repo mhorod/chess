@@ -12,6 +12,12 @@ public class StandardRuleFactory implements RuleFactory{
         //We also enable king's safety
         rules.add(new YourKingCannotBeCheckedAfterYourMove());
 
+        //Also castling is enabled here
+        rules.add(new KingCantBeCheckedDuringCastling());
+        rules.add(new KingAndRookCantMoveBeforeCastling());
+        rules.add(new ThereCanBeNothingBetweenKingAndRookDuringCastling());
+        rules.add(new NothingOnTheRoadOfTheKingIsUnderAttack());
+
         return rules;
     }
 }

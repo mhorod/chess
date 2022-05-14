@@ -7,8 +7,9 @@ import java.util.*;
 public class KingsSafetyDisabledRuleFactory implements RuleFactory{
     @Override
     public List<Rule> getRules() {
-        //Should do basically the same as the StandardRuleFactory, but without validating king safety after move
-        //Please note that it still throws an exception if ENEMY king can be taken
+        //Validates only basic stuff, used by Utils to check if a field is under attack
+        //Why this way? We don't want to care about pinning of pieces, etc.
+        //For full rules, please see StandardRuleFactory
 
         List<Rule> rules = new ArrayList<>();
 
@@ -18,7 +19,6 @@ public class KingsSafetyDisabledRuleFactory implements RuleFactory{
         //Pawns
         rules.add(new PawnGoingForwardCantTakePieces());
         rules.add(new PawnGoingSidewaysNeedsToTakeSomething());
-
 
 
         return rules;
