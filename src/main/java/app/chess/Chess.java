@@ -2,7 +2,6 @@ package app.chess;
 
 import app.chess.moves.Castle;
 import app.chess.moves.ChessMove;
-import app.chess.pieces.ChessPieceFactory;
 import app.chess.pieces.ChessPieceKind;
 import app.chess.rules.*;
 import app.chess.utils.*;
@@ -12,8 +11,6 @@ import app.core.game.Game;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static app.chess.pieces.ChessPieceKind.KING;
 
 public class Chess implements Game<ChessMove, ChessPiece> {
     public static final int SIZE = 8;
@@ -27,99 +24,6 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     public Chess(Board board) {
         this.board = board.pieces;
     }
-
-
-
-
-    private boolean validateKingSafety(int player) {
-        //Validates king safety the way that is done in validateKingSafety(ChessMove move) but it doesn't perform any move
-        //Yes, it's duplicating some parts of code, but we will have to live with it for now
-
-        int secondPlayer = player == 0 ? 1 : 0;
-
-        try {
-            testMode = true;
-            getLegalMoves(secondPlayer);
-        } catch (KingCanBeTaken e) {
-            return false;
-        } finally {
-            testMode = false;
-        }
-        return true;
-    }
-
-
-
-    private boolean validateMove(Castle move) {
-        //There are 6 conditions for castling to be valid and checking for some of them is going to be annoying to say the least
-
-        //First: King cannot be in check
-        if (!testMode && !validateKingSafety(move.getPiece().getPlayer())) {
-            return false;
-        }
-
-        //Second: Rook and king haven't moved since beginning of the game
-
-        final int currentRank = move.getPiece().getPosition().rank();
-        final int currentFile = move.getPiece().getPosition().file();
-
-        final int newRank = move.getField().rank();
-        final int newFile = move.getField().file();
-
-        final boolean kingSideCastling = newFile - currentFile > 0;  //If the file is increasing, this means (both for white and black) that we are castling king side
-
-        final int rookRank = move.getPiece().getPlayer() == 0 ? 1 : 8; //White has rooks on first rank, black on eighth
-        final int rookFile = kingSideCastling ? 8 : 1;
-
-        var rook = board[rookRank][rookFile]; //You might ask why I've decided to call that variable "rook" when I have no guarantee that such piece is a rook. Well, I'm checking that in the if that is below
-
-        if (rook == null || !rook.unwrap().canParticipateInCastling()) {
-            //There's no rook to even, you know, castle with
-            //Or something that on that place cannot castle
-            return false;
-        }
-        //You might ask: Why is that sufficient? Well, only rooks and kings can ever participate in castling, and any move invalidates that right.
-        //That pretty much means that whatever is standing on that place has been standing there for all of the game, so it is eligible for castling
-
-        //It'd be great to check what's going on with our king
-        //We have a guarantee that the piece that tries to castle is king, because we are checking that in Castle constructor
-
-        if (!move.getPiece().unwrap().canParticipateInCastling()) {
-            return false;
-        }
-
-        //So, our rook didn't move and our king also didn't
-        //That's perfect, second condition is satisfied
-
-        //Third condition: Road between rook and king is not obstructed
-        if (!Utils.roadNotObstructed(move.getPiece().getPosition(), new Field(rookRank, rookFile), board)) {
-            return false;
-        }
-
-        //Fourth condition: Nothing on the road of the king is under attack
-        int multiplier = kingSideCastling ? 1 : -1;
-
-        for (int i = 1; i <= 2; i++) {
-            //This is somewhat weird, but we are going to check if this is ok by placing a fake king on a piece that cannot be attacked and checking if anything goes wrong
-            //Truly magnificent
-            //(and crazy ineffective, but it was never meant to be effective)
-            var currentPiece = board[currentRank][currentFile + i * multiplier];
-            if(currentPiece == null){
-                continue;
-            }
-            var field = new Field(currentRank, currentFile + i * multiplier);
-            board[field.rank()][field.file()] = ChessPieceFactory.newPiece(field, KING, currentPiece.getColor());
-
-            if (!testMode && !validateKingSafety(move.getPiece().getPlayer())) {
-                board[currentRank][currentFile + i * multiplier] = currentPiece;
-                return false;
-            }
-            board[currentRank][currentFile + i * multiplier] = currentPiece;
-        }
-
-        return true;
-    }
-
 
     @Override
     public List<ChessPiece> getPieces(int player) {
@@ -327,6 +231,4 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     static class BoardDiscrepancy extends RuntimeException {
     }
 
-    static class KingCanBeTaken extends RuntimeException {
-    }
 }

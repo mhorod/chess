@@ -7,6 +7,7 @@ import java.util.*;
 
 public class StandardValidator implements Validator {
     private final RuleFactory factory = new StandardRuleFactory();
+    private final List<Rule> defaultRules = factory.getRules();
     @Override
     public List<ChessMove> getLegalMoves(ChessPiece piece, ChessPiece[][] board, List<Rule> rules) {
 
@@ -37,6 +38,6 @@ public class StandardValidator implements Validator {
 
     @Override
     public List<Rule> getDefaultRules() {
-        return factory.getRules();
+        return defaultRules;
     }
 }
