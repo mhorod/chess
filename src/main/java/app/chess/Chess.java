@@ -17,7 +17,6 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     ChessPiece[][] board;
     private boolean blackToMove = false;
     private boolean pendingPromotion = false; //In case there is a promotion of a pawn, that move is split into 2 submoves
-    private boolean testMode = false; //this is NOT how it should be done, but it's the simplest way
 
     private final Validator validator = new StandardValidator();
 
