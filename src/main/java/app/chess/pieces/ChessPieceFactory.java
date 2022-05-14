@@ -6,7 +6,8 @@ import app.core.game.Field;
 /**
  * Factory to easily create piece from kind and color
  */
-public class ChessPieceFactory {
+public final class ChessPieceFactory {
+    private ChessPieceFactory(){}
     public static ChessPiece newPiece(
             Field field, ChessPieceKind kind, ChessPieceColor color
     ) {
