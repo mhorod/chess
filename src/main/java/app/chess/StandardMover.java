@@ -87,7 +87,7 @@ class StandardMover implements Mover {
 
 
     private List<ChessPiece> castleMove(Castle move, ChessPiece[][] board) {
-        Field whereRookIs = Utils.getRookPositionBasedOnCastling(move, board);
+        Field whereRookIs = Utils.getRookPositionBasedOnCastling(move);
 
         int rookRank = whereRookIs.rank();
         int rookFile = whereRookIs.file();

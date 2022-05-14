@@ -45,15 +45,12 @@ public final class Utils {
     }
 
     /**
-     * @param move
      * @return Assuming that castling is possible, returns the position on which the rook should be located. Makes
      *         ABSOLUTELY NO GUARANTEE that castling is legal.
      */
-    public static Field getRookPositionBasedOnCastling(Castle move, ChessPiece[][] board) {
-        final int currentRank = move.getPiece().getPosition().rank();
+    public static Field getRookPositionBasedOnCastling(Castle move) {
         final int currentFile = move.getPiece().getPosition().file();
 
-        final int newRank = move.getField().rank();
         final int newFile = move.getField().file();
 
         final boolean kingSideCastling = newFile - currentFile > 0;  //If the file is increasing, this means (both for white and black) that we are castling king side
@@ -75,7 +72,7 @@ public final class Utils {
     /**
      * Puts the piece on a given piece on board, WITHOUT changing any data about piece location (inside the piece).
      * Should be used with caution.
-     * @returns Piece that was already on a given field
+     * @return Piece that was already on a given field
      */
     public static ChessPiece putPieceOnBoard (ChessPiece who, Field field, ChessPiece[][] board){
         var wasThereBefore = getPieceByField(field,board);
