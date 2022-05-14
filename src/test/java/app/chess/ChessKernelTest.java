@@ -98,4 +98,57 @@ public class ChessKernelTest {
         assertNotEquals(g1.getLegalMoves(0).size(),g2.getLegalMoves(0).size());
 
     }
+    @Test
+    public void pinned_figures_cannot_move(){
+        var g1 = new Chess(FENConverter.parseFen("4k3/4r3/8/8/1b3n1q/4Qn2/3R1B2/4K3 w - - 0 1"));
+        assertEquals(2,g1.getLegalMoves(0).size());
+    }
+
+    @Test
+    public void king_cannot_castle_if_checked(){
+        var g1 = new Chess(FENConverter.parseFen("4k3/4r3/8/8/1b3n1q/4Qn2/3R1B2/R3K3 w Q - 0 1"));
+        assertEquals(2, g1.getLegalMoves(0).size());
+    }
+
+    @Test
+    public void king_can_castle_even_if_rook_is_under_attack(){
+        var g1 = new Chess(FENConverter.parseFen("4k3/4r3/8/8/1b3n1q/4N3/q2N1N2/R3K3 w Q - 0 1"));
+        assertEquals(7,g1.getLegalMoves(0).size());
+    }
+    @Test
+    public void many_bishops_on_board_dont_confuse_chess_engine(){
+        var g1 = new Chess(FENConverter.parseFen("kBBBBBBB/BqBBBBBB/BBBBBBBB/BBBBBBBB/BBBBBBBB/BBBBBBBB/BBBBBBBB/BBBBKBBB w - - 0 1"));
+        assertEquals(3,g1.getLegalMoves(0).size());
+    }
+
+    @Test
+    public void you_have_0_legal_moves_if_checkmated(){
+        var g1 = new Chess(FENConverter.parseFen("kqqqqqqq/8/8/8/8/8/8/4K3 w - - 0 1"));
+        assertEquals(0, g1.getLegalMoves(0).size());
+    }
+
+    @Test
+    public void pinned_pawn_cant_take(){
+        var g1 = new Chess(FENConverter.parseFen("kqqqqqqq/8/8/8/8/bb1p4/r3P3/4K3 w - - 0 1"));
+        assertEquals(2,g1.getLegalMoves(0).size());
+    }
+
+    @Test
+    public void en_passant_mate(){
+        var g1 = new Chess(FENConverter.parseFen("RP4kb/RP3p2/RP2B3/RP1B4/RPB1p3/1B2P3/B1BP1PPP/KB3QQQ w - - 0 1"));
+        assertEquals(1,g1.getLegalMoves(0).size());
+        g1.makeMove(0, g1.getLegalMoves(0).get(0));
+
+        var legalMoves = g1.getLegalMoves(1);
+
+        for(var move :legalMoves){
+            if(move.getPiece().getPosition().rank() == 4){
+                g1.makeMove(1,move); //Mate by en passant
+            }
+        }
+
+        assertEquals(0,g1.getLegalMoves(0).size());
+
+    }
+
 }
