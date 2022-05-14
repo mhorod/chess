@@ -15,8 +15,8 @@ import java.util.List;
 public class Chess implements Game<ChessMove, ChessPiece> {
     public static final int SIZE = 8;
     ChessPiece[][] board;
-    private boolean blackToMove = false;
-    private boolean pendingPromotion = false; //In case there is a promotion of a pawn, that move is split into 2 submoves
+
+    private final StateManager manager = new StateManager();
 
     private final Validator validator = new StandardValidator();
 
@@ -41,16 +41,15 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     @Override
     public List<ChessMove> getLegalMoves(int player) {
 
-        if (pendingPromotion) {
+        if (manager.thereIsPromotionPending()) {
             if (true)
                 throw new BoardDiscrepancy();
             //Promotion is this funny case where we should create entirely different branch
-            pendingPromotion = false;
+            manager.markPromotionAsDone();
             return getPromotionMoves(player);
         }
 
         List<ChessPiece> playersPieces = getPieces(player);
-
         List<ChessMove> allLegalMoves = new ArrayList<>();
 
         for (var currentPiece : playersPieces) {
@@ -63,6 +62,9 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
     @Override
     public List<ChessMove> getLegalMoves(int player, ChessPiece piece) {
+        if(player != manager.getCurrentPlayer()){
+            return Collections.emptyList();
+        }
         return validator.getLegalMoves(piece,board);
     }
 
@@ -76,9 +78,6 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
     /**
      * Executes castling under assumption that function calling it made sure that such castling is, indeed, legal
-     *
-     * @param move
-     * @return
      */
     private List<ChessPiece> castleMove(Castle move) {
         Field whereRookIs = Utils.getRookPositionBasedOnCastling(move, board);
@@ -135,18 +134,18 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
 
         ///TODO: MAKE IT NOT FAIL WITH PENDING PROMOTION
-        blackToMove = !blackToMove;
+        manager.switchCurrentPlayer();
 
 
-        //Now, if castling is involved, I'm going to delegate it to another function because otherwise this will be to messy
+        //Now, if castling is involved, I'm going to delegate it to another function because otherwise this will be too messy
         if (move.getClass() == Castle.class) {
             //I'm sure checking it that way won't cause any issues down the line
             return castleMove((Castle) move);
         }
 
-        if (pendingPromotion) {
+        if (manager.thereIsPromotionPending()) {
             ///TODO: IMPLEMENT PROMOTION
-            pendingPromotion = false;
+            manager.markPromotionAsDone();
         }
 
         resetWasMoved(); //Because things will be overwritten
@@ -155,7 +154,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         if (move.getPiece().getKind() == ChessPieceKind.PAWN && (move.getField().rank() == SIZE || move.getField()
                                                                                                        .rank() == 1)) {
             //That's funny because it will result in a pawn promotion
-            if (pendingPromotion) {
+            if (manager.thereIsPromotionPending()) {
                 throw new RuntimeException("This shouldn't even be mathematically possible");
             }
             ///TODO: IMPLEMENT PROMOTION
