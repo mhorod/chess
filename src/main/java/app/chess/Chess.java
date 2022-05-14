@@ -76,13 +76,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     public int getPlayerCount() {
         return 2; //It's always going to be that way in classical chess
     }
-
-    static class IllegalMove extends RuntimeException {
-    }
-
-    static class PlayerDiscrepancy extends RuntimeException {
-    }
-
+    
     static class BoardDiscrepancy extends RuntimeException {
     }
 
