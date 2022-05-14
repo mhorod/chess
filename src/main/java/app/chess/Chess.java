@@ -33,7 +33,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     }
 
     /**
-     * TODO: Possibly extract this function somewhere where it makes more sense semantically 
+     * TODO: Possibly extract this function somewhere where it makes more sense semantically
      */
     private List<ChessMove> getPromotionMoves(int player) {
 

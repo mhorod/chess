@@ -13,7 +13,7 @@ public class ThereCanBeNothingBetweenKingAndRookDuringCastling extends CastlingR
             return true;
         }
 
-        Field whereRookIs = Utils.getRookPositionBasedOnCastling((Castle) move, board);
+        Field whereRookIs = Utils.getRookPositionBasedOnCastling((Castle) move);
         return Utils.roadNotObstructed(move.getPiece().getPosition(),whereRookIs,board);
     }
 }
