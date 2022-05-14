@@ -20,6 +20,9 @@ public class ChessPieceConverter {
     protected static AbstractChessPiece fakeConvert(ChessPiece a){
         //It's protected, so we can extend it inside rules package and be able to unwrap stuff there
         //Without violating the ISP
+        if(a == null){
+            return null;
+        }
         return a.unwrap();
     }
 }
