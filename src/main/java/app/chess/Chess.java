@@ -1,11 +1,10 @@
 package app.chess;
 
 import app.chess.moves.*;
-import app.chess.pieces.ChessPieceKind;
+import app.chess.pieces.*;
 import app.chess.rules.*;
 import app.chess.utils.*;
-import app.core.game.Field;
-import app.core.game.Game;
+import app.core.game.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,18 +32,36 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         return Utils.getMatchingPieces(false, 0, board);
     }
 
+    /**
+     * TODO: Possibly extract this function somewhere where it makes more sense semantically 
+     */
     private List<ChessMove> getPromotionMoves(int player) {
-        return Collections.emptyList();
+
+        var where = Utils.findPawnThatCanBePromoted(player,board).getPosition();
+
+        //And now we need to create piece pick for each piece that's in game... ouch
+        List<AbstractChessPiece> subAnswer = new ArrayList<>();
+        boolean isBlack = player != 0;
+
+        subAnswer.add(new Rook(where,isBlack));
+        subAnswer.add(new Queen(where, isBlack));
+        subAnswer.add(new Knight(where, isBlack));
+        subAnswer.add(new Bishop(where, isBlack));
+
+        List<ChessMove> answer = new ArrayList<>();
+
+        for(var piece : subAnswer){
+            answer.add(new PiecePick(piece.wrap(),where));
+        }
+
+        return answer;
     }
 
     @Override
     public List<ChessMove> getLegalMoves(int player) {
 
         if (manager.thereIsPromotionPending()) {
-            if (true)
-                throw new BoardDiscrepancy();
             //Promotion is this funny case where we should create entirely different branch
-            manager.markPromotionAsDone();
             return getPromotionMoves(player);
         }
 
@@ -52,7 +69,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         List<ChessMove> allLegalMoves = new ArrayList<>();
 
         for (var currentPiece : playersPieces) {
-            List<ChessMove> someLegalMoves = validator.getLegalMoves(currentPiece, board);
+            List<ChessMove> someLegalMoves = getLegalMoves(player, currentPiece);
             allLegalMoves.addAll(someLegalMoves);
         }
 
@@ -64,6 +81,16 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         if(player != manager.getCurrentPlayer()){
             return Collections.emptyList();
         }
+
+        if(manager.thereIsPromotionPending()){
+            if(piece == Utils.findPawnThatCanBePromoted(player,board)){
+                return getPromotionMoves(player);
+            }
+            else{
+                return Collections.emptyList();
+            }
+        }
+
         return validator.getLegalMoves(piece,board);
     }
 
@@ -76,7 +103,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     public int getPlayerCount() {
         return 2; //It's always going to be that way in classical chess
     }
-    
+
     static class BoardDiscrepancy extends RuntimeException {
     }
 
