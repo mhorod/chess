@@ -2,6 +2,6 @@ package app.chess.rules;
 
 import java.util.*;
 
-public interface RuleFactory {
+public interface Rules {
     List<Rule> getRules();
 }

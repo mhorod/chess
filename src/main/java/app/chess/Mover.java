@@ -1,9 +1,9 @@
 package app.chess;
 
-import app.chess.moves.*;
+import app.chess.moves.ChessMove;
 
-import java.util.*;
+import java.util.List;
 
 interface Mover {
-    public List<ChessPiece> makeMove(int player, ChessMove move, ChessPiece[][] board, StateManager manager);
+    List<ChessPiece> makeMove(int player, ChessMove move, ChessPiece[][] board, StateManager manager);
 }
