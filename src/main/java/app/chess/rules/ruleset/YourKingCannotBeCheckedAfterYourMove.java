@@ -1,10 +1,9 @@
 package app.chess.rules.ruleset;
 
-import app.chess.ChessBoard;
-import app.chess.ChessPiece;
-import app.chess.moves.ChessMove;
-import app.chess.rules.Rule;
-import app.chess.utils.Utils;
+import app.chess.*;
+import app.chess.moves.*;
+import app.chess.rules.*;
+import app.chess.utils.*;
 
 public class YourKingCannotBeCheckedAfterYourMove implements Rule {
     @Override
@@ -26,7 +25,12 @@ public class YourKingCannotBeCheckedAfterYourMove implements Rule {
             var goBack = ChessBoard.putPieceOnBoard(wasThereBefore, move.getField(), board);
             if (ChessBoard.putPieceOnBoard(goBack, goBack.getPosition(), board) != null) {
                 System.err.println(goBack);
-                throw new ChessBoard.BoardDiscrepancy(); //It shouldn't happen, but when it does something went absolutely and terribly wrong
+
+                throw new ChessBoard.BoardDiscrepancy();
+                //It shouldn't happen, but when it does something went absolutely and terribly wrong
+                //Yes, I know that throwing exception inside the finally{} block is a terrible practice
+                //But seriously though, if condition of this if happens the whole behaviour of code is an undefined behaviour
+
             }
         }
     }

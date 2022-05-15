@@ -1,14 +1,15 @@
 package app.chess.rules.ruleset;
 
-import app.chess.ChessPiece;
-import app.chess.moves.ChessMove;
+import app.chess.*;
+import app.chess.moves.*;
 
 public class KingAndRookCantMoveBeforeCastling extends CastlingRules {
 
     @Override
     public boolean validate(ChessMove move, ChessPiece[][] board) {
-        if (!canBeAppliedTo(move))
+        if (!canBeAppliedTo(move)) {
             return true;
+        }
 
         final int currentFile = move.getPiece().getPosition().file();
 
