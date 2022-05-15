@@ -1,10 +1,14 @@
 package app.chess;
-import app.chess.moves.*;
-import app.chess.pieces.*;
-import app.chess.utils.*;
-import app.core.game.*;
 
-import java.util.*;
+import app.chess.moves.Castle;
+import app.chess.moves.ChessMove;
+import app.chess.pieces.ChessPieceKind;
+import app.chess.utils.Utils;
+import app.core.game.Field;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static app.chess.Chess.SIZE;
 
@@ -15,7 +19,6 @@ class StandardMover implements Mover {
         //Note: If somehow we get here move that isn't legal, we get an undefined behaviour.
 
 
-
         //Now, if castling is involved, I'm going to delegate it to another function because otherwise this will be too messy
         if (move.getClass() == Castle.class) {
             //I'm sure checking it that way won't cause any issues down the line
@@ -23,7 +26,7 @@ class StandardMover implements Mover {
         }
 
         if (manager.thereIsPromotionPending()) {
-            Utils.putPieceOnBoard(move.getPiece(),move.getField(),board);
+            ChessBoard.putPieceOnBoard(move.getPiece(), move.getField(), board);
             manager.markPromotionAsDone();
             manager.switchCurrentPlayer();
             return Collections.singletonList(move.getPiece());
@@ -36,8 +39,7 @@ class StandardMover implements Mover {
                                                                                                        .rank() == 1)) {
             //That's funny because it will result in a pawn promotion
             manager.waitForPromotion();
-        }
-        else{
+        } else {
             manager.switchCurrentPlayer();
         }
 

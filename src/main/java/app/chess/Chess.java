@@ -1,10 +1,15 @@
 package app.chess;
 
-import app.chess.moves.*;
-import app.chess.pieces.*;
-import app.chess.rules.*;
-import app.chess.utils.*;
-import app.core.game.*;
+import app.chess.moves.ChessMove;
+import app.chess.moves.PiecePick;
+import app.chess.pieces.Bishop;
+import app.chess.pieces.Knight;
+import app.chess.pieces.Queen;
+import app.chess.pieces.Rook;
+import app.chess.rules.StandardValidator;
+import app.chess.rules.Validator;
+import app.chess.utils.Utils;
+import app.core.game.Game;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,13 +17,12 @@ import java.util.List;
 
 public class Chess implements Game<ChessMove, ChessPiece> {
     public static final int SIZE = 8;
-    ChessPiece[][] board;
-
     private final StateManager manager = new StateManager();
     private final Mover mover = new StandardMover();
     private final Validator validator = new StandardValidator();
+    ChessPiece[][] board;
 
-    public Chess(Board board) {
+    public Chess(ChessBoard board) {
         this.board = board.pieces;
     }
 
@@ -37,21 +41,21 @@ public class Chess implements Game<ChessMove, ChessPiece> {
      */
     private List<ChessMove> getPromotionMoves(int player) {
 
-        var where = Utils.findPawnThatCanBePromoted(player,board).getPosition();
+        var where = Utils.findPawnThatCanBePromoted(player, board).getPosition();
 
         //And now we need to create piece pick for each piece that's in game... ouch
         List<AbstractChessPiece> subAnswer = new ArrayList<>();
         boolean isBlack = player != 0;
 
-        subAnswer.add(new Rook(where,isBlack));
+        subAnswer.add(new Rook(where, isBlack));
         subAnswer.add(new Queen(where, isBlack));
         subAnswer.add(new Knight(where, isBlack));
         subAnswer.add(new Bishop(where, isBlack));
 
         List<ChessMove> answer = new ArrayList<>();
 
-        for(var piece : subAnswer){
-            answer.add(new PiecePick(piece.wrap(),where));
+        for (var piece : subAnswer) {
+            answer.add(new PiecePick(piece.wrap(), where));
         }
 
         return answer;
@@ -78,20 +82,19 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
     @Override
     public List<ChessMove> getLegalMoves(int player, ChessPiece piece) {
-        if(player != manager.getCurrentPlayer()){
+        if (player != manager.getCurrentPlayer()) {
             return Collections.emptyList();
         }
 
-        if(manager.thereIsPromotionPending()){
-            if(piece == Utils.findPawnThatCanBePromoted(player,board)){
+        if (manager.thereIsPromotionPending()) {
+            if (piece == Utils.findPawnThatCanBePromoted(player, board)) {
                 return getPromotionMoves(player);
-            }
-            else{
+            } else {
                 return Collections.emptyList();
             }
         }
 
-        return validator.getLegalMoves(piece,board);
+        return validator.getLegalMoves(piece, board);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package app.chess.utils;
 
+import app.chess.ChessBoard;
 import app.chess.ChessPiece;
 import app.chess.moves.Castle;
 import app.chess.moves.ChessMove;
@@ -67,25 +68,6 @@ public final class Utils {
         return new Field(rookRank, rookFile);
     }
 
-    public static boolean fieldIsValid(Field toValidate) {
-        return toValidate.rank() <= SIZE && toValidate.file() <= SIZE && toValidate.rank() > 0 && toValidate.file() > 0;
-    }
-
-    public static ChessPiece getPieceByField(Field field, ChessPiece[][] board) {
-        return board[field.rank()][field.file()];
-    }
-
-    /**
-     * Puts the piece on a given piece on board, WITHOUT changing any data about piece location (inside the piece).
-     * Should be used with caution.
-     *
-     * @return Piece that was already on a given field
-     */
-    public static ChessPiece putPieceOnBoard(ChessPiece who, Field field, ChessPiece[][] board) {
-        var wasThereBefore = getPieceByField(field, board);
-        board[field.rank()][field.file()] = who;
-        return wasThereBefore;
-    }
 
     /**
      * @param checkPlayer Whether to return pieces of only one player
@@ -161,14 +143,12 @@ public final class Utils {
             }
         }
         if (where == null) {
-            throw new BoardDiscrepancy();
+            throw new ChessBoard.BoardDiscrepancy();
         }
-        return getPieceByField(where, board);
+        return ChessBoard.getPieceByField(where, board);
     }
 
     static class ThereIsNoKingOnBoard extends RuntimeException {
     }
 
-    public static class BoardDiscrepancy extends RuntimeException {
-    }
 }

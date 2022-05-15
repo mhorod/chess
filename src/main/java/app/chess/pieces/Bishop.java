@@ -2,9 +2,9 @@ package app.chess.pieces;
 
 import app.chess.AbstractChessPiece;
 import app.chess.Chess;
+import app.chess.ChessBoard;
 import app.chess.moves.ChessMove;
 import app.chess.moves.NormalMove;
-import app.chess.utils.*;
 import app.core.game.Field;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class Bishop extends AbstractChessPiece {
                 for (int howManyTimes = 1; howManyTimes <= Chess.SIZE; howManyTimes++) {
                     Field potentialField = new Field(initialRank + rankVector * howManyTimes,
                                                      initialFile + fileVector * howManyTimes);
-                    if (Utils.fieldIsValid(potentialField)) {
+                    if (ChessBoard.fieldIsValid(potentialField)) {
                         potentialMoves.add(new NormalMove(this.wrap(), potentialField));
                     }
                 }

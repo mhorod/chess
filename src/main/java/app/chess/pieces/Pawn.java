@@ -1,9 +1,9 @@
 package app.chess.pieces;
 
 import app.chess.AbstractChessPiece;
+import app.chess.ChessBoard;
 import app.chess.moves.ChessMove;
 import app.chess.moves.NormalMove;
-import app.chess.utils.*;
 import app.core.game.Field;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class Pawn extends AbstractChessPiece {
         for (int fileModifier = -1; fileModifier <= 1; fileModifier++) {
             //Moves that go 1 forward
             Field whereToGo = new Field(currentRank + multiplier, currentFile + fileModifier);
-            if (Utils.fieldIsValid(whereToGo)) {
+            if (ChessBoard.fieldIsValid(whereToGo)) {
                 potentialMoves.add(new NormalMove(this.wrap(), whereToGo));
             }
         }

@@ -1,9 +1,10 @@
 package app.chess.rules.ruleset;
 
-import app.chess.*;
-import app.chess.moves.*;
-import app.chess.rules.*;
-import app.chess.utils.*;
+import app.chess.ChessBoard;
+import app.chess.ChessPiece;
+import app.chess.moves.ChessMove;
+import app.chess.rules.Rule;
+import app.chess.utils.Utils;
 
 public class YourKingCannotBeCheckedAfterYourMove implements Rule {
     @Override
@@ -16,17 +17,16 @@ public class YourKingCannotBeCheckedAfterYourMove implements Rule {
         //Temporarily modifies the board and checks if something went wrong
         //Please note that it doesn't modify anything at the end of the day
 
-        var wasThereBefore = Utils.putPieceOnBoard(move.getPiece(),move.getField(), board);
-        Utils.putPieceOnBoard(null, move.getPiece().getPosition(), board);
+        var wasThereBefore = ChessBoard.putPieceOnBoard(move.getPiece(), move.getField(), board);
+        ChessBoard.putPieceOnBoard(null, move.getPiece().getPosition(), board);
 
-        try{
+        try {
             return Utils.kingIsSafe(move.getPiece().getPlayer(), board);
-        }
-        finally{
-            var goBack = Utils.putPieceOnBoard(wasThereBefore, move.getField(), board);
-            if(Utils.putPieceOnBoard(goBack, goBack.getPosition(), board) != null){
+        } finally {
+            var goBack = ChessBoard.putPieceOnBoard(wasThereBefore, move.getField(), board);
+            if (ChessBoard.putPieceOnBoard(goBack, goBack.getPosition(), board) != null) {
                 System.err.println(goBack);
-                throw new Utils.BoardDiscrepancy(); //It shouldn't happen, but when it does something went absolutely and terribly wrong
+                throw new ChessBoard.BoardDiscrepancy(); //It shouldn't happen, but when it does something went absolutely and terribly wrong
             }
         }
     }
