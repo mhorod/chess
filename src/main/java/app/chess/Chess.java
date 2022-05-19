@@ -12,13 +12,18 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     public static final int SIZE = 8;
     private final StateManager manager = new StateManager();
     private final Mover mover = new StandardMover();
-    private final Validator validator = new StandardValidator();
+    private final Validator validator;
     ChessPiece[][] board;
     private List<Rule> ruleset = new ArrayList<>();
 
     public Chess(Board board) {
         this.board = board.pieces;
+        validator = new StandardValidator();
         ruleset = validator.getDefaultRules();
+    }
+
+    public Chess(Board board, Validator validator) {
+        this.validator = validator;
     }
 
     @Override
@@ -116,7 +121,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     public void overrideRules(List<Rule> rules) {
         ruleset = rules;
     }
-    
+
     public List<Rule> getCurrentRules() {
         return ruleset;
     }
