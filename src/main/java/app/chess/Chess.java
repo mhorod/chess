@@ -14,9 +14,11 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     private final Mover mover = new StandardMover();
     private final Validator validator = new StandardValidator();
     ChessPiece[][] board;
+    private List<Rule> ruleset = new ArrayList<>();
 
     public Chess(Board board) {
         this.board = board.pieces;
+        ruleset = validator.getDefaultRules();
     }
 
     @Override
@@ -87,7 +89,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             }
         }
 
-        return validator.getLegalMoves(piece, board);
+        return validator.getLegalMoves(piece, board, ruleset);
     }
 
     @Override
@@ -109,6 +111,14 @@ public class Chess implements Game<ChessMove, ChessPiece> {
                 return ChessState.CHECKED;
             }
         }
+    }
+
+    public void overrideRules(List<Rule> rules) {
+        ruleset = rules;
+    }
+    
+    public List<Rule> getCurrentRules() {
+        return ruleset;
     }
 
     @Override
