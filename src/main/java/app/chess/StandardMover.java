@@ -1,4 +1,5 @@
 package app.chess;
+
 import app.chess.moves.*;
 import app.chess.pieces.*;
 import app.chess.utils.*;
@@ -6,14 +7,39 @@ import app.core.game.*;
 
 import java.util.*;
 
-import static app.chess.Chess.SIZE;
+import static app.chess.Chess.*;
 
 class StandardMover implements Mover {
+    /**
+     * Checks if a move kills a piece (or pawn).
+     *
+     * @param move A valid move that is to be evaluated. If it's invalid, an UB will occur.
+     * @param board A board on which the move should take place.
+     * @return Null if there is no piece that's going to be taken, reference to said piece otherwise.
+     */
+    public ChessPiece getPieceKilledByMove(ChessMove move, ChessPiece[][] board) {
+        var pieceThatsEndangered = Utils.getPieceByField(move.getField(), board);
+
+        if (pieceThatsEndangered != null) {
+            return pieceThatsEndangered;
+        } else {
+
+            if (move.getPiece().getKind() == ChessPieceKind.PAWN && move.getField().file() != move.getPiece()
+                                                                                                  .getPosition()
+                                                                                                  .file()) {
+                //It means that the pawn had to do en passant
+                return Utils.getPieceByField(new Field(move.getPiece().getPosition().rank(), move.getField().file()),
+                                             board);
+            } else {
+                return null; //Nothing's being taken by that move
+            }
+
+        }
+    }
 
     @Override
     public List<ChessPiece> makeMove(int player, ChessMove move, ChessPiece[][] board, StateManager manager) {
         //Note: If somehow we get here move that isn't legal, we get an undefined behaviour.
-
 
 
         //Now, if castling is involved, I'm going to delegate it to another function because otherwise this will be too messy
@@ -23,7 +49,7 @@ class StandardMover implements Mover {
         }
 
         if (manager.thereIsPromotionPending()) {
-            Utils.putPieceOnBoard(move.getPiece(),move.getField(),board);
+            Utils.putPieceOnBoard(move.getPiece(), move.getField(), board);
             manager.markPromotionAsDone();
             manager.switchCurrentPlayer();
             return Collections.singletonList(move.getPiece());
@@ -36,8 +62,7 @@ class StandardMover implements Mover {
                                                                                                        .rank() == 1)) {
             //That's funny because it will result in a pawn promotion
             manager.waitForPromotion();
-        }
-        else{
+        } else {
             manager.switchCurrentPlayer();
         }
 
@@ -47,38 +72,22 @@ class StandardMover implements Mover {
         int oldRank = move.getPiece().getPosition().rank();
         int oldFile = move.getPiece().getPosition().file();
 
-        var wasHereBefore = board[newRank][newFile];
 
-        if (wasHereBefore != null) {
-            wasHereBefore.unwrap().kill();
-            board[newRank][newFile] = move.getPiece();
-        } else {
-            board[newRank][newFile] = move.getPiece();
+        ChessPiece attacked = getPieceKilledByMove(move, board);
 
-            //you'd think that we are done
-            //and you'd be wrong
-            //because en passant exists
-            //to mess with our code
-
-            if (move.getPiece().getKind() == ChessPieceKind.PAWN && oldFile - newFile != 0) {
-                //So, there is nothing in there but we are going sideways
-                //This means en passant
-                //So we'll just remove whatever stays in enpassantable place
-                wasHereBefore = board[oldRank][newFile];
-                wasHereBefore.unwrap().kill();
-                board[oldRank][newFile] = null;
-            }
+        if (attacked != null) {
+            attacked.unwrap().kill();
+            board[attacked.getPosition().rank()][attacked.getPosition().file()] = null;
         }
-
-        board[oldRank][oldFile] = null;
+        board[newRank][newFile] = move.getPiece();
 
         move.getPiece().unwrap().move(move.getField());
 
         //After executing the move, we can finally return a list informing what's happening on the board
         ArrayList<ChessPiece> changedList = new ArrayList<>();
         changedList.add(move.getPiece());
-        if (wasHereBefore != null) {
-            changedList.add(wasHereBefore);
+        if (attacked != null) {
+            changedList.add(attacked);
         }
 
         return changedList;
