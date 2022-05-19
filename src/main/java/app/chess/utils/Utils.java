@@ -1,18 +1,14 @@
 package app.chess.utils;
 
-import app.chess.ChessPiece;
-import app.chess.moves.Castle;
-import app.chess.moves.ChessMove;
-import app.chess.pieces.ChessPieceKind;
-import app.chess.rules.KingsSafetyDisabledRules;
-import app.chess.rules.StandardValidator;
-import app.chess.rules.Validator;
-import app.core.game.Field;
+import app.chess.*;
+import app.chess.moves.*;
+import app.chess.pieces.*;
+import app.chess.rules.*;
+import app.core.game.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import static app.chess.Chess.SIZE;
+import static app.chess.Chess.*;
 
 public final class Utils {
     private Utils() {
