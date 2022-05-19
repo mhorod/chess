@@ -1,15 +1,16 @@
 package app.chess.rules.ruleset;
 
-import app.chess.ChessPiece;
-import app.chess.moves.ChessMove;
-import app.chess.pieces.ChessPieceKind;
-import app.chess.rules.Rule;
+import app.chess.*;
+import app.chess.moves.*;
+import app.chess.pieces.*;
+import app.chess.rules.*;
 
 public class PawnGoingSidewaysNeedsToTakeSomething implements Rule {
     @Override
     public boolean canBeAppliedTo(ChessMove move) {
-        if (move.getPiece().getKind() != ChessPieceKind.PAWN)
+        if (move.getPiece().getKind() != ChessPieceKind.PAWN) {
             return false;
+        }
 
         int currentFile = move.getPiece().getPosition().file();
         int newFile = move.getField().file();
