@@ -6,20 +6,24 @@ import app.chess.rules.*;
 import app.chess.utils.*;
 import app.core.game.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Chess implements Game<ChessMove, ChessPiece> {
     public static final int SIZE = 8;
-    ChessPiece[][] board;
-
     private final StateManager manager = new StateManager();
     private final Mover mover = new StandardMover();
-    private final Validator validator = new StandardValidator();
+    private final Validator validator;
+    ChessPiece[][] board;
+    private List<Rule> ruleset = new ArrayList<>();
 
     public Chess(Board board) {
         this.board = board.pieces;
+        validator = new StandardValidator();
+        ruleset = validator.getDefaultRules();
+    }
+
+    public Chess(Board board, Validator validator) {
+        this.validator = validator;
     }
 
     @Override
@@ -37,21 +41,21 @@ public class Chess implements Game<ChessMove, ChessPiece> {
      */
     private List<ChessMove> getPromotionMoves(int player) {
 
-        var where = Utils.findPawnThatCanBePromoted(player,board).getPosition();
+        var where = Utils.findPawnThatCanBePromoted(player, board).getPosition();
 
         //And now we need to create piece pick for each piece that's in game... ouch
         List<AbstractChessPiece> subAnswer = new ArrayList<>();
         boolean isBlack = player != 0;
 
-        subAnswer.add(new Rook(where,isBlack));
+        subAnswer.add(new Rook(where, isBlack));
         subAnswer.add(new Queen(where, isBlack));
         subAnswer.add(new Knight(where, isBlack));
         subAnswer.add(new Bishop(where, isBlack));
 
         List<ChessMove> answer = new ArrayList<>();
 
-        for(var piece : subAnswer){
-            answer.add(new PiecePick(piece.wrap(),where));
+        for (var piece : subAnswer) {
+            answer.add(new PiecePick(piece.wrap(), where));
         }
 
         return answer;
@@ -78,25 +82,48 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
     @Override
     public List<ChessMove> getLegalMoves(int player, ChessPiece piece) {
-        if(player != manager.getCurrentPlayer()){
+        if (player != manager.getCurrentPlayer()) {
             return Collections.emptyList();
         }
 
-        if(manager.thereIsPromotionPending()){
-            if(piece == Utils.findPawnThatCanBePromoted(player,board)){
+        if (manager.thereIsPromotionPending()) {
+            if (piece == Utils.findPawnThatCanBePromoted(player, board)) {
                 return getPromotionMoves(player);
-            }
-            else{
+            } else {
                 return Collections.emptyList();
             }
         }
 
-        return validator.getLegalMoves(piece,board);
+        return validator.getLegalMoves(piece, board, ruleset);
     }
 
     @Override
     public List<ChessPiece> makeMove(int player, ChessMove move) {
         return mover.makeMove(player, move, board, manager);
+    }
+
+    public ChessState getState(int player) {
+        if (getLegalMoves(player).isEmpty()) {
+            if (Utils.kingIsSafe(player, board)) {
+                return ChessState.DRAW;
+            } else {
+                return ChessState.MATED;
+            }
+        } else {
+            if (Utils.kingIsSafe(player, board)) {
+                return ChessState.OK;
+            } else {
+                return ChessState.CHECKED;
+            }
+        }
+    }
+
+    public void overrideRules(List<Rule> rules) {
+        ruleset = rules;
+    }
+
+    public List<Rule> getCurrentRules() {
+        return ruleset;
     }
 
     @Override
@@ -106,5 +133,6 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
     static class BoardDiscrepancy extends RuntimeException {
     }
+
 
 }
