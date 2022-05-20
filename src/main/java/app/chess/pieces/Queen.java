@@ -1,17 +1,19 @@
 package app.chess.pieces;
 
-import app.chess.AbstractChessPiece;
-import app.chess.moves.ChessMove;
-import app.chess.moves.NormalMove;
-import app.core.game.Field;
+import app.chess.*;
+import app.chess.moves.*;
+import app.core.game.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Queen extends AbstractChessPiece {
 
     public Queen(Field position, boolean isBlack) {
         super(position, isBlack);
+    }
+
+    public Queen(Queen toCopy) {
+        super(toCopy);
     }
 
     @Override

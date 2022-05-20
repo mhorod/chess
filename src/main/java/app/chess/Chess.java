@@ -7,6 +7,7 @@ import app.chess.utils.*;
 import app.core.game.*;
 
 import java.util.*;
+import java.util.function.*;
 
 public class Chess implements Game<ChessMove, ChessPiece> {
     public static final int SIZE = 8;
@@ -116,6 +117,15 @@ public class Chess implements Game<ChessMove, ChessPiece> {
                 return ChessState.CHECKED;
             }
         }
+    }
+
+
+    public Boolean checkIfEnemyKingIsCheckedAfterMove(ChessMove move) {
+        Function<ChessPiece[][], Boolean> checkLambda = (board) -> {
+            final int playerToCheck = move.getPiece().getPlayer() == 0 ? 1 : 0;
+            return !Utils.kingIsSafe(playerToCheck, board);
+        };
+        return PredicateChecker.safelyCheckPredicate(checkLambda, move, board, manager, mover);
     }
 
     public void overrideRules(List<Rule> rules) {

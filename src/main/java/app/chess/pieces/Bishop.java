@@ -1,19 +1,20 @@
 package app.chess.pieces;
 
-import app.chess.AbstractChessPiece;
-import app.chess.Chess;
-import app.chess.moves.ChessMove;
-import app.chess.moves.NormalMove;
+import app.chess.*;
+import app.chess.moves.*;
 import app.chess.utils.*;
-import app.core.game.Field;
+import app.core.game.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Bishop extends AbstractChessPiece {
 
     public Bishop(Field position, boolean isBlack) {
         super(position, isBlack);
+    }
+
+    public Bishop(Bishop toCopy) {
+        super(toCopy);
     }
 
     @Override

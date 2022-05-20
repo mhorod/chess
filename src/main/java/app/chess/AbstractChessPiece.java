@@ -1,13 +1,10 @@
 package app.chess;
 
-import app.chess.*;
-import app.chess.moves.ChessMove;
-import app.chess.pieces.ChessPieceColor;
-import app.chess.pieces.ChessPieceKind;
-import app.core.game.Field;
-import app.core.game.Piece;
+import app.chess.moves.*;
+import app.chess.pieces.*;
+import app.core.game.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Internal game implementation of a chess piece
@@ -18,6 +15,11 @@ public abstract class AbstractChessPiece implements Piece {
     protected boolean isBlack;
     protected boolean isAlive = true; //Defaults to true, who would like to create a dead chess piece anyways
     protected Field position;
+
+    protected AbstractChessPiece(AbstractChessPiece toCopy) {
+        //Java has no trivial copy constructors, so we have to do this instead
+        overwriteState(toCopy);
+    }
 
     protected AbstractChessPiece(Field position, boolean isBlack) {
 
@@ -32,6 +34,17 @@ public abstract class AbstractChessPiece implements Piece {
         if (rank > 8 || rank < 1 || file > 8 || file < 1) {
             throw new IncorrectPiecePlacement();
         }
+    }
+
+    /**
+     * This function effectively copies all state from another piece. <br> Please, use it with caution under acceptable
+     * circumstances. <br> Passing incompatible pieces might result in an exception.
+     */
+    public void overwriteState(AbstractChessPiece toCopy) {
+        wasMoved = toCopy.wasMoved;
+        isBlack = toCopy.isBlack;
+        isAlive = toCopy.isAlive;
+        position = toCopy.position;
     }
 
     @Override
@@ -101,4 +114,5 @@ public abstract class AbstractChessPiece implements Piece {
 
     static class IncorrectPiecePlacement extends RuntimeException {
     }
+
 }

@@ -49,6 +49,8 @@ public final class Utils {
     /**
      * @return Assuming that castling is possible, returns the position on which the rook should be located. Makes
      *         ABSOLUTELY NO GUARANTEE that castling is legal.
+     *         <p>
+     *                                                 TODO: Placement of this function is bad. Find a class where it makes more sense.
      */
     public static Field getRookPositionBasedOnCastling(Castle move) {
         final int currentFile = move.getPiece().getPosition().file();
@@ -160,6 +162,12 @@ public final class Utils {
             throw new BoardDiscrepancy();
         }
         return getPieceByField(where, board);
+    }
+
+    public static Field inferNewRookPositionAfterCastling(Castle move) {
+        final Field currentRookLocation = getRookPositionBasedOnCastling(move);
+
+        return new Field(currentRookLocation.rank(), currentRookLocation.file() == 1 ? 4 : 6);
     }
 
     static class ThereIsNoKingOnBoard extends RuntimeException {
