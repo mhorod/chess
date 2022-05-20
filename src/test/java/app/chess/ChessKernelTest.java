@@ -5,11 +5,14 @@ import app.chess.pieces.*;
 import app.core.game.*;
 import org.junit.*;
 
+import java.util.*;
+
 import static org.junit.Assert.*;
 
 public class ChessKernelTest {
     Board board = new ChessBoard();
     Chess game = new Chess(board);
+
 
     @Test
     public void white_makes_moves_first() {
@@ -46,7 +49,7 @@ public class ChessKernelTest {
     }
 
     @Test
-    public void pinned_figures_cannot_move() {
+    public void pinned_pieces_cannot_move() {
         var g1 = new Chess(FENConverter.parseFen("4k3/4r3/8/8/1b3n1q/4Qn2/3R1B2/4K3 w - - 0 1"));
         assertEquals(2, g1.getLegalMoves(0).size());
     }
@@ -142,8 +145,132 @@ public class ChessKernelTest {
         assertEquals(0, g1.getLegalMoves(0).size());
     }
 
+    @Test
+    public void checking_if_a_move_causes_check() {
+        var g1 = new Chess(FENConverter.parseFen("7k/K7/8/2P5/4PP2/3PBP2/3PPP2/8 w - - 0 1"));
+
+        for (ChessMove move : g1.getLegalMoves(0)) {
+            if (move.getPiece().getKind() == ChessPieceKind.BISHOP) {
+                assertEquals(1, g1.getLegalMoves(0, move.getPiece())
+                                  .size()); //Bishop has only one legal move in this position
+                //We want to check if it properly recognizes this move as a check
+                assertEquals(true, g1.checkIfEnemyKingIsCheckedAfterMove(move));
+
+                //Now our reference to the bishop is pointing to the changed one, let's get the current one
+                ChessPiece newBishop = g1.getAllPieces()
+                                         .stream()
+                                         .filter((ChessPiece a) -> a.getKind() == ChessPieceKind.BISHOP)
+                                         .findFirst()
+                                         .get();
+
+                //Its internal state shouldn't be changed in any way
+                assertEquals(3, newBishop.getPosition().rank());
+                assertEquals(5, newBishop.getPosition().file());
+
+            }
+        }
+    }
+
+    @Test
+    public void results_of_checking_for_checks_are_consistent() {
+        var g1 = new Chess(FENConverter.parseFen(
+                "NNNRBppk/NNRBRppp/NNRRBppp/PPPPPPQQ/QQQQPPPP/QQQQQQQQ/QQQQQQQQ/KQQQQQQQ w - - 0 1"));
+        //In this position, black king is never going to be checked by ANY move that white performs.
+
+        for (int i = 0; i < 100; i++) {
+            //g1.getAllPieces().forEach(System.out::println);
+
+            g1.getLegalMoves(0)
+              .forEach((ChessMove move) -> assertEquals(false, g1.checkIfEnemyKingIsCheckedAfterMove(move)));
+        }
+    }
+
+    @Test
+    public void easier_consistency_test() {
+        //If the above tests fails, it is likely that this one will too, and this one is easier to debug.
+        //If this tests is OK and the above one fails, good luck!
+
+        var g1 = new Chess(FENConverter.parseFen("7k/8/8/6PP/8/8/8/7K w - - 0 1"));
+
+        for (int i = 0; i < 100; i++) {
+            //System.out.println("====" + i + "===");
+            //g1.getAllPieces().forEach(System.out::println);
+
+            g1.getLegalMoves(0)
+              .forEach((ChessMove move) -> assertEquals(false, g1.checkIfEnemyKingIsCheckedAfterMove(move)));
+        }
+    }
+
+    @Test
+    public void castling_causing_check() {
+        var g1 = new Chess(FENConverter.parseFen("3k4/8/8/8/8/8/8/R3K3 w Q - 0 1"));
+
+        for (int i = 0; i < 100; i++) {
+            Castle move = null;
+
+            try {
+                move = (Castle) g1.getLegalMoves(0)
+                                  .stream()
+                                  .filter((ChessMove a) -> a.getClass() == Castle.class)
+                                  .findFirst()
+                                  .get();
+            } catch (NoSuchElementException e) {
+                fail("Couldn't castle!");
+            }
+
+            assertEquals(true, g1.checkIfEnemyKingIsCheckedAfterMove(move));
+        }
+    }
+
+
+    @Test
+    public void castling_causing_check_advanced() {
+        var g1 = new Chess(FENConverter.parseFen("3k4/qqR1pppN/2R2PPP/2R2PPP/2R2PPP/2R2PPP/2R2PPP/R3K3 w Q - 0 1"));
+
+        for (int i = 0; i < 100; i++) {
+            Castle move = null;
+
+            try {
+                move = (Castle) g1.getLegalMoves(0)
+                                  .stream()
+                                  .filter((ChessMove a) -> a.getClass() == Castle.class)
+                                  .findFirst()
+                                  .get();
+            } catch (NoSuchElementException e) {
+                fail("Couldn't castle!");
+            }
+
+            assertEquals(true, g1.checkIfEnemyKingIsCheckedAfterMove(move));
+        }
+    }
+
+    @Test
+    public void promotion_causing_check() {
+        var g1 = new Chess(FENConverter.parseFen("7k/P7/8/8/8/8/8/K7 w - - 0 1"));
+        //In this scenario, white can promote its pawn
+        ChessMove toTheLastRank = g1.getLegalMoves(0)
+                                    .stream()
+                                    .filter((ChessMove a) -> a.getPiece().getKind() == ChessPieceKind.PAWN)
+                                    .findAny()
+                                    .get();
+        g1.makeMove(0, toTheLastRank);
+        
+        assertNotEquals(0, g1.getLegalMoves(0)
+                             .size()); //It's still white that is supposed to make move, this time piece pick
+
+        for (int i = 0; i < 100; i++) {
+            var promotionToQueen = g1.getLegalMoves(0)
+                                     .stream()
+                                     .filter((ChessMove a) -> a.getPiece().getKind() == ChessPieceKind.QUEEN)
+                                     .findAny()
+                                     .get();
+            assertEquals(true, g1.checkIfEnemyKingIsCheckedAfterMove(promotionToQueen));
+            assertEquals(3, g1.getAllPieces().size());
+        }
+    }
+
     /**
-     * Used only for tests purposes, doesn't really parse FEN I mean it does, but only a part of it
+     * Used only for tests purposes, doesn't really parse FEN <br> I mean it does, but only a part of it
      */
     private static class FENConverter {
         private static int putPieceOnBoard(char letter, Board board, int rank, int file) {

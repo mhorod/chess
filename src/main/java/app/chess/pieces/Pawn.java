@@ -1,19 +1,28 @@
 package app.chess.pieces;
 
-import app.chess.AbstractChessPiece;
-import app.chess.moves.ChessMove;
-import app.chess.moves.NormalMove;
+import app.chess.*;
+import app.chess.moves.*;
 import app.chess.utils.*;
-import app.core.game.Field;
+import app.core.game.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Pawn extends AbstractChessPiece {
     private boolean movedBy2RanksRecently = false;
 
     public Pawn(Field position, boolean isBlack) {
         super(position, isBlack);
+    }
+
+    public Pawn(Pawn toCopy) {
+        super(toCopy);
+        overwriteState(toCopy);
+    }
+
+    @Override
+    public void overwriteState(AbstractChessPiece toCopy) {
+        super.overwriteState(toCopy);
+        movedBy2RanksRecently = ((Pawn) toCopy).movedBy2RanksRecently;
     }
 
     @Override

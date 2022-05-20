@@ -10,13 +10,6 @@ import java.util.*;
 import static app.chess.Chess.*;
 
 class StandardMover implements Mover {
-    /**
-     * Checks if a move kills a piece (or pawn).
-     *
-     * @param move A valid move that is to be evaluated. If it's invalid, an UB will occur.
-     * @param board A board on which the move should take place.
-     * @return Null if there is no piece that's going to be taken, reference to said piece otherwise.
-     */
     public ChessPiece getPieceKilledByMove(ChessMove move, ChessPiece[][] board) {
         var pieceThatsEndangered = Utils.getPieceByField(move.getField(), board);
 
@@ -69,10 +62,6 @@ class StandardMover implements Mover {
         int newRank = move.getField().rank();
         int newFile = move.getField().file();
 
-        int oldRank = move.getPiece().getPosition().rank();
-        int oldFile = move.getPiece().getPosition().file();
-
-
         ChessPiece attacked = getPieceKilledByMove(move, board);
 
         if (attacked != null) {
@@ -81,6 +70,10 @@ class StandardMover implements Mover {
         }
         board[newRank][newFile] = move.getPiece();
 
+        //Updating the board
+        Utils.putPieceOnBoard(null, move.getPiece().getPosition(), board);
+
+        //Now we are changing the internal state of the piece that's moving
         move.getPiece().unwrap().move(move.getField());
 
         //After executing the move, we can finally return a list informing what's happening on the board
