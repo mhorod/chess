@@ -1,9 +1,13 @@
 package app.chess;
 
-import app.chess.moves.*;
-import app.chess.pieces.*;
-import app.core.game.*;
-import org.junit.*;
+import app.chess.moves.Castle;
+import app.chess.moves.ChessMove;
+import app.chess.pieces.ChessPieceColor;
+import app.chess.pieces.ChessPieceKind;
+import app.core.game.Field;
+import org.junit.Test;
+
+import java.util.NoSuchElementException;
 
 import java.util.*;
 
@@ -254,7 +258,7 @@ public class ChessKernelTest {
                                     .findAny()
                                     .get();
         g1.makeMove(0, toTheLastRank);
-        
+
         assertNotEquals(0, g1.getLegalMoves(0)
                              .size()); //It's still white that is supposed to make move, this time piece pick
 
@@ -269,6 +273,24 @@ public class ChessKernelTest {
         }
     }
 
+    @Test
+    public void player_changes_after_normal_move() {
+        var chess = new Chess(FENConverter.parseFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQK2R w KQkq - 0 1"));
+        var move = chess.getLegalMoves(0).stream().filter(e -> !(e instanceof Castle)).toList().get(0);
+        chess.makeMove(0, move);
+        assertEquals(0, chess.getLegalMoves(0).size());
+        assertNotEquals(0, chess.getLegalMoves(1).size());
+    }
+
+    @Test
+    public void player_changes_after_castling() {
+        var chess = new Chess(FENConverter.parseFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQK2R w KQkq - 0 1"));
+        var castle = chess.getLegalMoves(0).stream().filter(e -> e instanceof Castle).toList().get(0);
+        chess.makeMove(0, castle);
+        assertEquals(0, chess.getLegalMoves(0).size());
+        assertNotEquals(0, chess.getLegalMoves(1).size());
+    }
+  
     /**
      * Used only for tests purposes, doesn't really parse FEN <br> I mean it does, but only a part of it
      */
