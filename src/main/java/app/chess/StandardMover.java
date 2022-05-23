@@ -38,7 +38,7 @@ class StandardMover implements Mover {
         //Now, if castling is involved, I'm going to delegate it to another function because otherwise this will be too messy
         if (move.getClass() == Castle.class) {
             //I'm sure checking it that way won't cause any issues down the line
-            return castleMove((Castle) move, board);
+            return castleMove((Castle) move, board, manager);
         }
 
         if (manager.thereIsPromotionPending()) {
@@ -88,7 +88,7 @@ class StandardMover implements Mover {
     }
 
 
-    private List<ChessPiece> castleMove(Castle move, ChessPiece[][] board) {
+    private List<ChessPiece> castleMove(Castle move, ChessPiece[][] board, StateManager manager) {
         Field whereRookIs = Utils.getRookPositionBasedOnCastling(move);
 
         int rookRank = whereRookIs.rank();
@@ -121,6 +121,8 @@ class StandardMover implements Mover {
 
         board[rookRank][newRookFile] = rook;
         rook.unwrap().move(new Field(rookRank, newRookFile));
+
+        manager.switchCurrentPlayer();
 
         return List.of(move.getPiece(), rook);
     }
