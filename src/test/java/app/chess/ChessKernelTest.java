@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import java.util.NoSuchElementException;
 
+import java.util.*;
+
 import static org.junit.Assert.*;
 
 public class ChessKernelTest {
@@ -288,7 +290,7 @@ public class ChessKernelTest {
         assertEquals(0, chess.getLegalMoves(0).size());
         assertNotEquals(0, chess.getLegalMoves(1).size());
     }
-
+  
     /**
      * Used only for tests purposes, doesn't really parse FEN <br> I mean it does, but only a part of it
      */
