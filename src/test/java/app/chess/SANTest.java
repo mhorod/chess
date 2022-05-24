@@ -1,5 +1,8 @@
 package app.chess;
 
+import app.chess.boards.CastleTestBoard;
+import app.chess.boards.PromotionTestBoard;
+import app.chess.san.ChessField;
 import app.chess.san.SAN;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
@@ -7,7 +10,10 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
+import static app.chess.pieces.ChessPieceKind.KING;
+import static app.chess.pieces.ChessPieceKind.KNIGHT;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Enclosed.class)
 public class SANTest {
@@ -49,4 +55,23 @@ public class SANTest {
         }
     }
 
+    public static class ApplyMovesTest {
+        @Test
+        public void apply_castle() {
+            var chess = new Chess(new CastleTestBoard());
+            SAN.applyMoves(chess, "1. O-O");
+            var pieces = chess.getPieces(0);
+            var king = pieces.stream().filter(p -> p.getKind() == KING).findFirst().orElseThrow();
+            assertEquals(ChessField.fromString("g1"), king.getPosition());
+        }
+
+        @Test
+        public void apply_promotion() {
+            var chess = new Chess(new PromotionTestBoard());
+            SAN.applyMoves(chess, "1. a8=N");
+            var pieces = chess.getAllPieces();
+            var knight = pieces.stream().filter(p -> p.getKind() == KNIGHT).findFirst();
+            assertTrue(knight.isPresent());
+        }
+    }
 }
