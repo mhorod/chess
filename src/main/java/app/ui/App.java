@@ -1,14 +1,16 @@
 package app.ui;
 
+import app.ai.dumb.DumbPlayer;
 import app.chess.Chess;
 import app.chess.ChessBoard;
 import app.chess.ChessPiece;
+import app.chess.moves.ChessMove;
 import app.core.interactor.InteractiveGame;
 import app.ui.board.boards.InvertedBoard;
 import app.ui.board.boards.NormalBoard;
 import app.ui.chess.ChessConnector;
-import app.utils.pieceplayer.HotSeatPlayer;
 import app.utils.pieceplayer.PieceSpectator;
+import app.utils.pieceplayer.StandalonePiecePlayer;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -42,11 +44,16 @@ public class App extends Application {
         Chess chess = new Chess(new ChessBoard());
         var game = new InteractiveGame<>(chess);
 
-        var hotSeatPlayer = new HotSeatPlayer<>(game, game);
+        var player = new StandalonePiecePlayer<>(game, 0);
         var pieceSpectator = new PieceSpectator<>(game, game);
 
+        var ai = new DumbPlayer<ChessMove, ChessPiece>();
+        game.connectPlayer(1, ai);
+        game.connectSpectator(ai);
+
+
         var hotSeatBoard = new NormalBoard<ChessPiece>(40, style);
-        ChessConnector.connect(hotSeatBoard, hotSeatPlayer);
+        ChessConnector.connect(hotSeatBoard, player);
 
         var spectatorBoard = new InvertedBoard<ChessPiece>(40, style);
         ChessConnector.connect(spectatorBoard, pieceSpectator);
