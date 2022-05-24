@@ -17,7 +17,7 @@ public class SAN {
         return null;
     }
 
-    public static ChessMove decodeMove(GameView<ChessMove, ChessPiece> chess, int player, String move) {
+    public static List<ChessMove> decodeMove(GameView<ChessMove, ChessPiece> chess, int player, String move) {
         return app.chess.san.SANDecoder.decodeMove(chess, player, move);
     }
 
@@ -27,7 +27,8 @@ public class SAN {
     public static void applyMoves(Chess chess, List<String> moves) {
         int player = 0;
         for (var move : moves) {
-            chess.makeMove(player, decodeMove(chess, player, move));
+            for (var decoded : decodeMove(chess, player, move))
+                chess.makeMove(player, decoded);
             player = 1 - player;
         }
     }
