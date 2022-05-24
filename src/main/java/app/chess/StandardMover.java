@@ -1,13 +1,15 @@
 package app.chess;
 
-import app.chess.moves.*;
-import app.chess.pieces.*;
-import app.chess.utils.*;
-import app.core.game.*;
+import app.chess.moves.Castle;
+import app.chess.moves.ChessMove;
+import app.chess.pieces.ChessPieceKind;
+import app.chess.utils.Utils;
+import app.core.game.Field;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static app.chess.Chess.*;
+import static app.chess.Chess.SIZE;
 
 class StandardMover implements Mover {
     public ChessPiece getPieceKilledByMove(ChessMove move, ChessPiece[][] board) {
@@ -42,10 +44,11 @@ class StandardMover implements Mover {
         }
 
         if (manager.thereIsPromotionPending()) {
-            Utils.putPieceOnBoard(move.getPiece(), move.getField(), board);
+            var wasThere = Utils.putPieceOnBoard(move.getPiece(), move.getField(), board);
+            wasThere.unwrap().kill();
             manager.markPromotionAsDone();
             manager.switchCurrentPlayer();
-            return Collections.singletonList(move.getPiece());
+            return List.of(wasThere, move.getPiece());
         }
 
         resetWasMoved(board); //Because things will be overwritten

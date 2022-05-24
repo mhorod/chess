@@ -18,7 +18,9 @@ public class Board<P extends app.core.game.Piece> {
     GraphicalBoard<P> board;
     Piece<?, P> selectedPiece;
 
-    public <M extends Move<P>> Board(PiecePlayer<M, P> player, GraphicalBoard<P> board, Function<P, GraphicalPiece<P>> supplier) {
+    public <M extends Move<P>> Board(
+            PiecePlayer<M, P> player, GraphicalBoard<P> board, Function<P, GraphicalPiece<P>> supplier
+    ) {
         behavior = new Machine<>(this);
         this.board = board;
         List<Piece<M, P>> pieces = new ArrayList<>();
@@ -26,9 +28,9 @@ public class Board<P extends app.core.game.Piece> {
             var graphical = supplier.apply(p);
             var piece = new Piece<M, P>(graphical, behavior, this, p);
             pieces.add(piece);
+            board.add(piece.graphical);
             return piece.logical;
         });
-        pieces.forEach((piece) -> board.add(piece.graphical));
         board.connectBehavior(behavior);
     }
 
@@ -55,9 +57,11 @@ public class Board<P extends app.core.game.Piece> {
 
     public void setLegalFields(Set<Field> legalFields) {
         for (var field : this.legalFields)
-            if (!legalFields.contains(field)) unmarkAsLegal(field);
+            if (!legalFields.contains(field))
+                unmarkAsLegal(field);
         for (var field : legalFields)
-            if (!this.legalFields.contains(field)) markAsLegal(field);
+            if (!this.legalFields.contains(field))
+                markAsLegal(field);
         this.legalFields = legalFields;
     }
 
@@ -80,9 +84,11 @@ public class Board<P extends app.core.game.Piece> {
 
     public void selectPiece(Piece<?, P> piece) {
         if (piece == null) {
-            if (selectedPiece != null) selectedPiece.putDown();
+            if (selectedPiece != null)
+                selectedPiece.putDown();
         } else {
-            if (selectedPiece != null && selectedPiece != piece) selectedPiece.putDown();
+            if (selectedPiece != null && selectedPiece != piece)
+                selectedPiece.putDown();
             piece.pickUp();
         }
         selectedPiece = piece;
@@ -96,7 +102,7 @@ public class Board<P extends app.core.game.Piece> {
 
     public Field getNearest(Set<Field> fields, Position position) {
         return fields.stream()
-                .min((a, b) -> (int) Math.signum(distance2(a, position) - distance2(b, position)))
-                .orElse(null);
+                     .min((a, b) -> (int) Math.signum(distance2(a, position) - distance2(b, position)))
+                     .orElse(null);
     }
 }
