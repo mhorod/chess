@@ -4,39 +4,37 @@ import app.chess.Chess;
 import app.chess.ChessBoard;
 import app.chess.ChessPiece;
 import app.core.interactor.InteractiveGame;
-import app.ui.board.boards.InvertedBoard;
 import app.ui.board.boards.NormalBoard;
 import app.ui.chess.ChessConnector;
+import app.ui.menu.DerpyButton;
 import app.ui.menu.MenuContainer;
 import app.utils.pieceplayer.HotSeatPlayer;
-import app.utils.pieceplayer.PieceSpectator;
 import javafx.geometry.Pos;
-import javafx.scene.layout.HBox;
 
-public class ChessHotseat extends HBox {
-    MenuContainer container;
+public class ChessHotseat extends View {
 
-    public ChessHotseat(MenuContainer container) {
-        super();
-        this.container = container;
+    public ChessHotseat(ViewContainer container) {
+        super(container);
 
         Chess chess = new Chess(new ChessBoard());
         var game = new InteractiveGame<>(chess);
 
         var hotSeatPlayer = new HotSeatPlayer<>(game, game);
-        var pieceSpectator = new PieceSpectator<>(game, game);
 
         var hotSeatBoard = new NormalBoard<ChessPiece>(40, container.getGameStyle());
         ChessConnector.connect(hotSeatBoard, hotSeatPlayer);
 
-        var spectatorBoard = new InvertedBoard<ChessPiece>(40, container.getGameStyle());
-        ChessConnector.connect(spectatorBoard, pieceSpectator);
-
-
         setAlignment(Pos.CENTER);
         getChildren().add(hotSeatBoard);
-        getChildren().add(spectatorBoard);
-        setFillHeight(true);
+
+        var returnButton = new DerpyButton("Return", container.getGameStyle().whitePiece);
+        getChildren().add(returnButton);
+        returnButton.setOnMouseClicked(e -> {
+            var menu = new MenuContainer(container, container.getGameStyle());
+            changeView(menu);
+            menu.changeMenu(new MainMenu(menu));
+        });
+        //setFillHeight(true);
         setSpacing(100);
 
     }

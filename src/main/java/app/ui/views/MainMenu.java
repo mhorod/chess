@@ -12,7 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class MainMenu extends VBox implements View {
+public class MainMenu extends VBox implements MenuView {
     MenuContainer container;
     Elephant piece;
     ElephantSpace elephantSpace;
@@ -21,10 +21,11 @@ public class MainMenu extends VBox implements View {
         super();
         this.container = container;
 
-        var menu = new Menu(new String[]{"PLAY", "SETTINGS", "EXIT"}, new Runnable[]{
-                () -> container.changeView(new PlayMenu(container)),
+        var menu = new Menu(new String[]{"PLAY", "SETTINGS", "GO RIGHT", "EXIT"}, new Runnable[]{
+                () -> container.changeMenu(new PlayMenu(container)),
                 this::doNothing,
-                Platform::exit
+                () -> container.changeMenu(new FunnyMenu(container)),
+                Platform::exit,
         }, container.getGameStyle());
 
         var content = new HBox();

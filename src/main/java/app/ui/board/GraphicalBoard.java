@@ -87,6 +87,7 @@ public abstract class GraphicalBoard<P extends app.core.game.Piece> extends Pane
         }
     }
 
+
     public void add(GraphicalPiece<P> piece) {
         getChildren().add(piece);
     }

@@ -50,7 +50,7 @@ public class Elephant extends Pane {
 
         var target = newSpace.localToScene(newSpace.getBoundsInLocal());
         var parentBounds = getParent().localToScene(getParent().getBoundsInLocal());
-        new JumpTransition(300, new Point2D(target.getMinX() - parentBounds.getMinX(), target.getMinY() - parentBounds.getMinY())).play();
+        new JumpTransition(300, new Point2D(target.getMinX() - parentBounds.getMinX(), target.getMinY() + target.getHeight() / 2 - getHeight() / 2 - parentBounds.getMinY())).play();
         currentSpace = newSpace;
     }
 

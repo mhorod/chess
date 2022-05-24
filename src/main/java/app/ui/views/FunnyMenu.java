@@ -1,32 +1,36 @@
 package app.ui.views;
 
 import app.ui.menu.*;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
-public class PlayMenu extends VBox implements MenuView {
+public class FunnyMenu extends VBox implements MenuView {
     ElephantSpace elephantSpace;
 
-    public PlayMenu(MenuContainer container) {
+    public FunnyMenu(MenuContainer container) {
         super();
-        var text = new Text("Play");
+        var text = new Text("Jump");
+        text.setTextAlignment(TextAlignment.CENTER);
         text.setFont(new Font(DerpyButton.font.getFamily(), 60));
         getChildren().add(text);
 
         var content = new HBox();
+        content.setSpacing(10);
         elephantSpace = new ElephantSpace();
         content.getChildren().add(elephantSpace);
-        content.getChildren().add(new Menu(new String[]{"ALONE", "WITH FRIENDS", "RETURN"}, new Runnable[]{
-                () -> container.changeView(new ChessHotseat(container.getContainer())),
-                () -> container.changeMenu(new PlayMenu(container)),
+        content.getChildren().add(new Menu(new String[]{"GO RIGHT", "GO LEFT"}, new Runnable[]{
+                () -> container.changeMenu(new FunnyMenu(container)),
                 container::goBack
         }, container.getGameStyle()));
         getChildren().add(content);
         setAlignment(Pos.CENTER);
+        setPadding(new Insets(10));
 
     }
 
