@@ -65,6 +65,10 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     @Override
     public List<ChessMove> getLegalMoves(int player) {
 
+        if (player != manager.getCurrentPlayer()) {
+            return Collections.emptyList();
+        }
+
         if (manager.thereIsPromotionPending()) {
             //Promotion is this funny case where we should create entirely different branch
             return getPromotionMoves(player);
