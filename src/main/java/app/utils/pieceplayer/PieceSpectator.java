@@ -22,10 +22,16 @@ public final class PieceSpectator<M extends Move<P>, P extends Piece> extends Pi
      * Connects all game pieces to supplied interactive pieces
      */
     public void connectPieces(Function<P, ? extends InteractivePiece<M, P>> newPiece) {
+        super.connectPieces(newPiece);
         for (var piece : game.getAllPieces()) {
-            var interactivePiece = newPiece.apply(piece);
-            interactivePiece.controls = new NoControls<>(piece);
-            pieces.put(piece, interactivePiece);
+            connectPiece(piece);
         }
+    }
+
+    @Override
+    protected void connectPiece(P piece) {
+        var interactivePiece = newPiece.apply(piece);
+        interactivePiece.controls = new NoControls<>(piece);
+        pieces.put(piece, interactivePiece);
     }
 }
