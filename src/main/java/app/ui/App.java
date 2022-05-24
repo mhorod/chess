@@ -41,7 +41,7 @@ public class App extends Application {
 
         container.changeView(menu);
         menu.appear();
-
+        
         Scene scene = new Scene(container, 1024, 800);
         scene.setFill(style.whiteField);
         stage.setScene(scene);

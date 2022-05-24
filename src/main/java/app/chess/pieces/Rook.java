@@ -1,21 +1,29 @@
 package app.chess.pieces;
 
-import app.chess.Chess;
-import app.chess.ChessPiece;
-import app.chess.moves.ChessMove;
-import app.chess.moves.NormalMove;
-import app.core.game.Field;
+import app.chess.*;
+import app.chess.moves.*;
+import app.core.game.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class Rook extends ChessPiece {
+public class Rook extends AbstractChessPiece {
     boolean wasMovedBefore = false; //Do not confuse with wasMoved of ChessPiece, this is supposed to be changed one time
+    //This field is going to be used to check whether the rook can be involved in castling
 
     public Rook(Field position, boolean isBlack) {
         super(position, isBlack);
     }
-    //This field is going to be used to check whether the rook can be involved in castling
+
+    public Rook(Rook toCopy) {
+        super(toCopy);
+        overwriteState(toCopy);
+    }
+
+    @Override
+    public void overwriteState(AbstractChessPiece toCopy) {
+        super.overwriteState(toCopy);
+        wasMovedBefore = ((Rook) toCopy).wasMovedBefore;
+    }
 
     @Override
     public ChessPieceKind getKind() {
@@ -34,8 +42,8 @@ public class Rook extends ChessPiece {
             Field fieldOnTheSameFile = new Field(i, currentPosition.file());
             Field fieldOnTheSameRank = new Field(currentPosition.rank(), i);
 
-            ChessMove moveOnTheSameFile = new NormalMove(this, fieldOnTheSameFile);
-            ChessMove moveOnTheSameRank = new NormalMove(this, fieldOnTheSameRank);
+            ChessMove moveOnTheSameFile = new NormalMove(this.wrap(), fieldOnTheSameFile);
+            ChessMove moveOnTheSameRank = new NormalMove(this.wrap(), fieldOnTheSameRank);
 
             potentialMoves.add(moveOnTheSameFile);
             potentialMoves.add(moveOnTheSameRank);

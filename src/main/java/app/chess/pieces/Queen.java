@@ -1,17 +1,19 @@
 package app.chess.pieces;
 
-import app.chess.ChessPiece;
-import app.chess.moves.ChessMove;
-import app.chess.moves.NormalMove;
-import app.core.game.Field;
+import app.chess.*;
+import app.chess.moves.*;
+import app.core.game.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class Queen extends ChessPiece {
+public class Queen extends AbstractChessPiece {
 
     public Queen(Field position, boolean isBlack) {
         super(position, isBlack);
+    }
+
+    public Queen(Queen toCopy) {
+        super(toCopy);
     }
 
     @Override
@@ -37,7 +39,7 @@ public class Queen extends ChessPiece {
         ArrayList<ChessMove> potentialMoves = new ArrayList<>();
 
         for (ChessMove fakePotentialMove : fakePotentialMoves) {
-            ChessMove legitimatePotentialMove = new NormalMove(this, fakePotentialMove.getField());
+            ChessMove legitimatePotentialMove = new NormalMove(this.wrap(), fakePotentialMove.getField());
             potentialMoves.add(legitimatePotentialMove);
         }
 

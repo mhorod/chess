@@ -14,29 +14,6 @@ public class Castle extends PieceMove<ChessPiece> implements ChessMove {
         }
     }
 
-    @Override
-    public Field getField() {
-        return this.field;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-        if (o.getClass() != Castle.class) {
-            return false;
-        }
-
-        var converted = (Castle) o;
-
-        if (converted.getField().rank() != this.getField().rank()) {
-            return false;
-        } else {
-            return converted.getField().file() == this.getField().file() && converted.getPiece() == this.getPiece();
-        }
-    }
-
     static class OnlyKingCanCastle extends RuntimeException {
     }
 }

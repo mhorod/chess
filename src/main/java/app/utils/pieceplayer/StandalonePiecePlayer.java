@@ -24,10 +24,16 @@ public final class StandalonePiecePlayer<M extends Move<P>, P extends Piece> ext
 
     @Override
     public void connectPieces(Function<P, ? extends InteractivePiece<M, P>> newPiece) {
+        super.connectPieces(newPiece);
         for (var piece : player.getAllPieces()) {
-            var interactivePiece = newPiece.apply(piece);
-            interactivePiece.controls = new PlayerControls<>(piece, player);
-            pieces.put(piece, interactivePiece);
+            connectPiece(piece);
         }
+    }
+
+    @Override
+    protected void connectPiece(P piece) {
+        var interactivePiece = newPiece.apply(piece);
+        interactivePiece.controls = new PlayerControls<>(piece, player);
+        pieces.put(piece, interactivePiece);
     }
 }

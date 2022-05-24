@@ -38,12 +38,19 @@ public class HotSeatPlayer<M extends Move<P>, P extends Piece> extends PiecePlay
 
     @Override
     public void connectPieces(Function<P, ? extends InteractivePiece<M, P>> newPiece) {
+        super.connectPieces(newPiece);
         for (var player : players) {
             for (var piece : player.getPieces()) {
-                var interactivePiece = newPiece.apply(piece);
-                interactivePiece.controls = new PlayerControls<>(piece, player);
-                pieces.put(piece, interactivePiece);
+                connectPiece(piece);
             }
         }
+    }
+
+    @Override
+    protected void connectPiece(P piece) {
+        var player = players.get(piece.getPlayer());
+        var interactivePiece = newPiece.apply(piece);
+        interactivePiece.controls = new PlayerControls<>(piece, player);
+        pieces.put(piece, interactivePiece);
     }
 }
