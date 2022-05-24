@@ -2,7 +2,7 @@ package app.chess;
 
 import app.chess.board.ChessBoard;
 import app.chess.moves.ChessMove;
-import app.chess.moves.PiecePick;
+import app.chess.moves.Promotion;
 import app.chess.pieces.Bishop;
 import app.chess.pieces.Knight;
 import app.chess.pieces.Queen;
@@ -65,7 +65,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         List<ChessMove> answer = new ArrayList<>();
 
         for (var piece : subAnswer) {
-            answer.add(new PiecePick(piece.wrap(), where));
+            answer.add(new Promotion(piece.wrap(), where));
         }
 
         return answer;
