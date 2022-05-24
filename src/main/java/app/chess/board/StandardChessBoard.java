@@ -1,5 +1,6 @@
-package app.chess;
+package app.chess.board;
 
+import app.chess.Chess;
 import app.core.game.Field;
 
 import static app.chess.pieces.ChessPieceColor.BLACK;
@@ -9,7 +10,7 @@ import static app.chess.pieces.ChessPieceKind.*;
 /**
  * Chessboard that initializes with standard chess layout
  */
-public class ChessBoard extends Board {
+public class StandardChessBoard extends ChessBoard {
 
     /*
      * 8 r n b q k b n r
@@ -28,26 +29,32 @@ public class ChessBoard extends Board {
     public static final int BLACK_PAWN_RANK = 7;
     public static final int BLACK_FIGURE_RANK = 8;
 
-    public ChessBoard() {
-        // Adding one here because Chess starts indexing from 1
-        // This is a little uncommon, but in Chess such numeration is also starting from 1 and it will hopefully create fewer bugs if we stick to this convention
-        super(Chess.SIZE + 1);
-        putPawns();
-        putRooks();
-        putKnights();
-        putBishops();
-        putKings();
-        putQueens();
+    public StandardChessBoard() {
+        this(true);
     }
 
-    private void putPawns() {
+    public StandardChessBoard(boolean initialize) {
+        // Adding one here because Chess starts indexing from 1
+        // This is a little uncommon, but in Chess such numeration is also starting from 1, and it will hopefully create fewer bugs if we stick to this convention
+        super(Chess.SIZE + 1);
+        if (initialize) {
+            putPawns();
+            putRooks();
+            putKnights();
+            putBishops();
+            putKings();
+            putQueens();
+        }
+    }
+
+    protected void putPawns() {
         for (int file = 1; file <= Chess.SIZE; file++) {
             put(new Field(WHITE_PAWN_RANK, file), PAWN, WHITE);
             put(new Field(BLACK_PAWN_RANK, file), PAWN, BLACK);
         }
     }
 
-    private void putRooks() {
+    protected void putRooks() {
         put(new Field(WHITE_FIGURE_RANK, 1), ROOK, WHITE);
         put(new Field(WHITE_FIGURE_RANK, 8), ROOK, WHITE);
 
@@ -55,7 +62,7 @@ public class ChessBoard extends Board {
         put(new Field(BLACK_FIGURE_RANK, 8), ROOK, BLACK);
     }
 
-    private void putKnights() {
+    protected void putKnights() {
         put(new Field(WHITE_FIGURE_RANK, 2), KNIGHT, WHITE);
         put(new Field(WHITE_FIGURE_RANK, 7), KNIGHT, WHITE);
 
@@ -63,7 +70,7 @@ public class ChessBoard extends Board {
         put(new Field(BLACK_FIGURE_RANK, 7), KNIGHT, BLACK);
     }
 
-    private void putBishops() {
+    protected void putBishops() {
         put(new Field(WHITE_FIGURE_RANK, 3), BISHOP, WHITE);
         put(new Field(WHITE_FIGURE_RANK, 6), BISHOP, WHITE);
 
@@ -71,12 +78,12 @@ public class ChessBoard extends Board {
         put(new Field(BLACK_FIGURE_RANK, 6), BISHOP, BLACK);
     }
 
-    private void putQueens() {
+    protected void putQueens() {
         put(new Field(WHITE_FIGURE_RANK, 4), QUEEN, WHITE);
         put(new Field(BLACK_FIGURE_RANK, 4), QUEEN, BLACK);
     }
 
-    private void putKings() {
+    protected void putKings() {
         put(new Field(WHITE_FIGURE_RANK, 5), KING, WHITE);
         put(new Field(BLACK_FIGURE_RANK, 5), KING, BLACK);
     }

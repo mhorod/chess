@@ -1,5 +1,7 @@
 package app.chess;
 
+import app.chess.board.ChessBoard;
+import app.chess.board.StandardChessBoard;
 import app.chess.moves.Castle;
 import app.chess.moves.ChessMove;
 import app.chess.pieces.ChessPieceColor;
@@ -9,12 +11,10 @@ import org.junit.Test;
 
 import java.util.NoSuchElementException;
 
-import java.util.*;
-
 import static org.junit.Assert.*;
 
 public class ChessKernelTest {
-    Board board = new ChessBoard();
+    ChessBoard board = new StandardChessBoard();
     Chess game = new Chess(board);
 
 
@@ -31,7 +31,7 @@ public class ChessKernelTest {
         int result = 0;
 
         for (var move : firstLegalMoves) {
-            Chess tmpgame = new Chess(new ChessBoard());
+            Chess tmpgame = new Chess(new StandardChessBoard());
             tmpgame.makeMove(0, move);
             result += tmpgame.getLegalMoves(1).size();
         }
@@ -41,7 +41,7 @@ public class ChessKernelTest {
 
     @Test
     public void board_is_initialized_properly_basic_test() {
-        var g1 = new Chess(new ChessBoard());
+        var g1 = new Chess(new StandardChessBoard());
         var g2 = new Chess(FENConverter.parseFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"));
 
         assertEquals(g1.getLegalMoves(0).size(), g2.getLegalMoves(0).size());
@@ -290,12 +290,12 @@ public class ChessKernelTest {
         assertEquals(0, chess.getLegalMoves(0).size());
         assertNotEquals(0, chess.getLegalMoves(1).size());
     }
-  
+
     /**
      * Used only for tests purposes, doesn't really parse FEN <br> I mean it does, but only a part of it
      */
     private static class FENConverter {
-        private static int putPieceOnBoard(char letter, Board board, int rank, int file) {
+        private static int putPieceOnBoard(char letter, ChessBoard board, int rank, int file) {
             var color = letter < 'a' ? ChessPieceColor.WHITE : ChessPieceColor.BLACK; //If it's a capital letter then it means that the player is white
 
             letter = Character.toLowerCase(letter);
@@ -320,8 +320,8 @@ public class ChessKernelTest {
             return file + 1;
         }
 
-        static Board parseFen(String code) {
-            Board result = new Board(9);
+        static ChessBoard parseFen(String code) {
+            ChessBoard result = new ChessBoard(9);
 
             int rank = 8;
             int file = 1;
