@@ -4,9 +4,13 @@ import app.chess.ChessPiece;
 import app.chess.moves.Castle;
 import app.chess.moves.ChessMove;
 import app.chess.moves.NormalMove;
+import app.chess.moves.Promotion;
+import app.chess.pieces.ChessPieceFactory;
 import app.chess.pieces.ChessPieceKind;
 import app.core.game.Field;
 import app.core.game.GameView;
+
+import java.util.List;
 
 import static app.chess.pieces.ChessPieceKind.*;
 
@@ -17,7 +21,7 @@ public class SANDecoder {
     private SANDecoder() {
     }
 
-    public static ChessMove decodeMove(GameView<ChessMove, ChessPiece> chess, int player, String move) {
+    public static List<ChessMove> decodeMove(GameView<ChessMove, ChessPiece> chess, int player, String move) {
 
         if (move == null || move.length() < 2)
             throw new SAN.InvalidSANMove("Invalid format: " + move);
@@ -28,16 +32,31 @@ public class SANDecoder {
 
         // Handle castling
         if (move.equals("O-O") || move.equals("0-0"))
-            return kingSideCastle(chess, player);
+            return List.of(kingSideCastle(chess, player));
         else if (move.equals("O-O-O") || move.equals("0-0-0"))
-            return queenSideCastle(chess, player);
+            return List.of(queenSideCastle(chess, player));
+
+        // Handle promotion
+        if (move.contains("="))
+            return promotion(chess, player, move);
 
         var kind = pieceKind(move);
         var targetField = targetField(move);
         var modifiers = modifiers(move);
         var piece = getMatchingPiece(chess, player, kind, targetField, modifiers);
 
-        return new NormalMove(piece, targetField);
+        return List.of(new NormalMove(piece, targetField));
+    }
+
+    private static List<ChessMove> promotion(GameView<ChessMove, ChessPiece> chess, int player, String move) {
+        var newKind = charToKind(move.charAt(move.length() - 1));
+        move = move.substring(0, move.length() - 2);
+        var targetField = targetField(move);
+        var modifiers = modifiers(move);
+        var piece = getMatchingPiece(chess, player, PAWN, targetField, modifiers);
+
+        var newPiece = ChessPieceFactory.newPiece(targetField, newKind, piece.getColor());
+        return List.of(new NormalMove(piece, targetField), new Promotion(newPiece, targetField));
     }
 
     static Castle kingSideCastle(GameView<ChessMove, ChessPiece> chess, int player) {
@@ -101,14 +120,19 @@ public class SANDecoder {
         if (Character.isLowerCase(move.charAt(0)))
             return PAWN;
         else
-            return switch (Character.toUpperCase(move.charAt(0))) {
-                case 'K' -> KING;
-                case 'Q' -> QUEEN;
-                case 'R' -> ROOK;
-                case 'B' -> BISHOP;
-                case 'N' -> KNIGHT;
-                default -> throw new SAN.InvalidSANMove("Invalid piece kind");
-            };
+            return charToKind(move.charAt(0));
+    }
+
+    static ChessPieceKind charToKind(char c) {
+        return switch (Character.toUpperCase(c)) {
+            case 'K' -> KING;
+            case 'Q' -> QUEEN;
+            case 'R' -> ROOK;
+            case 'B' -> BISHOP;
+            case 'N' -> KNIGHT;
+            default -> throw new SAN.InvalidSANMove("Invalid piece kind");
+        };
+
     }
 
     static Field targetField(String move) {

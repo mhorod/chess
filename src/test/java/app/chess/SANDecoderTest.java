@@ -3,7 +3,10 @@ package app.chess;
 import app.chess.board.StandardChessBoard;
 import app.chess.boards.AmbiguousMovesTestBoard;
 import app.chess.boards.CastleTestBoard;
+import app.chess.boards.PromotionTestBoard;
 import app.chess.boards.TestChessBoard;
+import app.chess.moves.NormalMove;
+import app.chess.moves.Promotion;
 import app.chess.san.ChessField;
 import app.chess.san.SAN;
 import org.junit.Test;
@@ -11,8 +14,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static app.chess.pieces.ChessPieceKind.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class SANDecoderTest {
     /**
@@ -27,7 +29,7 @@ public class SANDecoderTest {
     @Test
     public void pawn_move() {
         var chess = new Chess(new StandardChessBoard());
-        var move = SAN.decodeMove(chess, 0, "e4");
+        var move = SAN.decodeMove(chess, 0, "e4").get(0);
         var piece = move.getPiece();
         assertEquals(ChessField.fromString("e2"), piece.getPosition());
         assertEquals(PAWN, piece.getKind());
@@ -37,7 +39,7 @@ public class SANDecoderTest {
     @Test
     public void en_passant() {
         var chess = prepareChess(List.of("d4", "a5", "d5", "c5"));
-        var move = SAN.decodeMove(chess, 0, "dxc6");
+        var move = SAN.decodeMove(chess, 0, "dxc6").get(0);
         var piece = move.getPiece();
         assertEquals(ChessField.fromString("d5"), piece.getPosition());
         assertEquals(PAWN, piece.getKind());
@@ -46,7 +48,7 @@ public class SANDecoderTest {
     @Test
     public void rook_move() {
         var chess = new Chess(new TestChessBoard());
-        var move = SAN.decodeMove(chess, 0, "Ra2");
+        var move = SAN.decodeMove(chess, 0, "Ra2").get(0);
         var piece = move.getPiece();
         assertEquals(ChessField.fromString("a1"), piece.getPosition());
         assertEquals(ROOK, piece.getKind());
@@ -55,7 +57,7 @@ public class SANDecoderTest {
     @Test
     public void knight_move() {
         var chess = new Chess(new TestChessBoard());
-        var move = SAN.decodeMove(chess, 0, "Nf3");
+        var move = SAN.decodeMove(chess, 0, "Nf3").get(0);
         var piece = move.getPiece();
         assertEquals(ChessField.fromString("g1"), piece.getPosition());
         assertEquals(KNIGHT, piece.getKind());
@@ -64,7 +66,7 @@ public class SANDecoderTest {
     @Test
     public void bishop_move() {
         var chess = new Chess(new TestChessBoard());
-        var move = SAN.decodeMove(chess, 0, "Bf4");
+        var move = SAN.decodeMove(chess, 0, "Bf4").get(0);
         var piece = move.getPiece();
         assertEquals(ChessField.fromString("c1"), piece.getPosition());
         assertEquals(BISHOP, piece.getKind());
@@ -73,7 +75,7 @@ public class SANDecoderTest {
     @Test
     public void queen_move() {
         var chess = new Chess(new TestChessBoard());
-        var move = SAN.decodeMove(chess, 0, "Qd4");
+        var move = SAN.decodeMove(chess, 0, "Qd4").get(0);
         var piece = move.getPiece();
         assertEquals(ChessField.fromString("d1"), piece.getPosition());
         assertEquals(QUEEN, piece.getKind());
@@ -82,7 +84,7 @@ public class SANDecoderTest {
     @Test
     public void king_move() {
         var chess = new Chess(new TestChessBoard());
-        var move = SAN.decodeMove(chess, 0, "Kf2");
+        var move = SAN.decodeMove(chess, 0, "Kf2").get(0);
         var piece = move.getPiece();
         assertEquals(ChessField.fromString("e1"), piece.getPosition());
         assertEquals(KING, piece.getKind());
@@ -91,7 +93,7 @@ public class SANDecoderTest {
     @Test
     public void king_side_castle() {
         var chess = new Chess(new CastleTestBoard());
-        var move = SAN.decodeMove(chess, 0, "O-O");
+        var move = SAN.decodeMove(chess, 0, "O-O").get(0);
         var piece = move.getPiece();
         assertEquals(KING, piece.getKind());
         assertEquals(ChessField.fromString("e1"), piece.getPosition());
@@ -101,7 +103,7 @@ public class SANDecoderTest {
     @Test
     public void queen_side_castle() {
         var chess = new Chess(new CastleTestBoard());
-        var move = SAN.decodeMove(chess, 0, "O-O-O");
+        var move = SAN.decodeMove(chess, 0, "O-O-O").get(0);
         var piece = move.getPiece();
         assertEquals(KING, piece.getKind());
         assertEquals(ChessField.fromString("e1"), piece.getPosition());
@@ -140,7 +142,7 @@ public class SANDecoderTest {
     @Test
     public void specified_file() {
         var chess = new Chess(new AmbiguousMovesTestBoard());
-        var move = SAN.decodeMove(chess, 0, "Rad7");
+        var move = SAN.decodeMove(chess, 0, "Rad7").get(0);
         var piece = move.getPiece();
         assertEquals(ROOK, piece.getKind());
         assertEquals(ChessField.fromString("a7"), piece.getPosition());
@@ -149,7 +151,7 @@ public class SANDecoderTest {
     @Test
     public void specified_rank() {
         var chess = new Chess(new AmbiguousMovesTestBoard());
-        var move = SAN.decodeMove(chess, 0, "R1h5");
+        var move = SAN.decodeMove(chess, 0, "R1h5").get(0);
         var piece = move.getPiece();
         assertEquals(ROOK, piece.getKind());
         assertEquals(ChessField.fromString("h1"), piece.getPosition());
@@ -177,7 +179,7 @@ public class SANDecoderTest {
     @Test
     public void specified_both_rank_and_file() {
         var chess = new Chess(new AmbiguousMovesTestBoard());
-        var move = SAN.decodeMove(chess, 0, "Qa1c3");
+        var move = SAN.decodeMove(chess, 0, "Qa1c3").get(0);
         var piece = move.getPiece();
         assertEquals(QUEEN, piece.getKind());
         assertEquals(ChessField.fromString("a1"), piece.getPosition());
@@ -187,7 +189,7 @@ public class SANDecoderTest {
     public void move_with_check() {
         var chess = new Chess(new StandardChessBoard());
         // This move isn't really  a check, but it does not matter since we only want move
-        var move = SAN.decodeMove(chess, 0, "c4+");
+        var move = SAN.decodeMove(chess, 0, "c4+").get(0);
         var piece = move.getPiece();
         assertEquals(PAWN, piece.getKind());
         assertEquals(ChessField.fromString("c2"), piece.getPosition());
@@ -198,9 +200,20 @@ public class SANDecoderTest {
 
         var chess = new Chess(new StandardChessBoard());
         // This move isn't really  a checkmate, but it does not matter since we only want move
-        var move = SAN.decodeMove(chess, 0, "c4#");
+        var move = SAN.decodeMove(chess, 0, "c4#").get(0);
         var piece = move.getPiece();
         assertEquals(PAWN, piece.getKind());
         assertEquals(ChessField.fromString("c2"), piece.getPosition());
+    }
+
+    @Test
+    public void promotion() {
+        var chess = new Chess(new PromotionTestBoard());
+        var moves = SAN.decodeMove(chess, 0, "a8=Q");
+        assertTrue(moves.get(0) instanceof NormalMove);
+        assertTrue(moves.get(1) instanceof Promotion);
+        assertEquals(2, moves.size());
+        assertEquals(PAWN, moves.get(0).getPiece().getKind());
+        assertEquals(QUEEN, moves.get(1).getPiece().getKind());
     }
 }
