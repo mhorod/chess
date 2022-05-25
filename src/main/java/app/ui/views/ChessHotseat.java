@@ -33,7 +33,7 @@ public class ChessHotseat extends View {
         var hotSeatBoard = new NormalBoard<ChessPiece>(40, container.getGameStyle());
         ChessConnector.connect(hotSeatBoard, hotSeatPlayer);
 
-        var gameStatus = new Text();
+        var gameStatus = new Text("White moves");
         gameStatus.setTextAlignment(TextAlignment.CENTER);
         gameStatus.setFont(new Font(DerpyButton.font.getFamily(), 40));
 
@@ -49,15 +49,18 @@ public class ChessHotseat extends View {
                 if (chess.getState(1) == ChessState.MATED) {
                     gameStatus.setText("You win!");
                     restartButton.setVisible(true);
-                }
-                if (chess.getState(0) == ChessState.MATED) {
+                } else if (chess.getState(0) == ChessState.MATED) {
                     gameStatus.setText("You lose!");
                     restartButton.setVisible(true);
 
-                }
-                if (chess.getState(1 - player) == ChessState.DRAW) {
+                } else if (chess.getState(chess.getCurrentPlayer()) == ChessState.DRAW) {
                     gameStatus.setText("It's a draw!");
                     restartButton.setVisible(true);
+                } else {
+                    if (chess.getCurrentPlayer() == 0)
+                        gameStatus.setText("White moves");
+                    else
+                        gameStatus.setText("Black moves");
                 }
             }
         };

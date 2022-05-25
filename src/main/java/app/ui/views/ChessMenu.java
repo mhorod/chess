@@ -9,10 +9,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class PlayMenu extends VBox implements MenuView {
+public class ChessMenu extends VBox implements MenuView {
     ElephantSpace elephantSpace;
 
-    public PlayMenu(MenuContainer container) {
+    public ChessMenu(MenuContainer container) {
         super();
         var text = new Text("Play");
         text.setFont(new Font(DerpyButton.font.getFamily(), 60));
@@ -22,9 +22,9 @@ public class PlayMenu extends VBox implements MenuView {
         elephantSpace = new ElephantSpace();
         content.getChildren().add(elephantSpace);
         content.getChildren()
-                .add(new Menu(new String[]{"CHESS", "CHECKERS", "RETURN"}, new Runnable[]{() -> container.changeMenu(
-                        new ChessMenu(container)), () -> container.changeMenu(
-                        new CheckersMenu(container)), container::goBack}, container.getGameStyle()));
+                .add(new Menu(new String[]{"ALONE", "WITH FRIENDS", "RETURN"}, new Runnable[]{() -> container.changeView(
+                        new ChessAI(container.getContainer())), () -> container.changeView(
+                        new ChessHotseat(container.getContainer())), container::goBack}, container.getGameStyle()));
         getChildren().add(content);
         setAlignment(Pos.CENTER);
 

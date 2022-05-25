@@ -1,16 +1,14 @@
 package app.ui.views;
 
 import app.ai.dumb.DumbPlayer;
-import app.chess.Chess;
-import app.chess.ChessPiece;
-import app.chess.ChessState;
-import app.chess.board.StandardChessBoard;
-import app.chess.moves.ChessMove;
+import app.checkers.Checkers;
+import app.checkers.CheckersMove;
+import app.checkers.CheckersPiece;
 import app.core.interactor.InteractiveGame;
 import app.core.interactor.Spectator;
 import app.ui.Style;
 import app.ui.board.boards.NormalBoard;
-import app.ui.chess.ChessConnector;
+import app.ui.checkers.CheckersConnector;
 import app.ui.menu.DerpyButton;
 import app.ui.menu.MenuContainer;
 import app.utils.pieceplayer.StandalonePiecePlayer;
@@ -21,22 +19,22 @@ import javafx.scene.text.TextAlignment;
 
 import java.util.List;
 
-public class ChessAI extends View {
+public class CheckersAI extends View {
 
-    public ChessAI(ViewContainer container) {
+    public CheckersAI(ViewContainer container) {
         super(container);
 
-        Chess chess = new Chess(new StandardChessBoard());
-        var game = new InteractiveGame<>(chess);
+        var checkers = new Checkers();
+        var game = new InteractiveGame<>(checkers);
 
         var player = new StandalonePiecePlayer<>(game, 0);
-        var ai = new DumbPlayer<ChessMove, ChessPiece>();
+        var ai = new DumbPlayer<CheckersMove, CheckersPiece>();
 
         game.connectPlayer(1, ai);
         game.connectSpectator(ai);
 
-        var playerBoard = new NormalBoard<ChessPiece>(40, container.getGameStyle());
-        ChessConnector.connect(playerBoard, player);
+        var playerBoard = new NormalBoard<CheckersPiece>(40, container.getGameStyle());
+        CheckersConnector.connect(playerBoard, player);
 
         setAlignment(Pos.CENTER);
         getChildren().add(playerBoard);
@@ -48,24 +46,22 @@ public class ChessAI extends View {
         var restartButton = new DerpyButton("Play again!", container.getGameStyle().whitePiece);
         restartButton.setVisible(false);
         restartButton.setOnMouseClicked(e -> {
-            container.changeView(new ChessHotseat(container));
+            container.changeView(new CheckersAI(container));
         });
 
-        var spectator = new Spectator<ChessMove, ChessPiece>() {
+        var spectator = new Spectator<CheckersMove, CheckersPiece>() {
             @Override
-            public void update(int player, ChessMove move, List<ChessPiece> changedPieces) {
-                if (chess.getState(1) == ChessState.MATED) {
-                    gameStatus.setText("You win!");
-                    restartButton.setVisible(true);
-                }
-                if (chess.getState(0) == ChessState.MATED) {
-                    gameStatus.setText("You lose!");
-                    restartButton.setVisible(true);
+            public void update(int player, CheckersMove move, List<CheckersPiece> changedPieces) {
+                switch (checkers.getResult()) {
 
-                }
-                if (chess.getState(chess.getCurrentPlayer()) == ChessState.DRAW) {
-                    gameStatus.setText("It's a draw!");
-                    restartButton.setVisible(true);
+                    case WHITE_WON -> {
+                        gameStatus.setText("You win!");
+                        restartButton.setVisible(true);
+                    }
+                    case BLACK_WON -> {
+                        gameStatus.setText("You lose!");
+                        restartButton.setVisible(true);
+                    }
                 }
             }
         };

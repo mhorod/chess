@@ -21,6 +21,7 @@ public class Piece<M extends Move<P>, P extends app.core.game.Piece> {
             public void update() {
                 putDown();
                 graphical.update(getPiece());
+                if (!getPiece().isAlive()) board.removePiece(getPiece().getPosition());
                 behavior.onMove();
             }
         };
