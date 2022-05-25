@@ -32,7 +32,6 @@ public class SAN {
             player = 1 - player;
         }
     }
-
     public static void applyMoves(Chess chess, List<String> moves) {
         applyMoves(chess, moves, 0);
     }
