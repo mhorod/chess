@@ -1,15 +1,10 @@
 package app.ui;
 
-import app.ai.dumb.DumbPlayer;
-import app.chess.Chess;
-import app.chess.ChessPiece;
-import app.chess.board.StandardChessBoard;
-import app.chess.moves.ChessMove;
 import app.core.interactor.InteractiveGame;
-import app.ui.board.boards.InvertedBoard;
+import app.minesweeper.Minesweeper;
+import app.minesweeper.MinesweeperPiece;
 import app.ui.board.boards.NormalBoard;
-import app.ui.chess.ChessConnector;
-import app.utils.pieceplayer.PieceSpectator;
+import app.ui.minesweeper.MinesweeperConnector;
 import app.utils.pieceplayer.StandalonePiecePlayer;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -41,27 +36,19 @@ public class App extends Application {
         };
 
 
-        Chess chess = new Chess(new StandardChessBoard());
-        var game = new InteractiveGame<>(chess);
+        Minesweeper minesweeper = new Minesweeper();
+        var game = new InteractiveGame<>(minesweeper);
 
         var player = new StandalonePiecePlayer<>(game, 0);
-        var pieceSpectator = new PieceSpectator<>(game, game);
-
-        var ai = new DumbPlayer<ChessMove, ChessPiece>();
-        game.connectPlayer(1, ai);
-        game.connectSpectator(ai);
 
 
-        var hotSeatBoard = new NormalBoard<ChessPiece>(40, style);
-        ChessConnector.connect(hotSeatBoard, player);
+        var board = new NormalBoard<MinesweeperPiece>(40, style);
+        MinesweeperConnector.connect(board, player);
 
-        var spectatorBoard = new InvertedBoard<ChessPiece>(40, style);
-        ChessConnector.connect(spectatorBoard, pieceSpectator);
 
         HBox pane = new HBox();
         pane.setAlignment(Pos.CENTER);
-        pane.getChildren().add(hotSeatBoard);
-        pane.getChildren().add(spectatorBoard);
+        pane.getChildren().add(board);
         pane.setFillHeight(true);
         pane.setSpacing(100);
         Scene scene = new Scene(pane, 1024, 800, true);
