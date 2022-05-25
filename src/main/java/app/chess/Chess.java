@@ -88,6 +88,8 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
     @Override
     public List<ChessMove> getLegalMoves(int player, ChessPiece piece) {
+        if (!piece.isAlive()) return List.of();
+
         if (player != manager.getCurrentPlayer()) {
             return Collections.emptyList();
         }
