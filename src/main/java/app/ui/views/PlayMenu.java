@@ -20,11 +20,10 @@ public class PlayMenu extends VBox implements MenuView {
         var content = new HBox();
         elephantSpace = new ElephantSpace();
         content.getChildren().add(elephantSpace);
-        content.getChildren().add(new Menu(new String[]{"ALONE", "WITH FRIENDS", "RETURN"}, new Runnable[]{
-                () -> container.changeView(new ChessHotseat(container.getContainer())),
-                () -> container.changeMenu(new PlayMenu(container)),
-                container::goBack
-        }, container.getGameStyle()));
+        content.getChildren()
+               .add(new Menu(new String[]{"ALONE", "WITH FRIENDS", "RETURN"}, new Runnable[]{() -> container.changeView(
+                       new ChessAI(container.getContainer())), () -> container.changeView(
+                       new ChessHotseat(container.getContainer())), container::goBack}, container.getGameStyle()));
         getChildren().add(content);
         setAlignment(Pos.CENTER);
 
