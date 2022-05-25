@@ -42,13 +42,13 @@ public class App extends Application {
         container.changeView(menu);
         menu.appear();
         stage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            var scale = Math.min(stage.getWidth() / 1024, stage.getHeight() / 800);
+            var scale = Math.min(Math.min(stage.getWidth() / 1024, stage.getHeight() / 800), 1);
             container.setScaleX(scale);
             container.setScaleY(scale);
         });
 
         stage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            var scale = Math.min(stage.getWidth() / 1024, stage.getHeight() / 800);
+            var scale = Math.min(Math.min(stage.getWidth() / 1024, stage.getHeight() / 800), 1);
             container.setScaleX(scale);
             container.setScaleY(scale);
         });

@@ -10,6 +10,7 @@ import static app.chess.pieces.ChessPieceKind.*;
 public class ImageManager {
     public static final Image logo = new Image(ImageManager.class.getResource("/img/logo.png").toString());
     public static final Image button = new Image(ImageManager.class.getResource("/img/button.png").toString());
+    public static final Image longButton = new Image(ImageManager.class.getResource("/img/long_button.png").toString());
     private static final Map<ChessPieceKind, Image> pieces = Map.ofEntries(
             Map.entry(KNIGHT, new Image(ImageManager.class.getResource("/img/knight.png").toString())),
             Map.entry(KING, new Image(ImageManager.class.getResource("/img/king.png").toString())),

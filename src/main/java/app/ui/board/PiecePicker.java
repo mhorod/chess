@@ -41,6 +41,8 @@ public class PiecePicker<P extends Piece> extends Pane {
         piece.setOnMouseClicked(e -> {
             behavior.onPiecePick(p);
         });
+        piece.setOnMouseEntered(e -> piece.pickUp(field));
+        piece.setOnMouseExited(e -> piece.putDown(field));
         pieces.add(p);
         piece.putDownImmediately(field);
         setMaxWidth(getMaxWidth() + fieldSize);

@@ -13,6 +13,9 @@ import app.ui.menu.DerpyButton;
 import app.ui.menu.MenuContainer;
 import app.utils.pieceplayer.HotSeatPlayer;
 import javafx.geometry.Pos;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 import java.util.List;
 
@@ -29,17 +32,31 @@ public class ChessHotseat extends View {
         var hotSeatBoard = new NormalBoard<ChessPiece>(40, container.getGameStyle());
         ChessConnector.connect(hotSeatBoard, hotSeatPlayer);
 
+        var gameStatus = new Text();
+        gameStatus.setTextAlignment(TextAlignment.CENTER);
+        gameStatus.setFont(new Font(DerpyButton.font.getFamily(), 40));
+
+        var restartButton = new DerpyButton("Play again!", container.getGameStyle().whitePiece);
+        restartButton.setVisible(false);
+        restartButton.setOnMouseClicked(e -> {
+            container.changeView(new ChessHotseat(container));
+        });
+
         var spectator = new Spectator<ChessMove, ChessPiece>() {
             @Override
             public void update(int player, ChessMove move, List<ChessPiece> changedPieces) {
                 if (chess.getState(1) == ChessState.MATED) {
-                    System.out.println("You win!");
+                    gameStatus.setText("You win!");
+                    restartButton.setVisible(true);
                 }
                 if (chess.getState(0) == ChessState.MATED) {
-                    System.out.println("You lose!");
+                    gameStatus.setText("You lose!");
+                    restartButton.setVisible(true);
+
                 }
                 if (chess.getState(1 - player) == ChessState.DRAW) {
-                    System.out.println("It's a draw!");
+                    gameStatus.setText("It's a draw!");
+                    restartButton.setVisible(true);
                 }
             }
         };
@@ -49,15 +66,20 @@ public class ChessHotseat extends View {
         setAlignment(Pos.CENTER);
         getChildren().add(hotSeatBoard);
 
+        getChildren().add(gameStatus);
+
         var returnButton = new DerpyButton("Return", container.getGameStyle().whitePiece);
-        getChildren().add(returnButton);
         returnButton.setOnMouseClicked(e -> {
             var menu = new MenuContainer(container, container.getGameStyle());
             changeView(menu);
             menu.changeMenu(new MainMenu(menu));
         });
+        getChildren().add(returnButton);
+
+
+        getChildren().add(restartButton);
         //setFillHeight(true);
-        setSpacing(100);
+        setSpacing(10);
 
     }
 }

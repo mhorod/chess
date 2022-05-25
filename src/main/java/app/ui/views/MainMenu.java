@@ -23,7 +23,7 @@ public class MainMenu extends VBox implements MenuView {
 
         var menu = new Menu(new String[]{"PLAY", "SETTINGS", "GO RIGHT", "EXIT"}, new Runnable[]{
                 () -> container.changeMenu(new PlayMenu(container)),
-                this::doNothing,
+                () -> container.changeMenu(new SettingsMenu(container)),
                 () -> container.changeMenu(new FunnyMenu(container)),
                 Platform::exit,
         }, container.getGameStyle());
@@ -54,10 +54,7 @@ public class MainMenu extends VBox implements MenuView {
         setFillWidth(true);
         //setBackground(new Background(new BackgroundFill(container.getStyle().whiteField, new CornerRadii(10), Insets.EMPTY)));
     }
-
-    void doNothing() {
-    }
-
+    
     @Override
     public ElephantSpace getSpaceForElephant() {
         return elephantSpace;
