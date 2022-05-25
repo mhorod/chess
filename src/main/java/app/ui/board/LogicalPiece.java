@@ -11,6 +11,8 @@ import java.util.Map;
 
 public abstract class LogicalPiece<M extends Move<P>, P extends Piece> extends InteractivePiece<M, P> {
 
+    Map<P, M> legalPiecePicks = new HashMap<>();
+
     public Map<Field, M> getLegalMoveFields() {
         Map<Field, M> fields = new HashMap<>();
         for (var move : getLegalMoves()) {
@@ -21,6 +23,7 @@ public abstract class LogicalPiece<M extends Move<P>, P extends Piece> extends I
                 public void pieceMove(Piece piece, Field field) {
                     result = field;
                 }
+
             };
             move.match(matcher);
             if (matcher.result != null)
@@ -29,8 +32,31 @@ public abstract class LogicalPiece<M extends Move<P>, P extends Piece> extends I
         return fields;
     }
 
+    public Map<P, M> getLegalPiecePicks() {
+        legalPiecePicks = new HashMap<>();
+        for (var move : getLegalMoves()) {
+            var matcher = new MoveMatcher<P>() {
+                P result;
+
+                @Override
+                public void piecePick(P piece) {
+                    result = piece;
+                }
+
+            };
+            move.match(matcher);
+            if (matcher.result != null)
+                legalPiecePicks.put(matcher.result, move);
+        }
+        return legalPiecePicks;
+    }
+
     public void makeMove(Field field) {
         makeMove(getLegalMoveFields().get(field));
+    }
+
+    public void makePick(P piece) {
+        makeMove(legalPiecePicks.get(piece));
     }
 
     public abstract void update();

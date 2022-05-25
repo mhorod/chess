@@ -23,12 +23,19 @@ public class PieceSelected<P extends app.core.game.Piece> extends State<P> {
     protected void init() {
         board.selectPiece(selectedPiece);
         board.setLegalFields(legalFields);
+        board.showPiecePicker(selectedPiece.logical.getLegalPiecePicks().keySet().stream().toList());
     }
 
     @Override
     public void onMove() {
         board.setLegalFields(selectedPiece.logical.getLegalMoveFields().keySet());
+        board.showPiecePicker(selectedPiece.logical.getLegalPiecePicks().keySet().stream().toList());
         changeState(new PieceSelected<>(board, selectedPiece));
+    }
+
+    @Override
+    public void onPiecePick(P p) {
+        selectedPiece.logical.makePick(p);
     }
 
     @Override

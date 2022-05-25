@@ -88,12 +88,14 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
     @Override
     public List<ChessMove> getLegalMoves(int player, ChessPiece piece) {
+        if (!piece.isAlive()) return List.of();
+
         if (player != manager.getCurrentPlayer()) {
             return Collections.emptyList();
         }
 
         if (manager.thereIsPromotionPending()) {
-            if (piece == Utils.findPawnThatCanBePromoted(player, board)) {
+            if (piece.equals(Utils.findPawnThatCanBePromoted(player, board))) {
                 return getPromotionMoves(player);
             } else {
                 return Collections.emptyList();

@@ -41,6 +41,11 @@ public class Machine<P extends app.core.game.Piece> implements Behavior<P> {
     }
 
     @Override
+    public void onPiecePick(P p) {
+        current.onPiecePick(p);
+    }
+
+    @Override
     public void onPieceDeleted(Piece<?, P> p) {
         current.onPieceDeleted(p);
     }

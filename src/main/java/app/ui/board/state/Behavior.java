@@ -23,6 +23,9 @@ public interface Behavior<P extends app.core.game.Piece> {
     default void onPieceDeleted(Piece<?, P> p) {
     }
 
+    default void onPiecePick(P p) {
+    }
+
     default void onMove() {
 
     }
