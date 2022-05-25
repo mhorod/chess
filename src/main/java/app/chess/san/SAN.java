@@ -24,8 +24,8 @@ public class SAN {
     /**
      * Convert moves from SAN and apply them on the game alternating the player
      */
-    public static void applyMoves(Chess chess, List<String> moves) {
-        int player = 0;
+    public static void applyMoves(Chess chess, List<String> moves, int firstPlayer) {
+        int player = firstPlayer;
         for (var move : moves) {
             for (var decoded : decodeMove(chess, player, move))
                 chess.makeMove(player, decoded);
@@ -33,11 +33,22 @@ public class SAN {
         }
     }
 
+    public static void applyMoves(Chess chess, List<String> moves) {
+        applyMoves(chess, moves, 0);
+    }
+
     /**
      * Convert moves from a single SAN sequence and apply them on the game
      */
     public static void applyMoves(Chess chess, String moveSequence) {
-        applyMoves(chess, splitMoveSequence(moveSequence));
+        applyMoves(chess, splitMoveSequence(moveSequence), 0);
+    }
+
+    /**
+     * Convert moves from a single SAN sequence and apply them on the game
+     */
+    public static void applyMoves(Chess chess, String moveSequence, int firstPlayer) {
+        applyMoves(chess, splitMoveSequence(moveSequence), firstPlayer);
     }
 
     /**
