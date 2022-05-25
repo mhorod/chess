@@ -14,8 +14,8 @@ public class Piece<M extends Move<P>, P extends app.core.game.Piece> {
     Piece(GraphicalPiece<P> graphical, Behavior<P> behavior, Board<P> board, P piece) {
         this.graphical = graphical;
         this.board = board;
-        putDown(piece);
-        
+        putDownImmediatly(piece);
+
         this.logical = new LogicalPiece<>() {
             @Override
             public void update() {
@@ -52,6 +52,16 @@ public class Piece<M extends Move<P>, P extends app.core.game.Piece> {
     private void putDown(P piece) {
         var position = piece.getPosition();
         graphical.putDown(board.board.getGraphicalField(position));
+        if (piece.isAlive())
+            board.movePiece(this, previousPosition, position);
+        else
+            board.removePiece(this, position);
+        previousPosition = position;
+    }
+
+    private void putDownImmediatly(P piece) {
+        var position = piece.getPosition();
+        graphical.putDownImmediately(board.board.getGraphicalField(position));
         board.movePiece(this, previousPosition, position);
         previousPosition = position;
     }

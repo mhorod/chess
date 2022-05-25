@@ -1,15 +1,11 @@
 package app.ui;
 
-import app.core.interactor.InteractiveGame;
-import app.minesweeper.Minesweeper;
-import app.minesweeper.MinesweeperPiece;
-import app.ui.board.boards.NormalBoard;
-import app.ui.minesweeper.MinesweeperConnector;
-import app.utils.pieceplayer.StandalonePiecePlayer;
+import app.ui.menu.MenuContainer;
+import app.ui.views.MainMenu;
+import app.ui.views.ViewContainer;
 import javafx.application.Application;
-import javafx.geometry.Pos;
+import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -34,25 +30,31 @@ public class App extends Application {
                 font = Font.loadFont(App.class.getResource("/fonts/regular.otf").toExternalForm(), 20);
             }
         };
+        var container = new ViewContainer(style);
+        var menu = new MenuContainer(container, style);
+
+        var mainMenu = new MainMenu(menu);
+        Platform.runLater(() -> {
+            menu.changeMenu(mainMenu);
+        });
 
 
-        Minesweeper minesweeper = new Minesweeper();
-        var game = new InteractiveGame<>(minesweeper);
+        container.changeView(menu);
+        menu.appear();
+        stage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            var scale = Math.min(Math.min(stage.getWidth() / 1024, stage.getHeight() / 800), 1);
+            container.setScaleX(scale);
+            container.setScaleY(scale);
+        });
 
-        var player = new StandalonePiecePlayer<>(game, 0);
+        stage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            var scale = Math.min(Math.min(stage.getWidth() / 1024, stage.getHeight() / 800), 1);
+            container.setScaleX(scale);
+            container.setScaleY(scale);
+        });
 
-
-        var board = new NormalBoard<MinesweeperPiece>(40, style);
-        MinesweeperConnector.connect(board, player);
-
-
-        HBox pane = new HBox();
-        pane.setAlignment(Pos.CENTER);
-        pane.getChildren().add(board);
-        pane.setFillHeight(true);
-        pane.setSpacing(100);
-        Scene scene = new Scene(pane, 1024, 800, true);
-        scene.setFill(Color.web("#222"));
+        Scene scene = new Scene(container, 1024, 800);
+        scene.setFill(style.whiteField);
         stage.setScene(scene);
         stage.setTitle("Epic chess");
         stage.show();

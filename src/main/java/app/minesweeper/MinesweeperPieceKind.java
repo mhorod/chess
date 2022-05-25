@@ -18,7 +18,7 @@ public class MinesweeperPieceKind {
     }
 
     public enum Type {
-        COVERED_EMPTY, UNCOVERED_EMPTY, BOMB, FLAG, NUMBER, SHOVEL
+        COVERED_EMPTY, UNCOVERED_EMPTY, MINE, FLAG, NUMBER, SHOVEL
     }
 
 }

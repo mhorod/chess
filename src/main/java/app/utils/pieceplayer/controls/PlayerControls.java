@@ -3,6 +3,7 @@ package app.utils.pieceplayer.controls;
 import app.core.game.Piece;
 import app.core.game.moves.Move;
 import app.core.game.moves.PieceMove;
+import app.core.game.moves.PiecePick;
 import app.core.interactor.Player;
 import app.utils.pieceplayer.IllegalMoveAttempt;
 
@@ -24,7 +25,9 @@ public class PlayerControls<M extends Move<P>, P extends Piece> extends PieceCon
 
     @Override
     public void makeMove(M move) {
-        if (!(move instanceof PieceMove<?>))
+        if (move instanceof PiecePick<?>)
+            player.makeMove(move);
+        else if (!(move instanceof PieceMove<?>))
             throw new IllegalMoveAttempt();
         else if (!piece.equals(((PieceMove<?>) move).getPiece()))
             throw new IllegalMoveAttempt("Piece specified by the move does not match piece of this");

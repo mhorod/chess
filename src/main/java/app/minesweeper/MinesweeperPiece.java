@@ -7,6 +7,7 @@ public class MinesweeperPiece implements Piece {
     Field position;
     boolean isAlive = true;
     MinesweeperPieceKind kind;
+    boolean isFake = false;
 
     public MinesweeperPiece(Field position, MinesweeperPieceKind kind) {
         this.position = position;
@@ -34,5 +35,17 @@ public class MinesweeperPiece implements Piece {
 
     public boolean isCovered() {
         return kind.isCovered();
+    }
+
+    public boolean isFlagged() {
+        return kind.type == MinesweeperPieceKind.Type.FLAG;
+    }
+
+    @Override
+    public int hashCode() {
+        if (isFake) {
+            return kind.type.hashCode();
+        } else
+            return position.hashCode() ^ kind.hashCode();
     }
 }

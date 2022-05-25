@@ -30,6 +30,11 @@ public abstract class GraphicalPiece<P extends app.core.game.Piece> extends Colo
         setCenterFluid(graphicalField.getCenter());
     }
 
+    public void putDownImmediately(GraphicalField graphicalField) {
+        setSize(graphicalField.getSize());
+        setCenter(graphicalField.getCenter());
+    }
+
     public void setSize(double size) {
         setX(getCenter().x() - size / 2);
         setY(getCenter().y() - size / 2);
