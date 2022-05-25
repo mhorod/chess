@@ -2,8 +2,8 @@ package app.ui.views;
 
 import app.ai.dumb.DumbPlayer;
 import app.chess.Chess;
-import app.chess.ChessBoard;
 import app.chess.ChessPiece;
+import app.chess.board.StandardChessBoard;
 import app.chess.moves.ChessMove;
 import app.core.interactor.InteractiveGame;
 import app.ui.board.boards.NormalBoard;
@@ -18,7 +18,7 @@ public class ChessAI extends View {
     public ChessAI(ViewContainer container) {
         super(container);
 
-        Chess chess = new Chess(new ChessBoard());
+        Chess chess = new Chess(new StandardChessBoard());
         var game = new InteractiveGame<>(chess);
 
         var player = new StandalonePiecePlayer<>(game, 0);

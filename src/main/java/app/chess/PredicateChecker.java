@@ -1,10 +1,13 @@
 package app.chess;
 
-import app.chess.moves.*;
-import app.chess.pieces.*;
-import app.chess.utils.*;
+import app.chess.moves.Castle;
+import app.chess.moves.ChessMove;
+import app.chess.moves.NormalMove;
+import app.chess.moves.Promotion;
+import app.chess.pieces.ChessPieceFactory;
+import app.chess.utils.Utils;
 
-import java.util.function.*;
+import java.util.function.Function;
 
 final class PredicateChecker {
     private PredicateChecker() {
@@ -37,7 +40,7 @@ final class PredicateChecker {
             return checkPredicateForNormalMove(predicate, move, board, manager, mover);
         } else if (move.getClass() == Castle.class) {
             return checkPredicateForCastling(predicate, (Castle) move, board, manager, mover);
-        } else if (move.getClass() == PiecePick.class) {
+        } else if (move.getClass() == Promotion.class) {
             return checkPredicateForPiecePick(predicate, move, board, manager, mover);
         } else {
             //It shouldn't happen, but if that happens it means that somebody decided to add a new move to the game

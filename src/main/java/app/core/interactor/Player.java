@@ -59,4 +59,11 @@ public class Player<M extends Move<P>, P extends Piece> {
             throw new UseOfUnconnectedPlayer();
         return game.makeMove(player, move);
     }
+
+    /**
+     * Returns in-game id of this player
+     */
+    public int getID() {
+        return player;
+    }
 }

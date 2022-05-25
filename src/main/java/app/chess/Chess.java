@@ -1,13 +1,22 @@
 package app.chess;
 
-import app.chess.moves.*;
-import app.chess.pieces.*;
-import app.chess.rules.*;
-import app.chess.utils.*;
-import app.core.game.*;
+import app.chess.board.ChessBoard;
+import app.chess.moves.ChessMove;
+import app.chess.moves.Promotion;
+import app.chess.pieces.Bishop;
+import app.chess.pieces.Knight;
+import app.chess.pieces.Queen;
+import app.chess.pieces.Rook;
+import app.chess.rules.Rule;
+import app.chess.rules.StandardValidator;
+import app.chess.rules.Validator;
+import app.chess.utils.Utils;
+import app.core.game.Game;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
 
 public class Chess implements Game<ChessMove, ChessPiece> {
     public static final int SIZE = 8;
@@ -17,13 +26,13 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     ChessPiece[][] board;
     private List<Rule> ruleset = new ArrayList<>();
 
-    public Chess(Board board) {
-        this.board = board.pieces;
+    public Chess(ChessBoard board) {
+        this.board = board.getPieces();
         validator = new StandardValidator();
         ruleset = validator.getDefaultRules();
     }
 
-    public Chess(Board board, Validator validator) {
+    public Chess(ChessBoard board, Validator validator) {
         this.validator = validator;
     }
 
@@ -56,7 +65,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         List<ChessMove> answer = new ArrayList<>();
 
         for (var piece : subAnswer) {
-            answer.add(new PiecePick(piece.wrap(), where));
+            answer.add(new Promotion(piece.wrap(), where));
         }
 
         return answer;
