@@ -1,22 +1,14 @@
 package app.chess;
 
-import app.chess.board.ChessBoard;
-import app.chess.moves.ChessMove;
-import app.chess.moves.Promotion;
-import app.chess.pieces.Bishop;
-import app.chess.pieces.Knight;
-import app.chess.pieces.Queen;
-import app.chess.pieces.Rook;
-import app.chess.rules.Rule;
-import app.chess.rules.StandardValidator;
-import app.chess.rules.Validator;
-import app.chess.utils.Utils;
-import app.core.game.Game;
+import app.chess.board.*;
+import app.chess.moves.*;
+import app.chess.pieces.*;
+import app.chess.rules.*;
+import app.chess.utils.*;
+import app.core.game.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
+import java.util.*;
+import java.util.function.*;
 
 public class Chess implements Game<ChessMove, ChessPiece> {
     public static final int SIZE = 8;
@@ -117,6 +109,10 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     }
 
     public ChessState getState(int player) {
+        if (manager.getCurrentPlayer() != player) {
+            return ChessState.OK;
+        }
+
         if (getLegalMoves(player).isEmpty()) {
             if (Utils.kingIsSafe(player, board)) {
                 return ChessState.DRAW;
@@ -132,6 +128,9 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         }
     }
 
+    public int getCurrentPlayer() {
+        return manager.getCurrentPlayer();
+    }
 
     public Boolean checkIfEnemyKingIsCheckedAfterMove(ChessMove move) {
         Function<ChessPiece[][], Boolean> checkLambda = (board) -> {
