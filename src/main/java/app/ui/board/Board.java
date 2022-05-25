@@ -38,7 +38,7 @@ public class Board<P extends app.core.game.Piece> {
 
     private void markAsLegal(Field field) {
         if (pieces.containsKey(field))
-            pieces.get(field).highlight();
+            pieces.get(field).highlight(board.style.whitePieceBorder);
         else
             board.getGraphicalField(field).markAsLegal();
     }
@@ -55,6 +55,10 @@ public class Board<P extends app.core.game.Piece> {
 
     private void unhighlight(Field field) {
         board.getGraphicalField(field).unhighlight();
+    }
+
+    public void removePiece(Field f) {
+        pieces.remove(f);
     }
 
     public void setLegalFields(Set<Field> legalFields) {
@@ -96,9 +100,7 @@ public class Board<P extends app.core.game.Piece> {
             return;
         }
 
-        var picker = new PiecePicker<>(board.fieldSize, board.style, supplier, behavior);
-        for (var p : pieces)
-            picker.addPiece(p);
+        var picker = new PiecePicker<>(board.fieldSize, board.style, supplier, behavior, pieces);
         board.showPicker(picker);
     }
 

@@ -7,6 +7,7 @@ import app.chess.board.StandardChessBoard;
 import app.chess.moves.ChessMove;
 import app.core.interactor.InteractiveGame;
 import app.core.interactor.Spectator;
+import app.ui.Style;
 import app.ui.board.boards.NormalBoard;
 import app.ui.chess.ChessConnector;
 import app.ui.menu.DerpyButton;
@@ -32,7 +33,7 @@ public class ChessHotseat extends View {
         var hotSeatBoard = new NormalBoard<ChessPiece>(40, container.getGameStyle());
         ChessConnector.connect(hotSeatBoard, hotSeatPlayer);
 
-        var gameStatus = new Text();
+        var gameStatus = new Text("White moves");
         gameStatus.setTextAlignment(TextAlignment.CENTER);
         gameStatus.setFont(new Font(DerpyButton.font.getFamily(), 40));
 
@@ -48,15 +49,18 @@ public class ChessHotseat extends View {
                 if (chess.getState(1) == ChessState.MATED) {
                     gameStatus.setText("You win!");
                     restartButton.setVisible(true);
-                }
-                if (chess.getState(0) == ChessState.MATED) {
+                } else if (chess.getState(0) == ChessState.MATED) {
                     gameStatus.setText("You lose!");
                     restartButton.setVisible(true);
 
-                }
-                if (chess.getState(1 - player) == ChessState.DRAW) {
+                } else if (chess.getState(chess.getCurrentPlayer()) == ChessState.DRAW) {
                     gameStatus.setText("It's a draw!");
                     restartButton.setVisible(true);
+                } else {
+                    if (chess.getCurrentPlayer() == 0)
+                        gameStatus.setText("White moves");
+                    else
+                        gameStatus.setText("Black moves");
                 }
             }
         };
@@ -80,6 +84,11 @@ public class ChessHotseat extends View {
         getChildren().add(restartButton);
         //setFillHeight(true);
         setSpacing(10);
+
+    }
+
+    @Override
+    protected void setGameStyle(Style style) {
 
     }
 }

@@ -1,11 +1,13 @@
 package app.ui.views;
 
+import app.chess.pieces.ChessPieceKind;
 import app.ui.ImageManager;
 import app.ui.Style;
 import app.ui.menu.DerpyButton;
 import app.ui.menu.ElephantSpace;
 import app.ui.menu.MenuContainer;
 import app.ui.menu.MenuView;
+import app.ui.styles.Styles;
 import app.ui.utils.ColoredImage;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -35,7 +37,8 @@ public class StyleMenu extends VBox implements MenuView {
                 .add(new Menu(new String[]{"RETURN"}, new Runnable[]{
                         container::goBack
                 }, container.getGameStyle()));*/
-        buttons.getChildren().add(new StyleButton("epic", container.getGameStyle()));
+        for (var entry : Styles.styles.entrySet())
+            buttons.getChildren().add(new StyleButton(entry.getKey(), entry.getValue(), container.getContainer()));
 
         content.getChildren().add(buttons);
         getChildren().add(content);
@@ -52,12 +55,17 @@ public class StyleMenu extends VBox implements MenuView {
     public Node getContent() {
         return this;
     }
+
+    @Override
+    public void setGameStyle(Style style) {
+
+    }
 }
 
 class StyleButton extends StackPane {
-    StyleButton(String name, Style style) {
+    StyleButton(String name, Style style, ViewContainer container) {
 
-        var background = new ColoredImage(ImageManager.longButton, style.whiteField);
+        var background = new ColoredImage(ImageManager.longButton, style.background);
         background.setPreserveRatio(true);
         background.setFitWidth(256);
 
@@ -71,24 +79,36 @@ class StyleButton extends StackPane {
         }
         content.add(textGraphic, 0, 0);
 
+        var squares = new HBox();
+        squares.setAlignment(Pos.CENTER_RIGHT);
+        squares.setSpacing(-10);
+        var piece = new ColoredImage(ImageManager.getPieceImage(ChessPieceKind.PAWN), style.whitePiece);
+        piece.setFitWidth(40);
+        piece.setPreserveRatio(true);
+        squares.getChildren().add(piece);
+        piece = new ColoredImage(ImageManager.getPieceImage(ChessPieceKind.PAWN), style.blackPiece);
+        piece.setFitWidth(40);
+        piece.setPreserveRatio(true);
+        squares.getChildren().add(piece);
+        content.add(squares, 1, 0);
 
         getChildren().add(background);
         getChildren().add(content);
 
         var column1 = new ColumnConstraints();
         column1.setHalignment(HPos.LEFT);
-        column1.setPercentWidth(70);
+        column1.setPercentWidth(60);
 
         var column2 = new ColumnConstraints();
         column2.setHalignment(HPos.RIGHT);
-        column2.setPercentWidth(30);
+        column2.setPercentWidth(40);
         var row1 = new RowConstraints();
         row1.setValignment(VPos.CENTER);
         row1.setPercentHeight(100);
 
         content.getColumnConstraints().addAll(column1, column2);
         content.getRowConstraints().add(row1);
-        content.setPadding(new Insets(10));
+        content.setPadding(new Insets(15));
 
 
         setOnMouseEntered(e -> {
@@ -99,6 +119,10 @@ class StyleButton extends StackPane {
         setOnMouseExited(e -> {
             setScaleX(1);
             setScaleY(1);
+        });
+
+        setOnMouseClicked(e -> {
+            container.setGameStyle(style);
         });
         setCursor(Cursor.HAND);
     }

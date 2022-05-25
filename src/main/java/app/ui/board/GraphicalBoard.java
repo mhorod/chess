@@ -16,7 +16,8 @@ public abstract class GraphicalBoard<P extends app.core.game.Piece> extends VBox
     protected final GraphicalField[][] graphicalFields = new GraphicalField[8][8];
     double fieldSize;
     Pane boardWithPieces = new Pane();
-    PiecePicker<P> picker;
+    PiecePicker<P> picker, oldPicker;
+
 
     public GraphicalBoard(double fieldSize, Style style) {
         this.style = style;
@@ -103,7 +104,7 @@ public abstract class GraphicalBoard<P extends app.core.game.Piece> extends VBox
     }
 
     public void showPicker(PiecePicker<P> picker) {
-        if (this.picker != null) {
+        if (this.oldPicker == null && this.picker != null) {
             hidePicker();
             this.picker = picker;
         } else {
@@ -115,7 +116,7 @@ public abstract class GraphicalBoard<P extends app.core.game.Piece> extends VBox
     }
 
     private void showPicker() {
-        if (this.picker == null) return;
+        if (this.picker == null || this.oldPicker != null) return;
         picker.setTranslateY(100);
         getChildren().add(0, picker);
 
@@ -127,15 +128,16 @@ public abstract class GraphicalBoard<P extends app.core.game.Piece> extends VBox
     }
 
     public void hidePicker() {
-        if (picker == null) return;
-        var transition = new TranslateTransition(Duration.seconds(0.2), picker);
+        if (picker == null || oldPicker != null) return;
+        oldPicker = picker;
+        picker = null;
+        var transition = new TranslateTransition(Duration.seconds(0.2), oldPicker);
         transition.setFromY(0);
         transition.setToY(100);
         transition.play();
-        final var oldPicker = picker;
-        picker = null;
         transition.setOnFinished(e -> {
             getChildren().remove(oldPicker);
+            oldPicker = null;
             showPicker();
         });
 

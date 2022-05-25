@@ -21,6 +21,7 @@ public class Piece<M extends Move<P>, P extends app.core.game.Piece> {
             public void update() {
                 putDown();
                 graphical.update(getPiece());
+                if (!getPiece().isAlive()) board.removePiece(getPiece().getPosition());
                 behavior.onMove();
             }
         };
@@ -70,8 +71,8 @@ public class Piece<M extends Move<P>, P extends app.core.game.Piece> {
         graphical.pickUp(board.board.getGraphicalField(logical.getPiece().getPosition()));
     }
 
-    public void highlight() {
-        graphical.highlight(Color.web("#38a7d6"));
+    public void highlight(Color color) {
+        graphical.highlight(color);
     }
 
     public void unhighlight() {

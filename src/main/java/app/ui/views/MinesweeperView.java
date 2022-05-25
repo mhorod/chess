@@ -3,6 +3,7 @@ package app.ui.views;
 import app.core.interactor.InteractiveGame;
 import app.minesweeper.Minesweeper;
 import app.minesweeper.MinesweeperPiece;
+import app.ui.Style;
 import app.ui.board.boards.NormalBoard;
 import app.ui.menu.DerpyButton;
 import app.ui.menu.MenuContainer;
@@ -35,5 +36,11 @@ public class MinesweeperView extends View {
         });
         //setFillHeight(true);
         setSpacing(100);
+    }
+
+    @Override
+    protected void setGameStyle(Style style)
+    {
+        
     }
 }

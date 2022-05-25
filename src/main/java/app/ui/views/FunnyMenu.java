@@ -1,5 +1,6 @@
 package app.ui.views;
 
+import app.ui.Style;
 import app.ui.menu.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -42,5 +43,10 @@ public class FunnyMenu extends VBox implements MenuView {
     @Override
     public Node getContent() {
         return this;
+    }
+
+    @Override
+    public void setGameStyle(Style style) {
+
     }
 }

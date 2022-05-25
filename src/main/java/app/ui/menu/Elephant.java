@@ -2,6 +2,7 @@ package app.ui.menu;
 
 import app.chess.pieces.ChessPieceKind;
 import app.ui.ImageManager;
+import app.ui.Style;
 import app.ui.utils.ColoredImage;
 import javafx.animation.Transition;
 import javafx.application.Platform;
@@ -16,13 +17,14 @@ public class Elephant extends Pane {
     Circle eye = new Circle(5);
     Circle outerEye = new Circle(10);
     double eyeX = 0.34, eyeY = 0.29;
+    ColoredImage piece;
     ElephantSpace currentSpace;
     boolean flipped = false;
     double mouseX, mouseY;
 
     public Elephant(Color color, ElephantSpace currentSpace) {
         this.currentSpace = currentSpace;
-        var piece = new ColoredImage(ImageManager.getPieceImageHQ(ChessPieceKind.BISHOP), color);
+        piece = new ColoredImage(ImageManager.getPieceImageHQ(ChessPieceKind.BISHOP), color);
         piece.setFitWidth(100);
         piece.setPreserveRatio(true);
         piece.setViewport(new Rectangle2D(30 * 4, 0, 72 * 4, 512));
@@ -53,7 +55,7 @@ public class Elephant extends Pane {
         var targetBounds = new Point2D(target.getMinX(), target.getCenterY());
         //targetBounds = getParent().sceneToLocal(targetBounds);
         targetBounds = new Point2D(targetBounds.getX(), targetBounds.getY() - getHeight() / 2);
-        new JumpTransition(300, targetBounds).play();
+        new JumpTransition(400, targetBounds).play();
         currentSpace = newSpace;
     }
 
@@ -67,6 +69,10 @@ public class Elephant extends Pane {
             dir = dir.normalize().multiply(5);
         eye.setCenterX(eyePos.getX() + dir.getX());
         eye.setCenterY(eyePos.getY() + dir.getY());
+    }
+
+    public void setGameStyle(Style style) {
+        piece.setColor(style.whitePiece);
     }
 
     class JumpTransition extends Transition {
