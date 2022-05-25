@@ -29,7 +29,9 @@ public class PiecePlayerTest {
         });
 
 
-        var otherPieceMoves = pieces.get(1).getLegalMoves();
-        assertThrows(IllegalMoveAttempt.class, () -> pieces.get(0).makeMove(otherPieceMoves.get(0)));
+        var otherPieceMoves = pieces.get(2).getLegalMoves();
+        System.out.println(otherPieceMoves);
+        var otherMove = otherPieceMoves.get(0);
+        assertThrows(IllegalMoveAttempt.class, () -> pieces.get(0).makeMove(otherMove));
     }
 }

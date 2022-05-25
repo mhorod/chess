@@ -1,8 +1,12 @@
 package app.mock;
 
-import app.core.game.*;
+import app.core.game.Field;
+import app.core.game.Game;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MockGame implements Game<MockMove, MockPiece> {
 
@@ -16,7 +20,7 @@ public class MockGame implements Game<MockMove, MockPiece> {
         playerPieces.put(1, new ArrayList<>());
 
         for (var i = 0; i < 4; i++) {
-            var piece = new MockPiece(i);
+            var piece = new MockPiece(i % 2);
             pieces.add(piece);
             playerPieces.get(i % 2).add(piece);
         }
