@@ -18,6 +18,7 @@ public class MenuContainer extends View {
     HBox viewsContainer = new HBox();
     Pane pane = new Pane();
     ArrayList<MenuView> menuViews = new ArrayList<>();
+    double centerX = 0;
 
     public MenuContainer(ViewContainer parent, Style style) {
         super(parent);
@@ -26,6 +27,11 @@ public class MenuContainer extends View {
         getChildren().add(pane);
         setFillWidth(true);
         setAlignment(Pos.CENTER);
+
+        pane.widthProperty().addListener((obs, oldVal, newVal) -> {
+            if (!menuViews.isEmpty())
+                pane.setTranslateX(getWidth() / 2 - viewsContainer.getWidth() + menuViews.get(menuViews.size() - 1).getContent().getLayoutBounds().getWidth() / 2);
+        });
 
     }
 

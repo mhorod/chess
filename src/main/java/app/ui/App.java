@@ -41,6 +41,17 @@ public class App extends Application {
 
         container.changeView(menu);
         menu.appear();
+        stage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            var scale = Math.min(stage.getWidth() / 1024, stage.getHeight() / 800);
+            container.setScaleX(scale);
+            container.setScaleY(scale);
+        });
+
+        stage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            var scale = Math.min(stage.getWidth() / 1024, stage.getHeight() / 800);
+            container.setScaleX(scale);
+            container.setScaleY(scale);
+        });
 
         Scene scene = new Scene(container, 1024, 800);
         scene.setFill(style.whiteField);

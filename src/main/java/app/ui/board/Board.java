@@ -17,6 +17,7 @@ public class Board<P extends app.core.game.Piece> {
     Field highlightedField;
     GraphicalBoard<P> board;
     Piece<?, P> selectedPiece;
+    Function<P, GraphicalPiece<P>> supplier;
 
     public <M extends Move<P>> Board(
             PiecePlayer<M, P> player, GraphicalBoard<P> board, Function<P, GraphicalPiece<P>> supplier
@@ -31,6 +32,7 @@ public class Board<P extends app.core.game.Piece> {
             board.add(piece.graphical);
             return piece.logical;
         });
+        this.supplier = supplier;
         board.connectBehavior(behavior);
     }
 
@@ -82,6 +84,24 @@ public class Board<P extends app.core.game.Piece> {
         pieces.put(to, piece);
     }
 
+    public void removePiece(Piece<?, P> piece, Field from) {
+        if (pieces.get(from) == piece)
+            pieces.remove(from);
+    }
+
+    public void showPiecePicker(List<P> pieces) {
+        if (board == null) return;
+        if (pieces.isEmpty()) {
+            board.hidePicker();
+            return;
+        }
+
+        var picker = new PiecePicker<>(board.fieldSize, board.style, supplier, behavior);
+        for (var p : pieces)
+            picker.addPiece(p);
+        board.showPicker(picker);
+    }
+
     public void selectPiece(Piece<?, P> piece) {
         if (piece == null) {
             if (selectedPiece != null)
@@ -102,7 +122,7 @@ public class Board<P extends app.core.game.Piece> {
 
     public Field getNearest(Set<Field> fields, Position position) {
         return fields.stream()
-                     .min((a, b) -> (int) Math.signum(distance2(a, position) - distance2(b, position)))
-                     .orElse(null);
+                .min((a, b) -> (int) Math.signum(distance2(a, position) - distance2(b, position)))
+                .orElse(null);
     }
 }

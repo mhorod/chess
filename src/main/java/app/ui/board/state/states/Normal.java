@@ -5,6 +5,7 @@ import app.ui.board.Piece;
 import app.ui.board.state.State;
 import javafx.scene.input.MouseEvent;
 
+import java.util.List;
 import java.util.Set;
 
 public class Normal<P extends app.core.game.Piece> extends State<P> {
@@ -19,6 +20,7 @@ public class Normal<P extends app.core.game.Piece> extends State<P> {
         board.selectPiece(null);
         board.setHighlightedField(null);
         board.setLegalFields(Set.of());
+        board.showPiecePicker(List.of());
     }
 
     @Override
