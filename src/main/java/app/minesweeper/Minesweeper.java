@@ -128,6 +128,7 @@ public class Minesweeper implements Game<MinesweeperMove, MinesweeperPiece> {
 
     @Override
     public List<MinesweeperMove> getLegalMoves(int player) {
+        if (lost) return List.of();
         return pieces.values()
                      .stream()
                      .filter(MinesweeperPiece::isCovered)
@@ -137,7 +138,8 @@ public class Minesweeper implements Game<MinesweeperMove, MinesweeperPiece> {
 
     @Override
     public List<MinesweeperMove> getLegalMoves(int player, MinesweeperPiece piece) {
-        if (!piece.isCovered())
+
+        if (lost || !piece.isCovered())
             return List.of();
         else {
             var flagPiece = new MinesweeperPiece(piece.position, new MinesweeperPieceKind(FLAG));
@@ -152,7 +154,7 @@ public class Minesweeper implements Game<MinesweeperMove, MinesweeperPiece> {
     }
 
     boolean won() {
-        return !lost && pieces.values().stream().allMatch(p -> !p.isCovered() || p.isFlagged());
+        return !lost && pieces.values().stream().allMatch(p -> !p.isAlive || !p.isCovered() || p.isFlagged());
     }
 
     @Override
