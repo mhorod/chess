@@ -128,6 +128,9 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         }
     }
 
+    public int getCurrentPlayer() {
+        return manager.getCurrentPlayer();
+    }
 
     public Boolean checkIfEnemyKingIsCheckedAfterMove(ChessMove move) {
         Function<ChessPiece[][], Boolean> checkLambda = (board) -> {
