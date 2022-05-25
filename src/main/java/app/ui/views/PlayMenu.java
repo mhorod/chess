@@ -1,5 +1,6 @@
 package app.ui.views;
 
+import app.ui.Style;
 import app.ui.menu.*;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -21,9 +22,9 @@ public class PlayMenu extends VBox implements MenuView {
         elephantSpace = new ElephantSpace();
         content.getChildren().add(elephantSpace);
         content.getChildren()
-               .add(new Menu(new String[]{"ALONE", "WITH FRIENDS", "RETURN"}, new Runnable[]{() -> container.changeView(
-                       new ChessAI(container.getContainer())), () -> container.changeView(
-                       new ChessHotseat(container.getContainer())), container::goBack}, container.getGameStyle()));
+                .add(new Menu(new String[]{"ALONE", "WITH FRIENDS", "RETURN"}, new Runnable[]{() -> container.changeView(
+                        new ChessAI(container.getContainer())), () -> container.changeView(
+                        new ChessHotseat(container.getContainer())), container::goBack}, container.getGameStyle()));
         getChildren().add(content);
         setAlignment(Pos.CENTER);
 
@@ -37,5 +38,10 @@ public class PlayMenu extends VBox implements MenuView {
     @Override
     public Node getContent() {
         return this;
+    }
+
+    @Override
+    public void setGameStyle(Style style) {
+
     }
 }

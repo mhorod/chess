@@ -10,9 +10,10 @@ import javafx.scene.text.Text;
 
 public class DerpyButton extends StackPane {
     public static final Font font = Font.loadFont(DerpyButton.class.getResource("/fonts/scb.ttf").toExternalForm(), 30);
+    ColoredImage background;
 
     public DerpyButton(String text, Color color) {
-        var background = new ColoredImage(ImageManager.button, color);
+        background = new ColoredImage(ImageManager.button, color);
         background.setPreserveRatio(true);
         background.setFitWidth(128);
 
@@ -36,5 +37,9 @@ public class DerpyButton extends StackPane {
             setScaleY(1);
         });
         setCursor(Cursor.HAND);
+    }
+
+    public void setColor(Color color) {
+        background.setColor(color);
     }
 }

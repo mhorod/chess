@@ -96,4 +96,11 @@ public class MenuContainer extends View {
     public Style getGameStyle() {
         return style;
     }
+
+    @Override
+    protected void setGameStyle(Style style) {
+        for (var menuView : menuViews)
+            menuView.setGameStyle(style);
+        elephant.setGameStyle(style);
+    }
 }

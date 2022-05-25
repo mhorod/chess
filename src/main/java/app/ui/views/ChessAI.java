@@ -6,6 +6,7 @@ import app.chess.ChessPiece;
 import app.chess.board.StandardChessBoard;
 import app.chess.moves.ChessMove;
 import app.core.interactor.InteractiveGame;
+import app.ui.Style;
 import app.ui.board.boards.NormalBoard;
 import app.ui.chess.ChessConnector;
 import app.ui.menu.DerpyButton;
@@ -42,6 +43,11 @@ public class ChessAI extends View {
         });
         //setFillHeight(true);
         setSpacing(100);
+
+    }
+
+    @Override
+    protected void setGameStyle(Style style) {
 
     }
 }

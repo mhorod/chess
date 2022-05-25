@@ -1,6 +1,7 @@
 package app.ui.views;
 
 import app.ui.ImageManager;
+import app.ui.Style;
 import app.ui.menu.*;
 import app.ui.utils.ColoredImage;
 import javafx.application.Platform;
@@ -14,14 +15,15 @@ import javafx.scene.text.Text;
 
 public class MainMenu extends VBox implements MenuView {
     MenuContainer container;
-    Elephant piece;
     ElephantSpace elephantSpace;
+    ColoredImage logo;
+    Menu menu;
 
     public MainMenu(MenuContainer container) {
         super();
         this.container = container;
 
-        var menu = new Menu(new String[]{"PLAY", "SETTINGS", "GO RIGHT", "EXIT"}, new Runnable[]{
+        menu = new Menu(new String[]{"PLAY", "SETTINGS", "GO RIGHT", "EXIT"}, new Runnable[]{
                 () -> container.changeMenu(new PlayMenu(container)),
                 () -> container.changeMenu(new SettingsMenu(container)),
                 () -> container.changeMenu(new FunnyMenu(container)),
@@ -37,7 +39,7 @@ public class MainMenu extends VBox implements MenuView {
         content.getChildren().add(menu);
 
 
-        var logo = new ColoredImage(ImageManager.logo, container.getGameStyle().blackPiece);
+        logo = new ColoredImage(ImageManager.logo, container.getGameStyle().blackPiece);
         logo.setFitWidth(200);
         logo.setPreserveRatio(true);
 
@@ -54,7 +56,7 @@ public class MainMenu extends VBox implements MenuView {
         setFillWidth(true);
         //setBackground(new Background(new BackgroundFill(container.getStyle().whiteField, new CornerRadii(10), Insets.EMPTY)));
     }
-    
+
     @Override
     public ElephantSpace getSpaceForElephant() {
         return elephantSpace;
@@ -63,5 +65,11 @@ public class MainMenu extends VBox implements MenuView {
     @Override
     public Node getContent() {
         return this;
+    }
+
+    @Override
+    public void setGameStyle(Style style) {
+        logo.setColor(style.blackPiece);
+        menu.setGameStyle(style);
     }
 }

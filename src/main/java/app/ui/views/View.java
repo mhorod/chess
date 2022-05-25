@@ -1,9 +1,10 @@
 package app.ui.views;
 
+import app.ui.Style;
 import javafx.animation.TranslateTransition;
 import javafx.scene.layout.VBox;
 
-public class View extends VBox {
+public abstract class View extends VBox {
     ViewContainer parent;
 
     public View(ViewContainer parent) {
@@ -40,4 +41,6 @@ public class View extends VBox {
 
     public void updateMousePosition(double x, double y) {
     }
+
+    protected abstract void setGameStyle(Style style);
 }

@@ -34,4 +34,11 @@ public class ViewContainer extends StackPane {
         return style;
     }
 
+    public void setGameStyle(Style style) {
+        getScene().setFill(style.background);
+        if (currentView != null)
+            currentView.setGameStyle(style);
+        this.style = style;
+    }
+
 }
