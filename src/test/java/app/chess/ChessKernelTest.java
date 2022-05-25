@@ -1,15 +1,12 @@
 package app.chess;
 
-import app.chess.board.ChessBoard;
-import app.chess.board.StandardChessBoard;
-import app.chess.moves.Castle;
-import app.chess.moves.ChessMove;
-import app.chess.pieces.ChessPieceColor;
-import app.chess.pieces.ChessPieceKind;
-import app.core.game.Field;
-import org.junit.Test;
+import app.chess.board.*;
+import app.chess.moves.*;
+import app.chess.pieces.*;
+import app.core.game.*;
+import org.junit.*;
 
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -289,6 +286,24 @@ public class ChessKernelTest {
         chess.makeMove(0, castle);
         assertEquals(0, chess.getLegalMoves(0).size());
         assertNotEquals(0, chess.getLegalMoves(1).size());
+    }
+
+
+    @Test
+    public void illegal_en_passant() {
+        var chess = new Chess(FENConverter.parseFen("b7/8/8/8/k4p1R/6q1/4P3/7K w - - 0 1"));
+        var onlyLegalMove = chess.getLegalMoves(0).get(0);
+        assertEquals(1, chess.getLegalMoves(0).size());
+
+        chess.makeMove(0, onlyLegalMove);
+
+        var blackPawn = chess.getPieces(1)
+                             .stream()
+                             .filter((ChessPiece a) -> a.getKind() == ChessPieceKind.PAWN)
+                             .findAny()
+                             .get();
+
+        assertEquals(1, chess.getLegalMoves(1, blackPawn).size()); //You CANNOT do en passant here
     }
 
     /**

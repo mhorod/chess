@@ -8,13 +8,21 @@ import app.chess.utils.*;
 public class YourKingCannotBeCheckedAfterYourMove implements Rule {
     @Override
     public boolean canBeAppliedTo(ChessMove move) {
-        return true;
+        //This class is deprecated and should be removed.
+
+        //Validation of king's safety is done by kernel itself, it's such a fundamental rule that I don't feel like encapsulating it
+
+        return false;
     }
 
     @Override
     public boolean validate(ChessMove move, ChessPiece[][] board) {
         //Temporarily modifies the board and checks if something went wrong
         //Please note that it doesn't modify anything at the end of the day
+
+        if (!canBeAppliedTo(move)) {
+            return true;
+        }
 
         var wasThereBefore = Utils.putPieceOnBoard(move.getPiece(), move.getField(), board);
         Utils.putPieceOnBoard(null, move.getPiece().getPosition(), board);

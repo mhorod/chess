@@ -100,7 +100,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             }
         }
 
-        return validator.getLegalMoves(piece, board, ruleset);
+        return validator.getLegalMoves(piece, board, ruleset).stream().filter(this::moveDoesntExposeYourKing).toList();
     }
 
     @Override
@@ -128,11 +128,23 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         }
     }
 
+    public int getCurrentPlayer() {
+        return manager.getCurrentPlayer();
+    }
+
 
     public Boolean checkIfEnemyKingIsCheckedAfterMove(ChessMove move) {
         Function<ChessPiece[][], Boolean> checkLambda = (board) -> {
             final int playerToCheck = move.getPiece().getPlayer() == 0 ? 1 : 0;
             return !Utils.kingIsSafe(playerToCheck, board);
+        };
+        return PredicateChecker.safelyCheckPredicate(checkLambda, move, board, manager, mover);
+    }
+
+    private boolean moveDoesntExposeYourKing(ChessMove move) {
+        Function<ChessPiece[][], Boolean> checkLambda = (board) -> {
+            final int playerToCheck = move.getPiece().getPlayer();
+            return Utils.kingIsSafe(playerToCheck, board);
         };
         return PredicateChecker.safelyCheckPredicate(checkLambda, move, board, manager, mover);
     }

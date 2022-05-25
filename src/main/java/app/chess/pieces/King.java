@@ -55,8 +55,10 @@ public class King extends AbstractChessPiece {
 
         //However, we're not finished yet - there is castling
 
-        //I won't validate whether I'm eligible for castling, there is a function for that inside of Chess core anyways
-        //Yes, I could check whether my position is ok for castling (there is exactly one such position) but honestly I don't want to
+        //(unless we are, because the king's moved)
+        if (!canParticipateInCastling()) {
+            return potentialMoves;
+        }
 
         //Castling, as far as king is concerned, is only moving 2 files to the left/right
         //Because there are only 2 possible castlings, I'm not going to write a loop for that
