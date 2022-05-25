@@ -101,7 +101,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         }
 
         if (manager.thereIsPromotionPending()) {
-            if (piece == Utils.findPawnThatCanBePromoted(player, board)) {
+            if (piece.equals(Utils.findPawnThatCanBePromoted(player, board))) {
                 return getPromotionMoves(player);
             } else {
                 return Collections.emptyList();
