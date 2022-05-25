@@ -6,6 +6,7 @@ import app.ui.menu.DerpyButton;
 import app.ui.menu.ElephantSpace;
 import app.ui.menu.MenuContainer;
 import app.ui.menu.MenuView;
+import app.ui.styles.Styles;
 import app.ui.utils.ColoredImage;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -35,7 +36,8 @@ public class StyleMenu extends VBox implements MenuView {
                 .add(new Menu(new String[]{"RETURN"}, new Runnable[]{
                         container::goBack
                 }, container.getGameStyle()));*/
-        buttons.getChildren().add(new StyleButton("epic", container.getGameStyle()));
+        for (var entry : Styles.styles.entrySet())
+            buttons.getChildren().add(new StyleButton(entry.getKey(), entry.getValue()));
 
         content.getChildren().add(buttons);
         getChildren().add(content);
