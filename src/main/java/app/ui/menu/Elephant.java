@@ -55,7 +55,7 @@ public class Elephant extends Pane {
         var targetBounds = new Point2D(target.getMinX(), target.getCenterY());
         //targetBounds = getParent().sceneToLocal(targetBounds);
         targetBounds = new Point2D(targetBounds.getX(), targetBounds.getY() - getHeight() / 2);
-        new JumpTransition(300, targetBounds).play();
+        new JumpTransition(400, targetBounds).play();
         currentSpace = newSpace;
     }
 
