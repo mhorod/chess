@@ -4,6 +4,8 @@ import app.core.game.Piece;
 import app.core.game.moves.Move;
 import app.core.interactor.GameSocket;
 import app.core.interactor.Player;
+import app.utils.pieceplayer.controls.NoControls;
+import app.utils.pieceplayer.controls.PieceControls;
 import app.utils.pieceplayer.controls.PlayerControls;
 
 import java.util.function.Function;
@@ -33,7 +35,12 @@ public final class StandalonePiecePlayer<M extends Move<P>, P extends Piece> ext
     @Override
     protected void connectPiece(P piece) {
         var interactivePiece = newPiece.apply(piece);
-        interactivePiece.controls = new PlayerControls<>(piece, player);
+        PieceControls<M, P> controls;
+        if (piece.getPlayer() == player.getID())
+            controls = new PlayerControls<>(piece, player);
+        else
+            controls = new NoControls<>(piece);
+        interactivePiece.controls = controls;
         pieces.put(piece, interactivePiece);
     }
 }
