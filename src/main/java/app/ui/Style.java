@@ -13,5 +13,8 @@ public abstract class Style {
     public Color borderText;
     public Color whiteFieldCircle;
     public Color blackFieldCircle;
+    public Color whitePieceBorder;
+    public Color blackPieceBorder;
+    public Color background;
     public Font font;
 }

@@ -9,6 +9,10 @@ import app.core.interactor.InteractiveGame;
 import app.ui.board.boards.InvertedBoard;
 import app.ui.board.boards.NormalBoard;
 import app.ui.chess.ChessConnector;
+import app.ui.styles.ChessCom;
+import app.ui.styles.CutePink;
+import app.ui.styles.Lichess;
+import app.ui.styles.Rainbow;
 import app.utils.pieceplayer.PieceSpectator;
 import app.utils.pieceplayer.StandalonePiecePlayer;
 import javafx.application.Application;
@@ -16,30 +20,17 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
+import java.util.Map;
 
 public class App extends Application {
     @Override
     public void start(Stage stage) {
-        Style style = new Style() {
-            {
-                whitePiece = Color.color(0.9, 0.9, 0.9);
-                blackPiece = Color.web("#FF8CE1");
 
-                whiteField = Color.web("#FFC8E5");
-                blackField = Color.web("#EA5CB1");
-
-                borderWhite = Color.web("#75234f");
-                borderBlack = Color.web("#75234f");
-
-                borderText = Color.color(0.9, 0.9, 0.9);
-                whiteFieldCircle = Color.web("#00bbfa");
-                blackFieldCircle = Color.web("#47e0ff");
-                font = Font.loadFont(App.class.getResource("/fonts/regular.otf").toExternalForm(), 20);
-            }
-        };
-
+        Map<String, Style> styles = Map.of("Cute Pink", new CutePink(), "Lichess", new Lichess(), "Chess.com",
+                                           new ChessCom(), "Rainbow", new Rainbow());
+        Style style = styles.get("Cute Pink");
 
         Chess chess = new Chess(new StandardChessBoard());
         var game = new InteractiveGame<>(chess);
