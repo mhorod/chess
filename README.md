@@ -5,7 +5,7 @@
 Chess made as an assignment project for OOP course 2021/22
 
 ## Installation
-Project is built with ![Maven](https://maven.apache.org/)
+Project is built with [Maven](https://maven.apache.org/)
 
 1. Clone the repository
 2. In the directory containing `pom.xml` run `mvn clean javafx:run`
@@ -19,17 +19,23 @@ Project is built with ![Maven](https://maven.apache.org/)
 - [x] game skeleton
 - [x] integrating ui with game core
 
-### TODO:
-- [ ] menus
-- [ ] complete chess logic
-- [ ] game events
-- [ ] optional chess configuration
-- [ ] api for external players and ai
+### 26-06-2022 goals [Completed]
+- [x] menus
+- [x] color scheme selection
+- [x] complete chess logic
+- [x] optional chess configuration (for now at compile time)
+- [x] api for external players and ai (almost)
+- [x] checkers and minesweeper
 
 # Screenshots
 
-![s1](s2.png)
-![s2](s1.png)
+![s1](screenshots/s1.png)
+![s2](screenshots/s2.png)
+![s3](screenshots/s3.png)
+![s4](screenshots/s4.png)
+![s5](screenshots/s5.png)
+![s6](screenshots/s6.png)
+![s7](screenshots/s7.png)
 
 # Project architecture
 
