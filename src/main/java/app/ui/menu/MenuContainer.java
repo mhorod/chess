@@ -94,7 +94,7 @@ public class MenuContainer extends View {
     }
 
     public Style getGameStyle() {
-        return style;
+        return getContainer().getGameStyle();
     }
 
     @Override
