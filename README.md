@@ -10,6 +10,7 @@ Project is built with [Maven](https://maven.apache.org/)
 1. Clone the repository
 2. In the directory containing `pom.xml` run `mvn clean javafx:run`
 3. Alternatively you can run `app.Main` class from your IDE
+4. You can build the project with `mvn package` - this will create a jar file inside `target` directory
 
 ## Changelog
 
