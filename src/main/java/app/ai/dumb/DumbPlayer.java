@@ -14,10 +14,17 @@ public class DumbPlayer<M extends Move<P>, P extends Piece> extends Player<M, P>
 
     @Override
     public void update(int player, M move, List<P> changedPieces) {
-        var moves = getLegalMoves();
-        if (!moves.isEmpty()) {
-            var choice = random.nextInt(moves.size());
-            makeMove(moves.get(choice));
-        }
+        Thread thread = new Thread(() -> {
+            try {
+                Thread.sleep(500);
+            } catch (Exception ignored) {
+            }
+            var moves = getLegalMoves();
+            if (!moves.isEmpty()) {
+                var choice = random.nextInt(moves.size());
+                makeMove(moves.get(choice));
+            }
+        });
+        thread.start();
     }
 }
