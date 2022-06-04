@@ -3,6 +3,7 @@ package app.chess.rules;
 import app.chess.ChessPiece;
 import app.chess.moves.ChessMove;
 
+import java.util.Collection;
 import java.util.List;
 
 public class StandardValidator implements Validator {
@@ -10,7 +11,7 @@ public class StandardValidator implements Validator {
     private final List<Rule> defaultRules = factory.getRules();
 
     @Override
-    public List<ChessMove> getLegalMoves(ChessPiece piece, ChessPiece[][] board, List<Rule> rules) {
+    public List<ChessMove> getLegalMoves(ChessPiece piece, ChessPiece[][] board, Collection<Rule> rules) {
         return RulesPieceConverter.convert(piece)
                                   .getPotentialMoves()
                                   .stream()

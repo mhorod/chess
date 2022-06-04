@@ -14,26 +14,26 @@ import app.chess.utils.Utils;
 import app.core.game.Game;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * Chess kernel that implements behavior of standard chess
+ */
 public class Chess implements Game<ChessMove, ChessPiece> {
     public static final int SIZE = 8;
     private final StateManager manager = new StateManager();
     private final Mover mover = new StandardMover();
     private final Validator validator;
     ChessPiece[][] board;
-    private List<Rule> ruleset = new ArrayList<>();
+    private Collection<Rule> ruleset;
 
     public Chess(ChessBoard board) {
         this.board = board.getPieces();
         validator = new StandardValidator();
         ruleset = validator.getDefaultRules();
-    }
-
-    public Chess(ChessBoard board, Validator validator) {
-        this.validator = validator;
     }
 
     @Override
@@ -111,7 +111,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             }
         }
 
-        return validator.getLegalMoves(piece, board, ruleset);
+        return validator.getLegalMoves(piece, board, ruleset).stream().toList();
     }
 
     @Override
@@ -119,6 +119,9 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         return mover.makeMove(player, move, board, manager);
     }
 
+    /**
+     * Get current win/lose state of the player
+     */
     public ChessState getState(int player) {
         if (manager.getCurrentPlayer() != player) {
             return ChessState.OK;
@@ -155,9 +158,6 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         ruleset = rules;
     }
 
-    public List<Rule> getCurrentRules() {
-        return ruleset;
-    }
 
     @Override
     public int getPlayerCount() {
