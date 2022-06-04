@@ -9,14 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * Player wrapper that allows moving with pieces instead moves
- */
 public abstract class PiecePlayer<M extends Move<P>, P extends Piece> implements Spectator<M, P> {
 
     protected Map<P, InteractivePiece<M, P>> pieces = new HashMap<>();
     protected Function<P, ? extends InteractivePiece<M, P>> newPiece;
 
+
+    @Override
     public final void update(int player, M move, List<P> changedPieces) {
         for (var piece : changedPieces) {
             if (!pieces.containsKey(piece)) {

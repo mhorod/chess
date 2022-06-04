@@ -22,6 +22,7 @@ public class NoControls<M extends Move<P>, P extends Piece> extends PieceControl
 
     @Override
     public void makeMove(M move) {
+        // Since there are no legal moves, any move here would be foreign and thus invalid
         throw new UnsupportedOperationException("Spectator cannot move pieces");
     }
 }

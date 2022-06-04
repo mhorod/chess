@@ -8,6 +8,9 @@ import app.core.interactor.Spectator;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * AI that makes random moves one second after receiving an update
+ */
 public class DumbPlayer<M extends Move<P>, P extends Piece> extends Player<M, P> implements Spectator<M, P> {
 
     Random random = new Random();

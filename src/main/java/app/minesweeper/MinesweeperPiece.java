@@ -3,10 +3,16 @@ package app.minesweeper;
 import app.core.game.Field;
 import app.core.game.Piece;
 
+import java.util.Objects;
+
 public class MinesweeperPiece implements Piece {
     Field position;
     boolean isAlive = true;
     MinesweeperPieceKind kind;
+
+    // fake piece is put as a choice in the move
+    // fake pieces hash differently, so they appear in consistent order
+    // in the ui PiecePicker
     boolean isFake = false;
 
     public MinesweeperPiece(Field position, MinesweeperPieceKind kind) {
@@ -42,10 +48,20 @@ public class MinesweeperPiece implements Piece {
     }
 
     @Override
+    public boolean equals(Object other) {
+        if (other == null)
+            return false;
+        else if (other.getClass() != getClass())
+            return false;
+        else
+            return hashCode() == Objects.hashCode(other);
+    }
+
+    @Override
     public int hashCode() {
         if (isFake) {
             return kind.type.hashCode();
         } else
-            return position.hashCode() ^ kind.hashCode();
+            return Objects.hash(position, kind);
     }
 }
