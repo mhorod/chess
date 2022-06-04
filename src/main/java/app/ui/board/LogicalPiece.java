@@ -39,8 +39,8 @@ public abstract class LogicalPiece<M extends Move<P>, P extends Piece> extends I
                 P result;
 
                 @Override
-                public void piecePick(P piece) {
-                    result = piece;
+                public void piecePick(P piece, P pick) {
+                    result = pick;
                 }
 
             };

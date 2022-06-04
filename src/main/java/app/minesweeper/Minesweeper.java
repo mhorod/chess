@@ -33,8 +33,8 @@ public class Minesweeper implements Game<MinesweeperMove, MinesweeperPiece> {
 
     @Override
     public List<MinesweeperPiece> makeMove(int player, MinesweeperMove move) {
-        var piece = move.changed;
-        if (move.getPiece().kind.type == SHOVEL)
+        var piece = move.getPiece();
+        if (move.getPick().kind.type == SHOVEL)
             return uncover(piece);
         else
             return switchFlag(piece);

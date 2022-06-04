@@ -16,7 +16,7 @@ public interface MoveMatcher<P extends Piece> {
     default void pieceMove(P piece, Field field) {
     }
 
-    default void piecePick(P piece) {
+    default void piecePick(P piece, P pick) {
     }
 }
 

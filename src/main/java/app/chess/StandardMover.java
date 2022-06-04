@@ -2,6 +2,7 @@ package app.chess;
 
 import app.chess.moves.Castle;
 import app.chess.moves.ChessMove;
+import app.chess.moves.Promotion;
 import app.chess.pieces.ChessPieceKind;
 import app.chess.utils.Utils;
 import app.core.game.Field;
@@ -44,11 +45,12 @@ class StandardMover implements Mover {
         }
 
         if (manager.thereIsPromotionPending()) {
-            var wasThere = Utils.putPieceOnBoard(move.getPiece(), move.getField(), board);
+            var promotion = (Promotion) move;
+            var wasThere = Utils.putPieceOnBoard(promotion.getPick(), move.getField(), board);
             wasThere.unwrap().kill();
             manager.markPromotionAsDone();
             manager.switchCurrentPlayer();
-            return List.of(wasThere, move.getPiece());
+            return List.of(wasThere, promotion.getPick());
         }
 
         resetWasMoved(board); //Because things will be overwritten

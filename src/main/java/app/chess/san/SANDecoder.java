@@ -56,7 +56,7 @@ public class SANDecoder {
         var piece = getMatchingPiece(chess, player, PAWN, targetField, modifiers);
 
         var newPiece = ChessPieceFactory.newPiece(targetField, newKind, piece.getColor());
-        return List.of(new NormalMove(piece, targetField), new Promotion(newPiece, targetField));
+        return List.of(new NormalMove(piece, targetField), new Promotion(piece, newPiece, targetField));
     }
 
     static Castle kingSideCastle(GameView<ChessMove, ChessPiece> chess, int player) {

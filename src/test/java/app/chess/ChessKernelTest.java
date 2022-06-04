@@ -4,6 +4,7 @@ import app.chess.board.ChessBoard;
 import app.chess.board.StandardChessBoard;
 import app.chess.moves.Castle;
 import app.chess.moves.ChessMove;
+import app.chess.moves.Promotion;
 import app.chess.pieces.ChessPieceColor;
 import app.chess.pieces.ChessPieceKind;
 import app.core.game.Field;
@@ -265,7 +266,8 @@ public class ChessKernelTest {
         for (int i = 0; i < 100; i++) {
             var promotionToQueen = g1.getLegalMoves(0)
                                      .stream()
-                                     .filter((ChessMove a) -> a.getPiece().getKind() == ChessPieceKind.QUEEN)
+                                     .filter(m -> m instanceof Promotion)
+                                     .filter(m -> ((Promotion) m).getPick().getKind() == ChessPieceKind.QUEEN)
                                      .findAny()
                                      .get();
             assertEquals(true, g1.checkIfEnemyKingIsCheckedAfterMove(promotionToQueen));

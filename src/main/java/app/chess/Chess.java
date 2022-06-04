@@ -51,7 +51,8 @@ public class Chess implements Game<ChessMove, ChessPiece> {
      */
     private List<ChessMove> getPromotionMoves(int player) {
 
-        var where = Utils.findPawnThatCanBePromoted(player, board).getPosition();
+        var promotedPawn = Utils.findPawnThatCanBePromoted(player, board);
+        var where = promotedPawn.getPosition();
 
         //And now we need to create piece pick for each piece that's in game... ouch
         List<AbstractChessPiece> subAnswer = new ArrayList<>();
@@ -64,8 +65,8 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
         List<ChessMove> answer = new ArrayList<>();
 
-        for (var piece : subAnswer) {
-            answer.add(new Promotion(piece.wrap(), where));
+        for (var pieceAfterPromotion : subAnswer) {
+            answer.add(new Promotion(promotedPawn.piece.wrap(), pieceAfterPromotion.wrap(), where));
         }
 
         return answer;

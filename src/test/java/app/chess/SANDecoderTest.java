@@ -214,6 +214,6 @@ public class SANDecoderTest {
         assertTrue(moves.get(1) instanceof Promotion);
         assertEquals(2, moves.size());
         assertEquals(PAWN, moves.get(0).getPiece().getKind());
-        assertEquals(QUEEN, moves.get(1).getPiece().getKind());
+        assertEquals(QUEEN, ((Promotion) moves.get(1)).getPick().getKind());
     }
 }
