@@ -1,6 +1,6 @@
 package app.ui.menu;
 
-import app.ui.ImageManager;
+import app.ui.Images;
 import app.ui.utils.ColoredImage;
 import javafx.scene.Cursor;
 import javafx.scene.layout.StackPane;
@@ -13,7 +13,7 @@ public class DerpyButton extends StackPane {
     ColoredImage background;
 
     public DerpyButton(String text, Color color) {
-        background = new ColoredImage(ImageManager.button, color);
+        background = new ColoredImage(Images.button, color);
         background.setPreserveRatio(true);
         background.setFitWidth(128);
 

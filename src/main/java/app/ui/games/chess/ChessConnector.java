@@ -1,4 +1,4 @@
-package app.ui.chess;
+package app.ui.games.chess;
 
 import app.chess.ChessPiece;
 import app.core.game.moves.Move;

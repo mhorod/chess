@@ -1,37 +1,33 @@
-package app.ui.views;
+package app.ui.menus;
 
 import app.ui.menu.*;
 import app.ui.styles.Style;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 
-public class FunnyMenu extends VBox implements MenuView {
+public class SettingsMenu extends VBox implements MenuView {
     ElephantSpace elephantSpace;
+    Menu menu;
 
-    public FunnyMenu(MenuContainer container) {
+    public SettingsMenu(MenuContainer container) {
         super();
-        var text = new Text("Jump");
-        text.setTextAlignment(TextAlignment.CENTER);
+        var text = new Text("Settings");
         text.setFont(new Font(DerpyButton.font.getFamily(), 60));
         getChildren().add(text);
 
         var content = new HBox();
-        content.setSpacing(10);
         elephantSpace = new ElephantSpace();
         content.getChildren().add(elephantSpace);
-        content.getChildren()
-               .add(new Menu(new String[]{"GO RIGHT", "GO LEFT"},
-                             new Runnable[]{() -> container.changeMenu(new FunnyMenu(container)), container::goBack},
-                             container.getGameStyle()));
+        menu = new Menu(new String[]{"CHANGE STYLE", "RETURN"},
+                        new Runnable[]{() -> container.changeMenu(new StyleMenu(container)), container::goBack},
+                        container.getGameStyle());
+        content.getChildren().add(menu);
         getChildren().add(content);
         setAlignment(Pos.CENTER);
-        setPadding(new Insets(10));
 
     }
 
@@ -47,6 +43,6 @@ public class FunnyMenu extends VBox implements MenuView {
 
     @Override
     public void setGameStyle(Style style) {
-
+        menu.setGameStyle(style);
     }
 }

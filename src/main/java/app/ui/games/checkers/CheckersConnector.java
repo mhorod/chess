@@ -1,4 +1,4 @@
-package app.ui.checkers;
+package app.ui.games.checkers;
 
 import app.checkers.CheckersPiece;
 import app.ui.board.Board;

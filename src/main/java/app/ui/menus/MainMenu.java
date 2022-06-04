@@ -1,6 +1,6 @@
-package app.ui.views;
+package app.ui.menus;
 
-import app.ui.ImageManager;
+import app.ui.Images;
 import app.ui.menu.*;
 import app.ui.styles.Style;
 import app.ui.utils.ColoredImage;
@@ -37,7 +37,7 @@ public class MainMenu extends VBox implements MenuView {
         content.getChildren().add(menu);
 
 
-        logo = new ColoredImage(ImageManager.logo, container.getGameStyle().blackPiece);
+        logo = new ColoredImage(Images.logo, container.getGameStyle().blackPiece);
         logo.setFitWidth(200);
         logo.setPreserveRatio(true);
 

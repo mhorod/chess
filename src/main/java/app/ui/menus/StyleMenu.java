@@ -1,7 +1,8 @@
-package app.ui.views;
+package app.ui.menus;
 
 import app.chess.pieces.ChessPieceKind;
-import app.ui.ImageManager;
+import app.ui.Images;
+import app.ui.games.chess.ChessImages;
 import app.ui.menu.DerpyButton;
 import app.ui.menu.ElephantSpace;
 import app.ui.menu.MenuContainer;
@@ -9,6 +10,7 @@ import app.ui.menu.MenuView;
 import app.ui.styles.Style;
 import app.ui.styles.Styles;
 import app.ui.utils.ColoredImage;
+import app.ui.views.ViewContainer;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -38,7 +40,8 @@ public class StyleMenu extends VBox implements MenuView {
                         container::goBack
                 }, container.getGameStyle()));*/
         for (var entry : Styles.styles.entrySet())
-            buttons.getChildren().add(new StyleButton(entry.getKey(), entry.getValue(), container.getContainer()));
+            buttons.getChildren()
+                   .add(new StyleButton(entry.getKey(), entry.getValue(), container.getParentContainer()));
 
         content.getChildren().add(buttons);
         getChildren().add(content);
@@ -65,7 +68,7 @@ public class StyleMenu extends VBox implements MenuView {
 class StyleButton extends StackPane {
     StyleButton(String name, Style style, ViewContainer container) {
 
-        var background = new ColoredImage(ImageManager.longButton, style.background);
+        var background = new ColoredImage(Images.longButton, style.background);
         background.setPreserveRatio(true);
         background.setFitWidth(256);
 
@@ -82,11 +85,11 @@ class StyleButton extends StackPane {
         var squares = new HBox();
         squares.setAlignment(Pos.CENTER_RIGHT);
         squares.setSpacing(-10);
-        var piece = new ColoredImage(ImageManager.getPieceImage(ChessPieceKind.PAWN), style.whitePiece);
+        var piece = new ColoredImage(ChessImages.getPieceImage(ChessPieceKind.PAWN), style.whitePiece);
         piece.setFitWidth(40);
         piece.setPreserveRatio(true);
         squares.getChildren().add(piece);
-        piece = new ColoredImage(ImageManager.getPieceImage(ChessPieceKind.PAWN), style.blackPiece);
+        piece = new ColoredImage(ChessImages.getPieceImage(ChessPieceKind.PAWN), style.blackPiece);
         piece.setFitWidth(40);
         piece.setPreserveRatio(true);
         squares.getChildren().add(piece);

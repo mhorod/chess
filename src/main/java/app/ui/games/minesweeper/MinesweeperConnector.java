@@ -1,4 +1,4 @@
-package app.ui.minesweeper;
+package app.ui.games.minesweeper;
 
 import app.core.game.moves.Move;
 import app.minesweeper.MinesweeperPiece;

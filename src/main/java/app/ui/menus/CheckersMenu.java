@@ -1,7 +1,9 @@
-package app.ui.views;
+package app.ui.menus;
 
 import app.ui.menu.*;
 import app.ui.styles.Style;
+import app.ui.views.CheckersAI;
+import app.ui.views.CheckersHotseat;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
@@ -9,10 +11,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class ChessMenu extends VBox implements MenuView {
+public class CheckersMenu extends VBox implements MenuView {
     ElephantSpace elephantSpace;
 
-    public ChessMenu(MenuContainer container) {
+    public CheckersMenu(MenuContainer container) {
         super();
         var text = new Text("Play");
         text.setFont(new Font(DerpyButton.font.getFamily(), 60));
@@ -23,8 +25,9 @@ public class ChessMenu extends VBox implements MenuView {
         content.getChildren().add(elephantSpace);
         content.getChildren()
                .add(new Menu(new String[]{"ALONE", "WITH FRIENDS", "RETURN"}, new Runnable[]{() -> container.changeView(
-                       new ChessAI(container.getContainer())), () -> container.changeView(
-                       new ChessHotseat(container.getContainer())), container::goBack}, container.getGameStyle()));
+                       new CheckersAI(container.getParentContainer())), () -> container.changeView(
+                       new CheckersHotseat(container.getParentContainer())), container::goBack},
+                             container.getGameStyle()));
         getChildren().add(content);
         setAlignment(Pos.CENTER);
 
