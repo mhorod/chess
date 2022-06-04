@@ -1,9 +1,9 @@
 package app.ui.menus;
 
-import app.ui.Images;
 import app.ui.menu.*;
 import app.ui.styles.Style;
 import app.ui.utils.ColoredImage;
+import app.ui.utils.Images;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

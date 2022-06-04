@@ -1,7 +1,6 @@
 package app.ui.menus;
 
 import app.chess.pieces.ChessPieceKind;
-import app.ui.Images;
 import app.ui.games.chess.ChessImages;
 import app.ui.menu.DerpyButton;
 import app.ui.menu.ElephantSpace;
@@ -10,6 +9,7 @@ import app.ui.menu.MenuView;
 import app.ui.styles.Style;
 import app.ui.styles.Styles;
 import app.ui.utils.ColoredImage;
+import app.ui.utils.Images;
 import app.ui.views.ViewContainer;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;

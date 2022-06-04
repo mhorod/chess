@@ -1,7 +1,7 @@
 package app.ui.menu;
 
-import app.ui.Images;
 import app.ui.utils.ColoredImage;
+import app.ui.utils.Images;
 import javafx.scene.Cursor;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;

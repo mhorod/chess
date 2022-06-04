@@ -1,7 +1,7 @@
 package app.ui.games.chess;
 
 import app.chess.pieces.ChessPieceKind;
-import app.ui.Images;
+import app.ui.utils.Images;
 import javafx.scene.image.Image;
 
 import java.util.Map;
