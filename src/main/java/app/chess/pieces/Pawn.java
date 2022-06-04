@@ -1,17 +1,19 @@
 package app.chess.pieces;
 
-import app.chess.*;
-import app.chess.moves.*;
-import app.chess.utils.*;
-import app.core.game.*;
+import app.chess.AbstractChessPiece;
+import app.chess.moves.ChessMove;
+import app.chess.moves.NormalMove;
+import app.chess.utils.Utils;
+import app.core.game.Field;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Pawn extends AbstractChessPiece {
     private boolean movedBy2RanksRecently = false;
 
-    public Pawn(Field position, boolean isBlack) {
-        super(position, isBlack);
+    public Pawn(Field position, ChessPieceColor color) {
+        super(position, ChessPieceKind.PAWN, color);
     }
 
     public Pawn(Pawn toCopy) {
@@ -25,10 +27,6 @@ public class Pawn extends AbstractChessPiece {
         movedBy2RanksRecently = ((Pawn) toCopy).movedBy2RanksRecently;
     }
 
-    @Override
-    public ChessPieceKind getKind() {
-        return ChessPieceKind.PAWN;
-    }
 
     @Override
     public List<ChessMove> getPotentialMoves() {
@@ -47,14 +45,14 @@ public class Pawn extends AbstractChessPiece {
         if (currentRank == twoMovesForwardRank) {
             Field whereToGo = new Field(currentRank + 2 * multiplier, currentFile);
             //no Field validation is needed in this case (because if you go 2 forward then, you are on a rank that guarantees that you won't get out of range)
-            potentialMoves.add(new NormalMove(this.wrap(), whereToGo));
+            potentialMoves.add(new NormalMove(this, whereToGo));
         }
 
         for (int fileModifier = -1; fileModifier <= 1; fileModifier++) {
             //Moves that go 1 forward
             Field whereToGo = new Field(currentRank + multiplier, currentFile + fileModifier);
             if (Utils.fieldIsValid(whereToGo)) {
-                potentialMoves.add(new NormalMove(this.wrap(), whereToGo));
+                potentialMoves.add(new NormalMove(this, whereToGo));
             }
         }
         return potentialMoves;

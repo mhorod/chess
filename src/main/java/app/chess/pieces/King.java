@@ -1,36 +1,35 @@
 package app.chess.pieces;
 
-import app.chess.*;
-import app.chess.moves.*;
-import app.chess.utils.*;
-import app.core.game.*;
+import app.chess.AbstractChessPiece;
+import app.chess.board.StandardChessBoard;
+import app.chess.moves.Castle;
+import app.chess.moves.ChessMove;
+import app.chess.moves.NormalMove;
+import app.chess.utils.Utils;
+import app.core.game.Field;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class King extends AbstractChessPiece {
 
     boolean wasMovedBefore = false; //Do not confuse with wasMoved of ChessPiece, this is supposed to be changed one time
     //This field is going to be used to check whether king can castle
 
-    public King(Field position, boolean isBlack) {
-        super(position, isBlack);
+    public King(Field position, ChessPieceColor color) {
+        super(position, ChessPieceKind.KING, color);
     }
 
-    public King(King toCopy) {
-        super(toCopy);
-        overwriteState(toCopy);
+    public King(King from) {
+        super(from);
+        overwriteState(from);
         //This is not particularly effective as we're overwriting things 2 times
     }
 
     @Override
-    public void overwriteState(AbstractChessPiece toCopy) {
-        super.overwriteState(toCopy);
-        wasMovedBefore = ((King) toCopy).wasMovedBefore;
-    }
-
-    @Override
-    public ChessPieceKind getKind() {
-        return ChessPieceKind.KING;
+    public void overwriteState(AbstractChessPiece from) {
+        super.overwriteState(from);
+        wasMovedBefore = ((King) from).wasMovedBefore;
     }
 
     @Override
@@ -47,7 +46,7 @@ public class King extends AbstractChessPiece {
                     //Because move that doesn't move is not the greatest move, I'd say
                     Field potentialField = new Field(currentRank + rankModifier, currentFile + fileModifier);
                     if (Utils.fieldIsValid(potentialField)) {
-                        potentialMoves.add(new NormalMove(this.wrap(), potentialField));
+                        potentialMoves.add(new NormalMove(this, potentialField));
                     }
                 }
             }
@@ -65,8 +64,8 @@ public class King extends AbstractChessPiece {
         for (int multiplier = -1; multiplier <= 1; multiplier++) {
             if (multiplier != 0) {
                 Field potentialField = new Field(currentRank, currentFile + 2 * multiplier);
-                if (Utils.fieldIsValid(potentialField)) {
-                    potentialMoves.add(new Castle(this.wrap(), potentialField));
+                if (StandardChessBoard.containsField(potentialField)) {
+                    potentialMoves.add(new Castle(this, potentialField));
                 }
             }
         }

@@ -1,11 +1,11 @@
 package app.chess;
 
-import app.chess.moves.*;
+import app.chess.moves.ChessMove;
 
-import java.util.*;
+import java.util.List;
 
 interface Mover {
-    List<ChessPiece> makeMove(int player, ChessMove move, ChessPiece[][] board, StateManager manager);
+    List<AbstractChessPiece> makeMove(int player, ChessMove move, AbstractChessPiece[][] board, StateManager manager);
 
     /**
      * Checks if a move kills a piece (or pawn).
@@ -14,5 +14,5 @@ interface Mover {
      * @param board A board on which the move should take place.
      * @return Null if there is no piece that's going to be taken, reference to said piece otherwise.
      */
-    public ChessPiece getPieceKilledByMove(ChessMove move, ChessPiece[][] board);
+    AbstractChessPiece getPieceKilledByMove(ChessMove move, AbstractChessPiece[][] board);
 }

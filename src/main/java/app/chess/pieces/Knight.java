@@ -1,25 +1,23 @@
 package app.chess.pieces;
 
-import app.chess.*;
-import app.chess.moves.*;
-import app.chess.utils.*;
-import app.core.game.*;
+import app.chess.AbstractChessPiece;
+import app.chess.moves.ChessMove;
+import app.chess.moves.NormalMove;
+import app.chess.utils.Utils;
+import app.core.game.Field;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Knight extends AbstractChessPiece {
-    public Knight(Field position, boolean isBlack) {
-        super(position, isBlack);
+    public Knight(Field position, ChessPieceColor color) {
+        super(position, ChessPieceKind.KNIGHT, color);
     }
 
-    public Knight(Knight toCopy) {
-        super(toCopy);
+    public Knight(Knight from) {
+        super(from);
     }
 
-    @Override
-    public ChessPieceKind getKind() {
-        return ChessPieceKind.KNIGHT;
-    }
 
     @Override
     public List<ChessMove> getPotentialMoves() {
@@ -57,7 +55,7 @@ public class Knight extends AbstractChessPiece {
                 Field potentialField = new Field(currentRank + vectorOne * firstMultiplier,
                                                  currentFile + vectorTwo * secondMultiplier);
                 if (Utils.fieldIsValid(potentialField)) {
-                    potentialMoves.add(new NormalMove(this.wrap(), potentialField));
+                    potentialMoves.add(new NormalMove(this, potentialField));
                 }
             }
 

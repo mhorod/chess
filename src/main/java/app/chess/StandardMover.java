@@ -13,7 +13,7 @@ import java.util.List;
 import static app.chess.Chess.SIZE;
 
 class StandardMover implements Mover {
-    public ChessPiece getPieceKilledByMove(ChessMove move, ChessPiece[][] board) {
+    public AbstractChessPiece getPieceKilledByMove(ChessMove move, AbstractChessPiece[][] board) {
         var pieceThatsEndangered = Utils.getPieceByField(move.getField(), board);
 
         if (pieceThatsEndangered != null) {
@@ -34,7 +34,9 @@ class StandardMover implements Mover {
     }
 
     @Override
-    public List<ChessPiece> makeMove(int player, ChessMove move, ChessPiece[][] board, StateManager manager) {
+    public List<AbstractChessPiece> makeMove(
+            int player, ChessMove move, AbstractChessPiece[][] board, StateManager manager
+    ) {
         //Note: If somehow we get here move that isn't legal, we get an undefined behaviour.
 
 
@@ -46,11 +48,11 @@ class StandardMover implements Mover {
 
         if (manager.thereIsPromotionPending()) {
             var promotion = (Promotion) move;
-            var wasThere = Utils.putPieceOnBoard(promotion.getPick(), move.getField(), board);
-            wasThere.unwrap().kill();
+            var wasThere = Utils.putPieceOnBoard((AbstractChessPiece) promotion.getPick(), move.getField(), board);
+            wasThere.kill();
             manager.markPromotionAsDone();
             manager.switchCurrentPlayer();
-            return List.of(wasThere, promotion.getPick());
+            return List.of(wasThere, (AbstractChessPiece) promotion.getPick());
         }
 
         resetWasMoved(board); //Because things will be overwritten
@@ -67,33 +69,31 @@ class StandardMover implements Mover {
         int newRank = move.getField().rank();
         int newFile = move.getField().file();
 
-        ChessPiece attacked = getPieceKilledByMove(move, board);
+        var attacked = getPieceKilledByMove(move, board);
 
         if (attacked != null) {
-            attacked.unwrap().kill();
+            attacked.kill();
             board[attacked.getPosition().rank()][attacked.getPosition().file()] = null;
         }
-        board[newRank][newFile] = move.getPiece();
+        board[newRank][newFile] = (AbstractChessPiece) move.getPiece();
 
         //Updating the board
         Utils.putPieceOnBoard(null, move.getPiece().getPosition(), board);
 
         //Now we are changing the internal state of the piece that's moving
-        move.getPiece().unwrap().move(move.getField());
+        ((AbstractChessPiece) move.getPiece()).move(move.getField());
 
         //After executing the move, we can finally return a list informing what's happening on the board
-        ArrayList<ChessPiece> changedList = new ArrayList<>();
-        changedList.add(move.getPiece());
+        List<AbstractChessPiece> changedList = new ArrayList<>();
+        changedList.add((AbstractChessPiece) move.getPiece());
         if (attacked != null) {
             changedList.add(attacked);
         }
-
         return changedList;
-
     }
 
 
-    private List<ChessPiece> castleMove(Castle move, ChessPiece[][] board, StateManager manager) {
+    private List<AbstractChessPiece> castleMove(Castle move, AbstractChessPiece[][] board, StateManager manager) {
         Field whereRookIs = Utils.getRookPositionBasedOnCastling(move);
 
         int rookRank = whereRookIs.rank();
@@ -103,7 +103,7 @@ class StandardMover implements Mover {
         //Just changing positions of 2 pieces, nothing can go wrong
         //Right?
 
-        var king = move.getPiece();
+        var king = (AbstractChessPiece) move.getPiece();
         int kingRank = king.getPosition().rank(); //Yes, kingRank will be the same as rookRank
         //In fact, let's just have an additional assertion here
 
@@ -122,21 +122,21 @@ class StandardMover implements Mover {
         board[kingRank][kingFile] = null;
 
         board[move.getField().rank()][move.getField().file()] = king;
-        king.unwrap().move(move.getField());
+        king.move(move.getField());
 
         board[rookRank][newRookFile] = rook;
-        rook.unwrap().move(new Field(rookRank, newRookFile));
+        rook.move(new Field(rookRank, newRookFile));
 
         manager.switchCurrentPlayer();
 
-        return List.of(move.getPiece(), rook);
+        return List.of((AbstractChessPiece) move.getPiece(), rook);
     }
 
-    private void resetWasMoved(ChessPiece[][] board) {
+    private void resetWasMoved(AbstractChessPiece[][] board) {
         var allPieces = Utils.getMatchingPieces(false, 0, board);
 
         for (var currentPiece : allPieces) {
-            currentPiece.unwrap().resetMoved();
+            ((AbstractChessPiece) currentPiece).resetMoved();
         }
     }
 

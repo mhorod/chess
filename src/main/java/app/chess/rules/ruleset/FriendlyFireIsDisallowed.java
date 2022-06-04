@@ -1,9 +1,9 @@
 package app.chess.rules.ruleset;
 
-import app.chess.*;
-import app.chess.moves.*;
-import app.chess.rules.*;
-import app.chess.utils.*;
+import app.chess.AbstractChessPiece;
+import app.chess.moves.ChessMove;
+import app.chess.rules.Rule;
+import app.chess.utils.Utils;
 
 public class FriendlyFireIsDisallowed implements Rule {
 
@@ -13,7 +13,7 @@ public class FriendlyFireIsDisallowed implements Rule {
     }
 
     @Override
-    public boolean validate(ChessMove move, ChessPiece[][] board) {
+    public boolean validate(ChessMove move, AbstractChessPiece[][] board) {
         var alreadyThere = Utils.getPieceByField(move.getField(), board);
         if (alreadyThere == null) {
             return true;

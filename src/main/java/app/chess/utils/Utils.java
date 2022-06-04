@@ -1,5 +1,6 @@
 package app.chess.utils;
 
+import app.chess.AbstractChessPiece;
 import app.chess.ChessPiece;
 import app.chess.moves.Castle;
 import app.chess.moves.ChessMove;
@@ -55,7 +56,7 @@ public final class Utils {
      * @return Assuming that castling is possible, returns the position on which the rook should be located. Makes
      *         ABSOLUTELY NO GUARANTEE that castling is legal.
      *         <p>
-     *                                                         TODO: Placement of this function is bad. Find a class where it makes more sense.
+     *                                                                                                                                         TODO: Placement of this function is bad. Find a class where it makes more sense.
      */
     public static Field getRookPositionBasedOnCastling(Castle move) {
         final int currentFile = move.getPiece().getPosition().file();
@@ -74,7 +75,7 @@ public final class Utils {
         return toValidate.rank() <= SIZE && toValidate.file() <= SIZE && toValidate.rank() > 0 && toValidate.file() > 0;
     }
 
-    public static ChessPiece getPieceByField(Field field, ChessPiece[][] board) {
+    public static AbstractChessPiece getPieceByField(Field field, AbstractChessPiece[][] board) {
         return board[field.rank()][field.file()];
     }
 
@@ -84,9 +85,11 @@ public final class Utils {
      *
      * @return Piece that was already on a given field
      */
-    public static ChessPiece putPieceOnBoard(ChessPiece who, Field field, ChessPiece[][] board) {
+    public static AbstractChessPiece putPieceOnBoard(
+            ChessPiece who, Field field, AbstractChessPiece[][] board
+    ) {
         var wasThereBefore = getPieceByField(field, board);
-        board[field.rank()][field.file()] = who;
+        board[field.rank()][field.file()] = (AbstractChessPiece) who;
         return wasThereBefore;
     }
 
@@ -110,13 +113,13 @@ public final class Utils {
         return piecesList;
     }
 
-    public static boolean fieldIsUnderAttack(int byWho, Field field, ChessPiece[][] board) {
+    public static boolean fieldIsUnderAttack(int byWho, Field field, AbstractChessPiece[][] board) {
         List<ChessPiece> playerPieces = getMatchingPieces(true, byWho, board);
         Validator validator = new StandardValidator();
         var ruleset = new KingsSafetyDisabledRules().getRules();
 
         for (var piece : playerPieces) {
-            Collection<ChessMove> movesForPiece = validator.getLegalMoves(piece, board, ruleset);
+            Collection<ChessMove> movesForPiece = validator.getLegalMoves((AbstractChessPiece) piece, board, ruleset);
             for (var move : movesForPiece) {
                 if (move.getField().rank() == field.rank() && move.getField().file() == field.file()) {
                     return true;
@@ -146,14 +149,14 @@ public final class Utils {
         throw new ThereIsNoKingOnBoard();
     }
 
-    public static boolean kingIsSafe(int whose, ChessPiece[][] board) {
+    public static boolean kingIsSafe(int whose, AbstractChessPiece[][] board) {
         Field kingLocation = getKingsPosition(whose, board);
         int enemyPlayer = whose == 0 ? 1 : 0;
 
         return !fieldIsUnderAttack(enemyPlayer, kingLocation, board);
     }
 
-    public static ChessPiece findPawnThatCanBePromoted(int player, ChessPiece[][] board) {
+    public static AbstractChessPiece findPawnThatCanBePromoted(int player, AbstractChessPiece[][] board) {
         var allPieces = Utils.getMatchingPieces(true, player, board);
         final int promotionRank = player == 0 ? 8 : 1;
         Field where = null;

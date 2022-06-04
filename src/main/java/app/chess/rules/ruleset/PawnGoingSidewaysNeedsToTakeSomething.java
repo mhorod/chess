@@ -1,9 +1,9 @@
 package app.chess.rules.ruleset;
 
-import app.chess.*;
-import app.chess.moves.*;
-import app.chess.pieces.*;
-import app.chess.rules.*;
+import app.chess.AbstractChessPiece;
+import app.chess.moves.ChessMove;
+import app.chess.pieces.ChessPieceKind;
+import app.chess.rules.Rule;
 
 public class PawnGoingSidewaysNeedsToTakeSomething implements Rule {
     @Override
@@ -19,20 +19,19 @@ public class PawnGoingSidewaysNeedsToTakeSomething implements Rule {
     }
 
     @Override
-    public boolean validate(ChessMove move, ChessPiece[][] board) {
+    public boolean validate(ChessMove move, AbstractChessPiece[][] board) {
         if (!canBeAppliedTo(move))
             return true;
 
         int newRank = move.getField().rank();
         int newFile = move.getField().file();
 
-        var wasThereBefore = RulesetPieceConverter.convert(board[newRank][newFile]);
+        var wasThereBefore = board[newRank][newFile];
 
         if (wasThereBefore == null) {
             //Perhaps en passant is possible
             //If not, we'll return false
-            wasThereBefore = RulesetPieceConverter.convert(
-                    board[move.getPiece().getPlayer() == 0 ? newRank - 1 : newRank + 1][newFile]);
+            wasThereBefore = board[move.getPiece().getPlayer() == 0 ? newRank - 1 : newRank + 1][newFile];
             if (wasThereBefore == null || !wasThereBefore.enPassantable() || wasThereBefore.getPlayer() == move.getPiece()
                                                                                                                .getPlayer()) {
                 return false;

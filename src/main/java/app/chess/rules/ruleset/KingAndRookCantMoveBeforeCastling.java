@@ -1,12 +1,12 @@
 package app.chess.rules.ruleset;
 
-import app.chess.*;
-import app.chess.moves.*;
+import app.chess.AbstractChessPiece;
+import app.chess.moves.ChessMove;
 
 public class KingAndRookCantMoveBeforeCastling extends CastlingRules {
 
     @Override
-    public boolean validate(ChessMove move, ChessPiece[][] board) {
+    public boolean validate(ChessMove move, AbstractChessPiece[][] board) {
         if (!canBeAppliedTo(move)) {
             return true;
         }
@@ -28,7 +28,7 @@ public class KingAndRookCantMoveBeforeCastling extends CastlingRules {
 
         //There's no rook to even, you know, castle with
         //Or something that on that place cannot castle
-        if (rook == null || !RulesetPieceConverter.convert(rook).canParticipateInCastling()) {
+        if (rook == null || !rook.canParticipateInCastling()) {
             return false;
         }
 
@@ -38,6 +38,6 @@ public class KingAndRookCantMoveBeforeCastling extends CastlingRules {
         //It'd be great to check what's going on with our king
         //We have a guarantee that the piece that tries to castle is king, because we are checking that in Castle constructor
 
-        return RulesetPieceConverter.convert(move.getPiece()).canParticipateInCastling();
+        return ((AbstractChessPiece) move.getPiece()).canParticipateInCastling();
     }
 }
