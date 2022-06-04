@@ -2,6 +2,11 @@ package app.core.game.moves;
 
 import app.core.game.Piece;
 
+/**
+ * Represents transformation of piece into another one e.g. chess promotion
+ *
+ * @param <P> type of piece
+ */
 public class PiecePick<P extends Piece> implements Move<P> {
     protected final P piece;
     protected final P pick;
