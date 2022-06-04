@@ -9,12 +9,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public abstract class PiecePlayer<M extends Move<P>, P extends Piece> implements Spectator<M, P> {
+/**
+ * Socket for interacting with game using individual pieces.
+ *
+ * @param <M>
+ * @param <P>
+ */
+public abstract class PieceSocket<M extends Move<P>, P extends Piece> implements Spectator<M, P> {
 
     protected Map<P, InteractivePiece<M, P>> pieces = new HashMap<>();
     protected Function<P, ? extends InteractivePiece<M, P>> newPiece;
 
 
+    /**
+     * Updates all interactive pieces connected to the changed pieces
+     *
+     * @param player player that made a move
+     * @param move move that caused the change
+     * @param changedPieces altered pieces
+     */
     @Override
     public final void update(int player, M move, List<P> changedPieces) {
         for (var piece : changedPieces) {

@@ -5,7 +5,7 @@ import app.core.game.moves.Move;
 import app.ui.board.state.Behavior;
 import app.ui.board.state.Machine;
 import app.ui.utils.Position;
-import app.utils.pieceplayer.PiecePlayer;
+import app.utils.pieceplayer.PieceSocket;
 
 import java.util.*;
 import java.util.function.Function;
@@ -20,7 +20,7 @@ public class Board<P extends app.core.game.Piece> {
     Function<P, GraphicalPiece<P>> supplier;
 
     public <M extends Move<P>> Board(
-            PiecePlayer<M, P> player, GraphicalBoard<P> board, Function<P, GraphicalPiece<P>> supplier
+            PieceSocket<M, P> player, GraphicalBoard<P> board, Function<P, GraphicalPiece<P>> supplier
     ) {
         behavior = new Machine<>(this);
         this.board = board;
@@ -94,7 +94,8 @@ public class Board<P extends app.core.game.Piece> {
     }
 
     public void showPiecePicker(List<P> pieces) {
-        if (board == null) return;
+        if (board == null)
+            return;
         if (pieces.isEmpty()) {
             board.hidePicker();
             return;
@@ -124,7 +125,7 @@ public class Board<P extends app.core.game.Piece> {
 
     public Field getNearest(Set<Field> fields, Position position) {
         return fields.stream()
-                .min((a, b) -> (int) Math.signum(distance2(a, position) - distance2(b, position)))
-                .orElse(null);
+                     .min((a, b) -> (int) Math.signum(distance2(a, position) - distance2(b, position)))
+                     .orElse(null);
     }
 }

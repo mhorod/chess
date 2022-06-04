@@ -12,7 +12,7 @@ import java.util.function.Function;
 /**
  * PiecePlayer that only spectates the game i.e. connects readonly controls
  */
-public final class PieceSpectator<M extends Move<P>, P extends Piece> extends PiecePlayer<M, P> {
+public final class PieceSpectator<M extends Move<P>, P extends Piece> extends PieceSocket<M, P> {
 
     private final GameView<M, P> game;
 

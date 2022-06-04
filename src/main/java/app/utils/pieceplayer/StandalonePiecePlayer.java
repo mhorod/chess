@@ -14,7 +14,7 @@ import java.util.function.Function;
 /**
  * Wraps single player allowing controlling it with individual pieces
  */
-public final class StandalonePiecePlayer<M extends Move<P>, P extends Piece> extends PiecePlayer<M, P> {
+public final class StandalonePiecePlayer<M extends Move<P>, P extends Piece> extends PieceSocket<M, P> {
 
     private final Player<M, P> player;
 

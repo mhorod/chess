@@ -17,7 +17,7 @@ import java.util.function.Function;
  * <p>
  * <b>NOTE:</b> If there is a piece belonging to multiple players it will be connected only to one of them
  */
-public class HotSeatPlayer<M extends Move<P>, P extends Piece> extends PiecePlayer<M, P> {
+public class HotSeatPlayer<M extends Move<P>, P extends Piece> extends PieceSocket<M, P> {
 
     List<Player<M, P>> players = new ArrayList<>();
 
