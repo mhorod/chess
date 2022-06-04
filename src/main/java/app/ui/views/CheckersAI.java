@@ -1,6 +1,6 @@
 package app.ui.views;
 
-import app.ai.dumb.DumbPlayer;
+import app.ai.DumbPlayer;
 import app.checkers.Checkers;
 import app.checkers.CheckersMove;
 import app.checkers.CheckersPiece;

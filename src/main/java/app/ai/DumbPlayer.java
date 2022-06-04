@@ -1,4 +1,4 @@
-package app.ai.dumb;
+package app.ai;
 
 import app.core.game.Piece;
 import app.core.game.moves.Move;

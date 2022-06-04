@@ -1,6 +1,6 @@
 package app.ui.views;
 
-import app.ai.dumb.DumbPlayer;
+import app.ai.DumbPlayer;
 import app.chess.Chess;
 import app.chess.ChessPiece;
 import app.chess.ChessState;
