@@ -1,8 +1,11 @@
-package app.ui;
+package app.ui.styles;
 
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+/**
+ * Properties used to style user interface
+ */
 public abstract class Style {
     public Color whitePiece;
     public Color blackPiece;

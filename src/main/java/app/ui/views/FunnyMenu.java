@@ -1,7 +1,7 @@
 package app.ui.views;
 
-import app.ui.Style;
 import app.ui.menu.*;
+import app.ui.styles.Style;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -25,10 +25,10 @@ public class FunnyMenu extends VBox implements MenuView {
         content.setSpacing(10);
         elephantSpace = new ElephantSpace();
         content.getChildren().add(elephantSpace);
-        content.getChildren().add(new Menu(new String[]{"GO RIGHT", "GO LEFT"}, new Runnable[]{
-                () -> container.changeMenu(new FunnyMenu(container)),
-                container::goBack
-        }, container.getGameStyle()));
+        content.getChildren()
+               .add(new Menu(new String[]{"GO RIGHT", "GO LEFT"},
+                             new Runnable[]{() -> container.changeMenu(new FunnyMenu(container)), container::goBack},
+                             container.getGameStyle()));
         getChildren().add(content);
         setAlignment(Pos.CENTER);
         setPadding(new Insets(10));

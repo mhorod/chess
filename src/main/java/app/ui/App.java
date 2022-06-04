@@ -1,6 +1,7 @@
 package app.ui;
 
 import app.ui.menu.MenuContainer;
+import app.ui.styles.Style;
 import app.ui.styles.Styles;
 import app.ui.views.MainMenu;
 import app.ui.views.ViewContainer;

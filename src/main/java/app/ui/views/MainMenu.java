@@ -1,8 +1,8 @@
 package app.ui.views;
 
 import app.ui.ImageManager;
-import app.ui.Style;
 import app.ui.menu.*;
+import app.ui.styles.Style;
 import app.ui.utils.ColoredImage;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -23,12 +23,10 @@ public class MainMenu extends VBox implements MenuView {
         super();
         this.container = container;
 
-        menu = new Menu(new String[]{"PLAY", "SETTINGS", "GO RIGHT", "EXIT"}, new Runnable[]{
-                () -> container.changeMenu(new PlayMenu(container)),
-                () -> container.changeMenu(new SettingsMenu(container)),
-                () -> container.changeMenu(new FunnyMenu(container)),
-                Platform::exit,
-        }, container.getGameStyle());
+        menu = new Menu(new String[]{"PLAY", "SETTINGS", "GO RIGHT", "EXIT"},
+                        new Runnable[]{() -> container.changeMenu(new PlayMenu(container)), () -> container.changeMenu(
+                                new SettingsMenu(container)), () -> container.changeMenu(
+                                new FunnyMenu(container)), Platform::exit,}, container.getGameStyle());
 
         var content = new HBox();
         content.setSpacing(30);

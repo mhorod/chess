@@ -1,6 +1,6 @@
 package app.ui.views;
 
-import app.ui.Style;
+import app.ui.styles.Style;
 import javafx.animation.TranslateTransition;
 import javafx.scene.layout.VBox;
 

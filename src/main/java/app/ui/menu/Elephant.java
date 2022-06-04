@@ -2,7 +2,7 @@ package app.ui.menu;
 
 import app.chess.pieces.ChessPieceKind;
 import app.ui.ImageManager;
-import app.ui.Style;
+import app.ui.styles.Style;
 import app.ui.utils.ColoredImage;
 import javafx.animation.Transition;
 import javafx.application.Platform;

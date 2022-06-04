@@ -1,7 +1,7 @@
 package app.ui.views;
 
-import app.ui.Style;
 import app.ui.menu.*;
+import app.ui.styles.Style;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
@@ -22,9 +22,9 @@ public class CheckersMenu extends VBox implements MenuView {
         elephantSpace = new ElephantSpace();
         content.getChildren().add(elephantSpace);
         content.getChildren()
-                .add(new Menu(new String[]{"ALONE", "WITH FRIENDS", "RETURN"}, new Runnable[]{() -> container.changeView(
-                        new CheckersAI(container.getContainer())), () -> container.changeView(
-                        new CheckersHotseat(container.getContainer())), container::goBack}, container.getGameStyle()));
+               .add(new Menu(new String[]{"ALONE", "WITH FRIENDS", "RETURN"}, new Runnable[]{() -> container.changeView(
+                       new CheckersAI(container.getContainer())), () -> container.changeView(
+                       new CheckersHotseat(container.getContainer())), container::goBack}, container.getGameStyle()));
         getChildren().add(content);
         setAlignment(Pos.CENTER);
 

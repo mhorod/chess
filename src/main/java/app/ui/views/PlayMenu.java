@@ -1,7 +1,7 @@
 package app.ui.views;
 
-import app.ui.Style;
 import app.ui.menu.*;
+import app.ui.styles.Style;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
@@ -21,18 +21,13 @@ public class PlayMenu extends VBox implements MenuView {
         var content = new HBox();
         elephantSpace = new ElephantSpace();
         content.getChildren().add(elephantSpace);
-        content.getChildren().add(
-                new Menu(
-                        new String[]{"CHESS", "CHECKERS","MINES", "RETURN"},
-                        new Runnable[]{
-                            () -> container.changeMenu(new ChessMenu(container)),
-                            () -> container.changeMenu(new CheckersMenu(container)),
-                            () -> container.changeView(new MinesweeperView(container.getContainer())),
-                            container::goBack
-                        },
-                        container.getGameStyle()
-                )
-        );
+        content.getChildren()
+               .add(new Menu(new String[]{"CHESS", "CHECKERS", "MINES", "RETURN"},
+                             new Runnable[]{() -> container.changeMenu(
+                                     new ChessMenu(container)), () -> container.changeMenu(
+                                     new CheckersMenu(container)), () -> container.changeView(
+                                     new MinesweeperView(container.getContainer())), container::goBack},
+                             container.getGameStyle()));
 
         getChildren().add(content);
         setAlignment(Pos.CENTER);

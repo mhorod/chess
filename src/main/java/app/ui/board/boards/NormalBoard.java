@@ -1,9 +1,9 @@
 package app.ui.board.boards;
 
 import app.core.game.Field;
-import app.ui.Style;
 import app.ui.board.GraphicalBoard;
 import app.ui.board.GraphicalField;
+import app.ui.styles.Style;
 
 public class NormalBoard<P extends app.core.game.Piece> extends GraphicalBoard<P> {
     public NormalBoard(double fieldSize, Style style) {

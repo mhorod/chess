@@ -2,11 +2,11 @@ package app.ui.views;
 
 import app.chess.pieces.ChessPieceKind;
 import app.ui.ImageManager;
-import app.ui.Style;
 import app.ui.menu.DerpyButton;
 import app.ui.menu.ElephantSpace;
 import app.ui.menu.MenuContainer;
 import app.ui.menu.MenuView;
+import app.ui.styles.Style;
 import app.ui.styles.Styles;
 import app.ui.utils.ColoredImage;
 import javafx.geometry.HPos;

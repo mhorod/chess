@@ -1,7 +1,7 @@
 package app.ui.views;
 
-import app.ui.Style;
 import app.ui.menu.*;
+import app.ui.styles.Style;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
@@ -22,12 +22,10 @@ public class SettingsMenu extends VBox implements MenuView {
         var content = new HBox();
         elephantSpace = new ElephantSpace();
         content.getChildren().add(elephantSpace);
-        menu = new Menu(new String[]{"CHANGE STYLE", "RETURN"}, new Runnable[]{
-                () -> container.changeMenu(new StyleMenu(container)),
-                container::goBack
-        }, container.getGameStyle());
-        content.getChildren()
-                .add(menu);
+        menu = new Menu(new String[]{"CHANGE STYLE", "RETURN"},
+                        new Runnable[]{() -> container.changeMenu(new StyleMenu(container)), container::goBack},
+                        container.getGameStyle());
+        content.getChildren().add(menu);
         getChildren().add(content);
         setAlignment(Pos.CENTER);
 
