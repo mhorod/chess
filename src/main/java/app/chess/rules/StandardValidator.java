@@ -12,7 +12,7 @@ public class StandardValidator implements Validator {
 
     @Override
     public List<ChessMove> getLegalMoves(ChessPiece piece, ChessPiece[][] board, Collection<Rule> rules) {
-        return RulesPieceConverter.convert(piece)
+        return RulesPieceUnwrapper.unwrap(piece)
                                   .getPotentialMoves()
                                   .stream()
                                   .filter(move -> rules.stream().allMatch(rule -> rule.validate(move, board)))

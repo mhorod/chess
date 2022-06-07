@@ -4,7 +4,7 @@
  of chess package has to operate on those objects.
 
  Because of that ChessPiece is not a java interface, but a class that simply wraps internal implementation
- it provides package-private unwrap method for retrieving actual piece.
+ it provides package-private baseUnwrap method for retrieving actual piece.
 
   We could make it an interface and throw exception when down-casting fails, but because of
   high number of usages we decided to leave it the way it is to provide better type-safety.

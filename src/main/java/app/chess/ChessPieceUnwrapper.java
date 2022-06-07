@@ -1,8 +1,8 @@
-// Since ChessPiece is just a wrapper we want to unwrap it to get the actual piece.
+// Since ChessPiece is just a wrapper we want to baseUnwrap it to get the actual piece.
 // This is true for every sub-package in chess, but in java those are separate packages,
-// and therefore they cannot access ChessPiece.unwrap method
-// This class provides a workaround - it lives in the same package as ChessPiece, so it can call unwrap
-// Inheriting from it grants access to fakeConvert method which allows getting unwrapped piece in the desired module
+// and therefore they cannot access ChessPiece.baseUnwrap method
+// This class provides a workaround - it lives in the same package as ChessPiece, so it can call baseUnwrap
+// Inheriting from it grants access to baseUnwrap method which allows getting unwrapped piece in the desired module
 package app.chess;
 
 /**
@@ -16,15 +16,15 @@ package app.chess;
  *
  *
  * <p>
- * Inherit from this class in your package to be able to unwrap ChessPiece
+ * Inherit from this class in your package to be able to baseUnwrap ChessPiece
  * </p>
  */
-public class ChessPieceConverter {
-    protected ChessPieceConverter() {
+public class ChessPieceUnwrapper {
+    protected ChessPieceUnwrapper() {
     }
 
-    protected static AbstractChessPiece fakeConvert(ChessPiece a) {
-        //It's protected, so we can extend it inside rules package and be able to unwrap stuff there
+    protected static AbstractChessPiece baseUnwrap(ChessPiece a) {
+        //It's protected, so we can extend it inside rules package and be able to baseUnwrap stuff there
         //Without violating the ISP
         if (a == null) {
             return null;

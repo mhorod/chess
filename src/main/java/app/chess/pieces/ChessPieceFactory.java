@@ -29,7 +29,7 @@ public final class ChessPieceFactory {
         if (toCopy == null) {
             return null;
         }
-        AbstractChessPiece unwrappedPiece = PiecesPieceConverter.convert(toCopy);
+        AbstractChessPiece unwrappedPiece = PiecesPieceUnwrapper.unwrap(toCopy);
         AbstractChessPiece result = switch (unwrappedPiece.getKind()) {
             case PAWN -> new Pawn((Pawn) unwrappedPiece);
             case KNIGHT -> new Knight((Knight) unwrappedPiece);
