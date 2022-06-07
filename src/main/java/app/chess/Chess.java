@@ -58,10 +58,11 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         List<AbstractChessPiece> subAnswer = new ArrayList<>();
         boolean isBlack = player != 0;
 
-        subAnswer.add(new Rook(where, isBlack));
-        subAnswer.add(new Queen(where, isBlack));
-        subAnswer.add(new Knight(where, isBlack));
-        subAnswer.add(new Bishop(where, isBlack));
+        var color = promotedPawn.getColor();
+        subAnswer.add(new Rook(where, color));
+        subAnswer.add(new Queen(where, color));
+        subAnswer.add(new Knight(where, color));
+        subAnswer.add(new Bishop(where, color));
 
         List<ChessMove> answer = new ArrayList<>();
 

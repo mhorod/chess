@@ -1,34 +1,34 @@
 package app.chess.pieces;
 
-import app.chess.*;
-import app.chess.moves.*;
-import app.chess.utils.*;
-import app.core.game.*;
+import app.chess.AbstractChessPiece;
+import app.chess.moves.ChessMove;
+import app.chess.moves.NormalMove;
+import app.chess.utils.Utils;
+import app.core.game.Field;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static app.chess.pieces.ChessPieceKind.PAWN;
 
 public class Pawn extends AbstractChessPiece {
     private boolean movedBy2RanksRecently = false;
 
-    public Pawn(Field position, boolean isBlack) {
-        super(position, isBlack);
+    public Pawn(Field position, ChessPieceColor color) {
+        super(position, PAWN, color);
     }
 
-    public Pawn(Pawn toCopy) {
-        super(toCopy);
-        overwriteState(toCopy);
-    }
-
-    @Override
-    public void overwriteState(AbstractChessPiece toCopy) {
-        super.overwriteState(toCopy);
-        movedBy2RanksRecently = ((Pawn) toCopy).movedBy2RanksRecently;
+    public Pawn(Pawn from) {
+        super(from);
+        overwriteState(from);
     }
 
     @Override
-    public ChessPieceKind getKind() {
-        return ChessPieceKind.PAWN;
+    public void overwriteState(AbstractChessPiece from) {
+        super.overwriteState(from);
+        movedBy2RanksRecently = ((Pawn) from).movedBy2RanksRecently;
     }
+
 
     @Override
     public List<ChessMove> getPotentialMoves() {
