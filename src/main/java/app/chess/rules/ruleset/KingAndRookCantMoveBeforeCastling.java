@@ -1,6 +1,7 @@
 package app.chess.rules.ruleset;
 
 import app.chess.ChessPiece;
+import app.chess.ChessPieceUnwrapper;
 import app.chess.moves.ChessMove;
 
 public class KingAndRookCantMoveBeforeCastling extends CastlingRules {
@@ -28,7 +29,7 @@ public class KingAndRookCantMoveBeforeCastling extends CastlingRules {
 
         //There's no rook to even, you know, castle with
         //Or something that on that place cannot castle
-        if (rook == null || !RulesetPieceUnwrapper.convert(rook).canParticipateInCastling()) {
+        if (rook == null || !ChessPieceUnwrapper.unwrap(rook).canParticipateInCastling()) {
             return false;
         }
 
@@ -38,6 +39,6 @@ public class KingAndRookCantMoveBeforeCastling extends CastlingRules {
         //It'd be great to check what's going on with our king
         //We have a guarantee that the piece that tries to castle is king, because we are checking that in Castle constructor
 
-        return RulesetPieceUnwrapper.convert(move.getPiece()).canParticipateInCastling();
+        return ChessPieceUnwrapper.unwrap(move.getPiece()).canParticipateInCastling();
     }
 }

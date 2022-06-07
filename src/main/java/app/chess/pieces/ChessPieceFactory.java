@@ -2,6 +2,7 @@ package app.chess.pieces;
 
 import app.chess.AbstractChessPiece;
 import app.chess.ChessPiece;
+import app.chess.ChessPieceUnwrapper;
 import app.core.game.Field;
 
 /**
@@ -29,7 +30,7 @@ public final class ChessPieceFactory {
         if (toCopy == null) {
             return null;
         }
-        AbstractChessPiece unwrappedPiece = PiecesPieceUnwrapper.unwrap(toCopy);
+        AbstractChessPiece unwrappedPiece = ChessPieceUnwrapper.unwrap(toCopy);
         AbstractChessPiece result = switch (unwrappedPiece.getKind()) {
             case PAWN -> new Pawn((Pawn) unwrappedPiece);
             case KNIGHT -> new Knight((Knight) unwrappedPiece);
