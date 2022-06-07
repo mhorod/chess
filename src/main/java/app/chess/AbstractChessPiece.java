@@ -1,56 +1,50 @@
 package app.chess;
 
-import app.chess.board.StandardChessBoard;
-import app.chess.moves.ChessMove;
-import app.chess.pieces.ChessPieceColor;
-import app.chess.pieces.ChessPieceKind;
-import app.core.game.Field;
+import app.chess.moves.*;
+import app.chess.pieces.*;
+import app.core.game.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Internal game implementation of a chess piece
  */
-public abstract class AbstractChessPiece implements ChessPiece {
+public abstract class AbstractChessPiece implements Piece {
 
     protected boolean wasMoved = false;
+    protected boolean isBlack;
     protected boolean isAlive = true; //Defaults to true, who would like to create a dead chess piece anyways
     protected Field position;
-    protected ChessPieceKind kind;
-    protected ChessPieceColor color;
 
-    protected AbstractChessPiece(AbstractChessPiece from) {
+    protected AbstractChessPiece(AbstractChessPiece toCopy) {
         //Java has no trivial copy constructors, so we have to do this instead
-        overwriteState(from);
+        overwriteState(toCopy);
     }
 
-    protected AbstractChessPiece(
-            Field position, ChessPieceKind kind, ChessPieceColor color
-    ) {
-        if (!StandardChessBoard.containsField(position))
-            throw new AbstractChessPiece.IncorrectPiecePlacement();
+    protected AbstractChessPiece(Field position, boolean isBlack) {
 
         this.position = position;
-        this.kind = kind;
-        this.color = color;
-    }
 
-    /**
-     * @return A list of ChessMoves that are potentially valid (i.e. the caller needs to check if king's safety is ok
-     *         and whether path to the given field isn't obstructed
-     */
-    public abstract List<ChessMove> getPotentialMoves();
+        this.isBlack = isBlack;
+
+        int rank = position.rank();
+        int file = position.file();
+
+        //A quick validation to check whether arguments supplied here are correct
+        if (rank > 8 || rank < 1 || file > 8 || file < 1) {
+            throw new IncorrectPiecePlacement();
+        }
+    }
 
     /**
      * This function effectively copies all state from another piece. <br> Please, use it with caution under acceptable
      * circumstances. <br> Passing incompatible pieces might result in an exception.
      */
-    public void overwriteState(AbstractChessPiece from) {
-        wasMoved = from.wasMoved;
-        kind = from.kind;
-        color = from.color;
-        isAlive = from.isAlive;
-        position = from.position;
+    public void overwriteState(AbstractChessPiece toCopy) {
+        wasMoved = toCopy.wasMoved;
+        isBlack = toCopy.isBlack;
+        isAlive = toCopy.isAlive;
+        position = toCopy.position;
     }
 
     @Override
@@ -65,15 +59,13 @@ public abstract class AbstractChessPiece implements ChessPiece {
 
     @Override
     public int getPlayer() {
-        return color == ChessPieceColor.WHITE ? 0 : 1;
+        return isBlack ? 1 : 0;
     }
 
-    public final ChessPieceKind getKind() {
-        return kind;
-    }
+    public abstract ChessPieceKind getKind();
 
-    public final ChessPieceColor getColor() {
-        return color;
+    public ChessPieceColor getColor() {
+        return isBlack ? ChessPieceColor.BLACK : ChessPieceColor.WHITE;
     }
 
     @Override
@@ -104,6 +96,21 @@ public abstract class AbstractChessPiece implements ChessPiece {
         return false;
     }
 
+
+    /**
+     * @return A list of ChessMoves that are potentially valid (i.e. the caller needs to check if king's safety is ok
+     *         and whether path to the given field isn't obstructed
+     */
+    public abstract List<ChessMove> getPotentialMoves();
+
+    /**
+     * Wraps this piece into ChessPiece that can be publicly exposed
+     *
+     * @return wrapped piece
+     */
+    public ChessPiece wrap() {
+        return new ChessPiece(this);
+    }
 
     static class IncorrectPiecePlacement extends RuntimeException {
     }

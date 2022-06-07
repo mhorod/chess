@@ -1,5 +1,6 @@
 package app.chess;
 
+import app.chess.moves.Castle;
 import app.chess.moves.NormalMove;
 import app.chess.pieces.ChessPieceFactory;
 import app.chess.pieces.ChessPieceKind;
@@ -10,8 +11,7 @@ import java.util.function.BiFunction;
 
 import static app.chess.AbstractChessPiece.IncorrectPiecePlacement;
 import static app.chess.pieces.ChessPieceColor.WHITE;
-import static app.chess.pieces.ChessPieceKind.PAWN;
-import static app.chess.pieces.ChessPieceKind.ROOK;
+import static app.chess.pieces.ChessPieceKind.*;
 import static org.junit.Assert.*;
 
 public class ChessPieceTest {
@@ -46,6 +46,15 @@ public class ChessPieceTest {
         }
     }
 
+    @Test
+    public void chess_piece_created_from_unwrapped_piece_is_equal_to_original() {
+        // because they reference the same object
+        for (var kind : ChessPieceKind.values()) {
+            var first = ChessPieceFactory.newPiece(new Field(1, 1), kind, WHITE);
+            var second = first.unwrap().wrap();
+            assertEquals(first, second);
+        }
+    }
 
     @Test
     public void chess_pieces_created_by_factory_are_not_equal() {
@@ -58,10 +67,29 @@ public class ChessPieceTest {
     }
 
     @Test
+    public void normal_moves_that_move_same_piece_to_same_position_are_equal() {
+        var piece = ChessPieceFactory.newPiece(new Field(1, 1), PAWN, WHITE);
+        var copy = piece.unwrap().wrap();
+        var first_move = new NormalMove(piece, new Field(1, 2));
+        var second_move = new NormalMove(copy, new Field(1, 2));
+        assertEquals(first_move, second_move);
+    }
+
+    @Test
+    public void castles_when_that_move_same_king_to_same_position_are_equal() {
+        var king = ChessPieceFactory.newPiece(new Field(1, 1), KING, WHITE);
+        var copy = king.unwrap().wrap();
+        var first_castle = new Castle(king, new Field(1, 2));
+        var second_castle = new Castle(copy, new Field(1, 2));
+        assertEquals(first_castle, second_castle);
+    }
+
+    @Test
     public void normal_moves_that_differ_in_position_are_not_equal() {
         var piece = ChessPieceFactory.newPiece(new Field(1, 1), PAWN, WHITE);
+        var copy = piece.unwrap().wrap();
         var first_move = new NormalMove(piece, new Field(1, 2));
-        var second_move = new NormalMove(piece, new Field(1, 3));
+        var second_move = new NormalMove(copy, new Field(1, 3));
         assertNotEquals(first_move, second_move);
     }
 

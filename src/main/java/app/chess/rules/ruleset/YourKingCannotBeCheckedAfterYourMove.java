@@ -1,9 +1,9 @@
 package app.chess.rules.ruleset;
 
-import app.chess.AbstractChessPiece;
-import app.chess.moves.ChessMove;
-import app.chess.rules.Rule;
-import app.chess.utils.Utils;
+import app.chess.*;
+import app.chess.moves.*;
+import app.chess.rules.*;
+import app.chess.utils.*;
 
 public class YourKingCannotBeCheckedAfterYourMove implements Rule {
     @Override
@@ -12,7 +12,7 @@ public class YourKingCannotBeCheckedAfterYourMove implements Rule {
     }
 
     @Override
-    public boolean validate(ChessMove move, AbstractChessPiece[][] board) {
+    public boolean validate(ChessMove move, ChessPiece[][] board) {
         //Temporarily modifies the board and checks if something went wrong
         //Please note that it doesn't modify anything at the end of the day
 

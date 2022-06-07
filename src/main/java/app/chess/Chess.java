@@ -3,7 +3,10 @@ package app.chess;
 import app.chess.board.ChessBoard;
 import app.chess.moves.ChessMove;
 import app.chess.moves.Promotion;
-import app.chess.pieces.*;
+import app.chess.pieces.Bishop;
+import app.chess.pieces.Knight;
+import app.chess.pieces.Queen;
+import app.chess.pieces.Rook;
 import app.chess.rules.Rule;
 import app.chess.rules.StandardValidator;
 import app.chess.rules.Validator;
@@ -24,17 +27,13 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     private final StateManager manager = new StateManager();
     private final Mover mover = new StandardMover();
     private final Validator validator;
-    AbstractChessPiece[][] board;
+    ChessPiece[][] board;
     private Collection<Rule> ruleset;
 
     public Chess(ChessBoard board) {
         this.board = board.getPieces();
         validator = new StandardValidator();
         ruleset = validator.getDefaultRules();
-    }
-
-    public static ChessPieceColor playerColor(int player) {
-        return player == 0 ? ChessPieceColor.WHITE : ChessPieceColor.BLACK;
     }
 
     @Override
@@ -53,21 +52,21 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     private List<ChessMove> getPromotionMoves(int player) {
 
         var promotedPawn = Utils.findPawnThatCanBePromoted(player, board);
-        var position = promotedPawn.getPosition();
+        var where = promotedPawn.getPosition();
 
         //And now we need to create piece pick for each piece that's in game... ouch
         List<AbstractChessPiece> subAnswer = new ArrayList<>();
-        var color = playerColor(player);
+        boolean isBlack = player != 0;
 
-        subAnswer.add(new Rook(position, color));
-        subAnswer.add(new Queen(position, color));
-        subAnswer.add(new Knight(position, color));
-        subAnswer.add(new Bishop(position, color));
+        subAnswer.add(new Rook(where, isBlack));
+        subAnswer.add(new Queen(where, isBlack));
+        subAnswer.add(new Knight(where, isBlack));
+        subAnswer.add(new Bishop(where, isBlack));
 
         List<ChessMove> answer = new ArrayList<>();
 
         for (var pieceAfterPromotion : subAnswer) {
-            answer.add(new Promotion(promotedPawn, pieceAfterPromotion, position));
+            answer.add(new Promotion(promotedPawn.piece.wrap(), pieceAfterPromotion.wrap(), where));
         }
 
         return answer;
@@ -113,12 +112,12 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             }
         }
 
-        return validator.getLegalMoves((AbstractChessPiece) piece, board, ruleset).stream().toList();
+        return validator.getLegalMoves(piece, board, ruleset).stream().toList();
     }
 
     @Override
     public List<ChessPiece> makeMove(int player, ChessMove move) {
-        return mover.makeMove(player, move, board, manager).stream().map(p -> (ChessPiece) p).toList();
+        return mover.makeMove(player, move, board, manager);
     }
 
     /**
@@ -149,7 +148,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
     }
 
     public Boolean checkIfEnemyKingIsCheckedAfterMove(ChessMove move) {
-        Function<AbstractChessPiece[][], Boolean> checkLambda = (board) -> {
+        Function<ChessPiece[][], Boolean> checkLambda = (board) -> {
             final int playerToCheck = move.getPiece().getPlayer() == 0 ? 1 : 0;
             return !Utils.kingIsSafe(playerToCheck, board);
         };

@@ -1,11 +1,10 @@
 package app.chess.rules.ruleset;
 
-import app.chess.AbstractChessPiece;
-import app.chess.moves.Castle;
-import app.chess.moves.ChessMove;
-import app.chess.pieces.ChessPieceKind;
-import app.chess.rules.Rule;
-import app.chess.utils.Utils;
+import app.chess.*;
+import app.chess.moves.*;
+import app.chess.pieces.*;
+import app.chess.rules.*;
+import app.chess.utils.*;
 
 public class RoadCannotBeObstructed implements Rule {
     @Override
@@ -19,7 +18,7 @@ public class RoadCannotBeObstructed implements Rule {
     }
 
     @Override
-    public boolean validate(ChessMove move, AbstractChessPiece[][] board) {
+    public boolean validate(ChessMove move, ChessPiece[][] board) {
 
         if (!canBeAppliedTo(move)) {
             return true;

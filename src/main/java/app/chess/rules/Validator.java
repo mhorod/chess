@@ -1,6 +1,6 @@
 package app.chess.rules;
 
-import app.chess.AbstractChessPiece;
+import app.chess.ChessPiece;
 import app.chess.moves.ChessMove;
 
 import java.util.Collection;
@@ -12,12 +12,12 @@ public interface Validator {
     /**
      * Get legal moves of the piece using supplied rules
      */
-    Collection<ChessMove> getLegalMoves(AbstractChessPiece piece, AbstractChessPiece[][] board, Collection<Rule> rules);
+    Collection<ChessMove> getLegalMoves(ChessPiece piece, ChessPiece[][] board, Collection<Rule> rules);
 
     /**
      * Ger legal moves of the piece using default rules
      */
-    Collection<ChessMove> getLegalMoves(AbstractChessPiece piece, AbstractChessPiece[][] board);
+    Collection<ChessMove> getLegalMoves(ChessPiece piece, ChessPiece[][] board);
 
     Collection<Rule> getDefaultRules();
 }

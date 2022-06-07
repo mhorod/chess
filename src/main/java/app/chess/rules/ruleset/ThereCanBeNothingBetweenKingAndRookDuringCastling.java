@@ -1,15 +1,14 @@
 package app.chess.rules.ruleset;
 
-import app.chess.AbstractChessPiece;
-import app.chess.moves.Castle;
-import app.chess.moves.ChessMove;
-import app.chess.utils.Utils;
-import app.core.game.Field;
+import app.chess.*;
+import app.chess.moves.*;
+import app.chess.utils.*;
+import app.core.game.*;
 
 public class ThereCanBeNothingBetweenKingAndRookDuringCastling extends CastlingRules {
 
     @Override
-    public boolean validate(ChessMove move, AbstractChessPiece[][] board) {
+    public boolean validate(ChessMove move, ChessPiece[][] board) {
         if (!canBeAppliedTo(move)) {
             return true;
         }

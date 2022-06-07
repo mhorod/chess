@@ -1,9 +1,9 @@
 package app.chess.rules.ruleset;
 
-import app.chess.AbstractChessPiece;
-import app.chess.moves.ChessMove;
-import app.chess.pieces.ChessPieceKind;
-import app.chess.rules.Rule;
+import app.chess.*;
+import app.chess.moves.*;
+import app.chess.pieces.*;
+import app.chess.rules.*;
 
 public class PawnGoingForwardCantTakePieces implements Rule {
     @Override
@@ -20,7 +20,7 @@ public class PawnGoingForwardCantTakePieces implements Rule {
     }
 
     @Override
-    public boolean validate(ChessMove move, AbstractChessPiece[][] board) {
+    public boolean validate(ChessMove move, ChessPiece[][] board) {
         if (!canBeAppliedTo(move)) {
             return true;
         } else {

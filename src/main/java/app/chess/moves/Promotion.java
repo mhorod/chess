@@ -26,4 +26,5 @@ public class Promotion extends PiecePick<ChessPiece> implements ChessMove {
     public Field getField() {
         return field;
     }
+
 }

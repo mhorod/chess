@@ -1,6 +1,6 @@
 package app.chess.board;
 
-import app.chess.AbstractChessPiece;
+import app.chess.ChessPiece;
 import app.chess.pieces.ChessPieceColor;
 import app.chess.pieces.ChessPieceFactory;
 import app.chess.pieces.ChessPieceKind;
@@ -12,10 +12,10 @@ import app.core.game.Field;
  */
 public class ChessBoard {
     protected int size;
-    AbstractChessPiece[][] pieces;
+    ChessPiece[][] pieces;
 
     public ChessBoard(int size) {
-        pieces = new AbstractChessPiece[size][size];
+        pieces = new ChessPiece[size][size];
     }
 
     /**
@@ -34,7 +34,7 @@ public class ChessBoard {
         pieces[field.rank()][field.file()] = ChessPieceFactory.newPiece(field, kind, color);
     }
 
-    public AbstractChessPiece[][] getPieces() {
+    public ChessPiece[][] getPieces() {
         return pieces;
     }
 }

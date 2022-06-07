@@ -29,8 +29,8 @@ final class PredicateChecker {
      * @return The result of performing the predicate on the modified board.
      */
     public static <T> T safelyCheckPredicate(
-            Function<AbstractChessPiece[][], T> predicate, ChessMove move, AbstractChessPiece[][] board,
-            StateManager manager, Mover mover
+            Function<ChessPiece[][], T> predicate, ChessMove move, ChessPiece[][] board, StateManager manager,
+            Mover mover
     ) {
 
         //Unfortunately, we need to pretty much split the code in 3 branches, accounting for all possible moves
@@ -51,16 +51,16 @@ final class PredicateChecker {
 
 
     private static <T> T checkPredicateForNormalMove(
-            Function<AbstractChessPiece[][], T> predicate, ChessMove move, AbstractChessPiece[][] board,
-            StateManager manager, Mover mover
+            Function<ChessPiece[][], T> predicate, ChessMove move, ChessPiece[][] board, StateManager manager,
+            Mover mover
     ) {
         //Saving copies of pieces that are going to be changed in case of the normal move
-        var killedPiece = mover.getPieceKilledByMove(move, board);
-        var movePerformer = (AbstractChessPiece) move.getPiece();
+        ChessPiece killedPiece = mover.getPieceKilledByMove(move, board);
+        ChessPiece movePerformer = move.getPiece();
 
-        var killedPieceCopy = ChessPieceFactory.copyPiece(killedPiece);
+        ChessPiece killedPieceCopy = ChessPieceFactory.copyPiece(killedPiece);
         //Note that killedPieceCopy might be null and that's totally okay
-        var movePerformerCopy = ChessPieceFactory.copyPiece(movePerformer);
+        ChessPiece movePerformerCopy = ChessPieceFactory.copyPiece(movePerformer);
         //We'd also like to backup the state manager, as it will be changed by performing of the move
         StateManager managerCopy = new StateManager(manager);
 
@@ -76,9 +76,9 @@ final class PredicateChecker {
         //Now we roll back the internal state of pieces that were here before
         //Please note that we CANNOT put copies on the board, because every class that holds a reference to those pieces will be in a trouble.
         if (killedPiece != null) {
-            killedPiece.overwriteState(killedPieceCopy);
+            killedPiece.unwrap().overwriteState(killedPieceCopy.unwrap());
         }
-        movePerformer.overwriteState(movePerformerCopy);
+        movePerformer.unwrap().overwriteState(movePerformerCopy.unwrap());
 
         //We remove the piece that was placed on said field
         Utils.putPieceOnBoard(null, move.getField(), board);
@@ -93,17 +93,16 @@ final class PredicateChecker {
     }
 
     private static <T> T checkPredicateForCastling(
-            Function<AbstractChessPiece[][], T> predicate, Castle move, AbstractChessPiece[][] board,
-            StateManager manager, Mover mover
+            Function<ChessPiece[][], T> predicate, Castle move, ChessPiece[][] board, StateManager manager, Mover mover
     ) {
         //If you need an explanation of what I'm doing here, please look at the function that takes care of checking predicates
         //for normal moves. It's pretty analogical, although it wasn't really possible to reuse code from that function here
 
-        var king = (AbstractChessPiece) move.getPiece();
-        var rook = Utils.getPieceByField(Utils.getRookPositionBasedOnCastling(move), board);
+        ChessPiece king = move.getPiece();
+        ChessPiece rook = Utils.getPieceByField(Utils.getRookPositionBasedOnCastling(move), board);
 
-        var kingCopy = ChessPieceFactory.copyPiece(king);
-        var rookCopy = ChessPieceFactory.copyPiece(rook);
+        ChessPiece kingCopy = ChessPieceFactory.copyPiece(king);
+        ChessPiece rookCopy = ChessPieceFactory.copyPiece(rook);
 
         StateManager copyManager = new StateManager(manager);
 
@@ -113,8 +112,8 @@ final class PredicateChecker {
 
         manager.copyState(copyManager);
 
-        king.overwriteState(kingCopy);
-        rook.overwriteState(rookCopy);
+        king.unwrap().overwriteState(kingCopy.unwrap());
+        rook.unwrap().overwriteState(rookCopy.unwrap());
 
         Utils.putPieceOnBoard(null, move.getField(), board);
         Utils.putPieceOnBoard(null, Utils.inferNewRookPositionAfterCastling(move), board);
@@ -126,11 +125,11 @@ final class PredicateChecker {
     }
 
     private static <T> T checkPredicateForPiecePick(
-            Function<AbstractChessPiece[][], T> predicate, ChessMove move, AbstractChessPiece[][] board,
-            StateManager manager, Mover mover
+            Function<ChessPiece[][], T> predicate, ChessMove move, ChessPiece[][] board, StateManager manager,
+            Mover mover
     ) {
-        var pawn = Utils.getPieceByField(move.getField(), board);
-        var pawnCopy = ChessPieceFactory.copyPiece(pawn);
+        ChessPiece pawn = Utils.getPieceByField(move.getField(), board);
+        ChessPiece pawnCopy = ChessPieceFactory.copyPiece(pawn);
 
         //We cannot do move.getPiece() because it would return a new piece that is going to be put on that field
         StateManager copyManager = new StateManager(manager);
@@ -141,7 +140,7 @@ final class PredicateChecker {
 
         manager.copyState(copyManager);
 
-        pawn.overwriteState(pawnCopy);
+        pawn.unwrap().overwriteState(pawnCopy.unwrap());
 
         Utils.putPieceOnBoard(pawn, pawn.getPosition(),
                               board); //Now we put pawn there again, effectively removing the piece that was promoted

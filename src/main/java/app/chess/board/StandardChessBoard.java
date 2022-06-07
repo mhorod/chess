@@ -1,8 +1,8 @@
 package app.chess.board;
 
+import app.chess.Chess;
 import app.core.game.Field;
 
-import static app.chess.Chess.SIZE;
 import static app.chess.pieces.ChessPieceColor.BLACK;
 import static app.chess.pieces.ChessPieceColor.WHITE;
 import static app.chess.pieces.ChessPieceKind.*;
@@ -36,7 +36,7 @@ public class StandardChessBoard extends ChessBoard {
     public StandardChessBoard(boolean initialize) {
         // Adding one here because Chess starts indexing from 1
         // This is a little uncommon, but in Chess such numeration is also starting from 1, and it will hopefully create fewer bugs if we stick to this convention
-        super(SIZE + 1);
+        super(Chess.SIZE + 1);
         if (initialize) {
             putPawns();
             putRooks();
@@ -47,13 +47,8 @@ public class StandardChessBoard extends ChessBoard {
         }
     }
 
-    public static boolean containsField(Field f) {
-        //A quick validation to check whether arguments supplied here are correct
-        return (f.rank() <= SIZE && f.rank() >= 1 && f.file() <= SIZE && f.file() >= 1);
-    }
-
     protected void putPawns() {
-        for (int file = 1; file <= SIZE; file++) {
+        for (int file = 1; file <= Chess.SIZE; file++) {
             put(new Field(WHITE_PAWN_RANK, file), PAWN, WHITE);
             put(new Field(BLACK_PAWN_RANK, file), PAWN, BLACK);
         }
