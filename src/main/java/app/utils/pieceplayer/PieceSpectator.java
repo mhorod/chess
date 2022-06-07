@@ -9,7 +9,10 @@ import app.utils.pieceplayer.controls.NoControls;
 import java.util.function.Function;
 
 
-public final class PieceSpectator<M extends Move<P>, P extends Piece> extends PiecePlayer<M, P> {
+/**
+ * PiecePlayer that only spectates the game i.e. connects readonly controls
+ */
+public final class PieceSpectator<M extends Move<P>, P extends Piece> extends PieceSocket<M, P> {
 
     private final GameView<M, P> game;
 
@@ -21,6 +24,7 @@ public final class PieceSpectator<M extends Move<P>, P extends Piece> extends Pi
     /**
      * Connects all game pieces to supplied interactive pieces
      */
+    @Override
     public void connectPieces(Function<P, ? extends InteractivePiece<M, P>> newPiece) {
         super.connectPieces(newPiece);
         for (var piece : game.getAllPieces()) {

@@ -9,4 +9,10 @@ module app {
     opens app.ui to javafx.fxml;
     exports app.ui.menu;
     opens app.ui.menu to javafx.fxml;
+    exports app.ui.styles;
+    opens app.ui.styles to javafx.fxml;
+    exports app.ui.games.chess;
+    opens app.ui.games.chess to javafx.fxml;
+    exports app.ui.utils;
+    opens app.ui.utils to javafx.fxml;
 }

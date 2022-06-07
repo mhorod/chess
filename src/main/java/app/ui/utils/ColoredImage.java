@@ -7,6 +7,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
+/**
+ * Applies color and border filter to supplied image. Used to change color and add effects to pieces.
+ */
 public class ColoredImage extends ImageView {
     Color color;
     Color highlightColor;
@@ -20,7 +23,8 @@ public class ColoredImage extends ImageView {
     private static Effect colorAdjust(Color color) {
         var colorAdjust = new ColorAdjust();
         var hue = color.getHue() / 180;
-        if (hue > 1) hue -= 2;
+        if (hue > 1)
+            hue -= 2;
         colorAdjust.setHue(hue);
         colorAdjust.setSaturation(color.getSaturation());
         colorAdjust.setBrightness(color.getBrightness() - 1);
@@ -31,7 +35,8 @@ public class ColoredImage extends ImageView {
         this.color = color;
         if (highlightColor == null)
             setEffect(colorAdjust(color));
-        else highlight(highlightColor);
+        else
+            highlight(highlightColor);
     }
 
     public void highlight(Color highlightColor) {

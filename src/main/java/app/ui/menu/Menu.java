@@ -1,6 +1,6 @@
 package app.ui.menu;
 
-import app.ui.Style;
+import app.ui.styles.Style;
 import javafx.geometry.Pos;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.VBox;

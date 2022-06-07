@@ -1,25 +1,25 @@
 package app.chess.pieces;
 
-import app.chess.*;
-import app.chess.moves.*;
-import app.chess.utils.*;
-import app.core.game.*;
+import app.chess.AbstractChessPiece;
+import app.chess.Chess;
+import app.chess.moves.ChessMove;
+import app.chess.moves.NormalMove;
+import app.chess.utils.Utils;
+import app.core.game.Field;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static app.chess.pieces.ChessPieceKind.BISHOP;
 
 public class Bishop extends AbstractChessPiece {
 
-    public Bishop(Field position, boolean isBlack) {
-        super(position, isBlack);
+    public Bishop(Field position, ChessPieceColor color) {
+        super(position, BISHOP, color);
     }
 
-    public Bishop(Bishop toCopy) {
-        super(toCopy);
-    }
-
-    @Override
-    public ChessPieceKind getKind() {
-        return ChessPieceKind.BISHOP;
+    public Bishop(Bishop from) {
+        super(from);
     }
 
     @Override

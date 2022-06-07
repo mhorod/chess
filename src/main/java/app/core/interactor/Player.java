@@ -7,7 +7,9 @@ import app.core.game.moves.Move;
 import java.util.List;
 
 /**
- * Player exposed to external controllers such as UI, abstracts out player number and input method.
+ * Player exposed to external controllers such as UI, abstracts out player number and underlying game.
+ * <p>
+ * Note that player is not a spectator and does not receive updates from game.
  * <p>
  * Override update method to implement custom behavior
  */
@@ -63,7 +65,7 @@ public class Player<M extends Move<P>, P extends Piece> {
     /**
      * Returns in-game id of this player
      */
-    public int getID() {
+    public final int getID() {
         return player;
     }
 }

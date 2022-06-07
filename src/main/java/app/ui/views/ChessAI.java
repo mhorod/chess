@@ -1,6 +1,6 @@
 package app.ui.views;
 
-import app.ai.dumb.DumbPlayer;
+import app.ai.DumbPlayer;
 import app.chess.Chess;
 import app.chess.ChessPiece;
 import app.chess.ChessState;
@@ -8,11 +8,12 @@ import app.chess.board.StandardChessBoard;
 import app.chess.moves.ChessMove;
 import app.core.interactor.InteractiveGame;
 import app.core.interactor.Spectator;
-import app.ui.Style;
 import app.ui.board.boards.NormalBoard;
-import app.ui.chess.ChessConnector;
+import app.ui.games.chess.ChessConnector;
 import app.ui.menu.DerpyButton;
 import app.ui.menu.MenuContainer;
+import app.ui.menus.MainMenu;
+import app.ui.styles.Style;
 import app.utils.pieceplayer.StandalonePiecePlayer;
 import javafx.geometry.Pos;
 import javafx.scene.text.Font;

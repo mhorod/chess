@@ -32,7 +32,7 @@ public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends
      * @param player player to be connected
      */
     @Override
-    public void connectPlayer(int playerId, Player<M, P> player) {
+    public synchronized void connectPlayer(int playerId, Player<M, P> player) {
         if (player == null)
             throw new NullPointerException();
         else if (playerId < 0 || playerId > game.getPlayerCount())
@@ -52,32 +52,32 @@ public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends
      * @param spectator spectator to be connected
      */
     @Override
-    public void connectSpectator(Spectator<M, P> spectator) {
+    public synchronized void connectSpectator(Spectator<M, P> spectator) {
         spectators.add(spectator);
     }
 
     @Override
-    public List<P> getPieces(int player) {
+    public synchronized List<P> getPieces(int player) {
         return game.getPieces(player);
     }
 
     @Override
-    public List<P> getAllPieces() {
+    public synchronized List<P> getAllPieces() {
         return game.getAllPieces();
     }
 
     @Override
-    public List<M> getLegalMoves(int player) {
+    public synchronized List<M> getLegalMoves(int player) {
         return game.getLegalMoves(player);
     }
 
     @Override
-    public List<M> getLegalMoves(int player, P piece) {
+    public synchronized List<M> getLegalMoves(int player, P piece) {
         return game.getLegalMoves(player, piece);
     }
 
     @Override
-    public List<P> makeMove(int player, M move) {
+    public synchronized List<P> makeMove(int player, M move) {
         if (connectedPlayers < game.getPlayerCount())
             throw new IllegalStateException("not all players are connected");
 
@@ -88,7 +88,7 @@ public final class InteractiveGame<M extends Move<P>, P extends Piece, G extends
     }
 
     @Override
-    public int getPlayerCount() {
+    public synchronized int getPlayerCount() {
         return game.getPlayerCount();
     }
 }

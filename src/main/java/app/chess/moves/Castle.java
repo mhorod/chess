@@ -5,6 +5,9 @@ import app.chess.pieces.ChessPieceKind;
 import app.core.game.Field;
 import app.core.game.moves.PieceMove;
 
+/**
+ * Castle i.e. move with both kind and rook
+ */
 public class Castle extends PieceMove<ChessPiece> implements ChessMove {
     public Castle(ChessPiece piece, Field field) {
         super(piece, field);

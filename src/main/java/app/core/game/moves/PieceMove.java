@@ -3,6 +3,11 @@ package app.core.game.moves;
 import app.core.game.Field;
 import app.core.game.Piece;
 
+/**
+ * Represents moving a piece into a position
+ *
+ * @param <P> type of moved piece
+ */
 public class PieceMove<P extends Piece> implements Move<P> {
     protected final P piece;
     protected final Field field;

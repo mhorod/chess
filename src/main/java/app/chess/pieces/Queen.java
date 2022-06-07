@@ -1,25 +1,25 @@
 package app.chess.pieces;
 
-import app.chess.*;
-import app.chess.moves.*;
-import app.core.game.*;
+import app.chess.AbstractChessPiece;
+import app.chess.moves.ChessMove;
+import app.chess.moves.NormalMove;
+import app.core.game.Field;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static app.chess.pieces.ChessPieceKind.QUEEN;
 
 public class Queen extends AbstractChessPiece {
 
-    public Queen(Field position, boolean isBlack) {
-        super(position, isBlack);
+    public Queen(Field position, ChessPieceColor color) {
+        super(position, QUEEN, color);
     }
 
-    public Queen(Queen toCopy) {
-        super(toCopy);
+    public Queen(Queen from) {
+        super(from);
     }
 
-    @Override
-    public ChessPieceKind getKind() {
-        return ChessPieceKind.QUEEN;
-    }
 
     @Override
     public List<ChessMove> getPotentialMoves() {
@@ -27,8 +27,8 @@ public class Queen extends AbstractChessPiece {
         //This means that there is no sense in writing this piece's logic, we might just create a fake rook and fake bishop with the same Field and then basically merge their results
 
         //We don't care about any other parameter than the position, because pieces don't care about interactions with others when returning potential moves
-        var fakeRook = new Rook(this.getPosition(), false);
-        var fakeBishop = new Bishop(this.getPosition(), false);
+        var fakeRook = new Rook(this.getPosition(), getColor());
+        var fakeBishop = new Bishop(this.getPosition(), getColor());
 
         List<ChessMove> fakePotentialMoves = fakeRook.getPotentialMoves();
         fakePotentialMoves.addAll(fakeBishop.getPotentialMoves());

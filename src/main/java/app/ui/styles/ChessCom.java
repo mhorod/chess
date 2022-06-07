@@ -1,7 +1,6 @@
 package app.ui.styles;
 
 import app.ui.App;
-import app.ui.Style;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 

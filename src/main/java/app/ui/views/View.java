@@ -1,6 +1,6 @@
 package app.ui.views;
 
-import app.ui.Style;
+import app.ui.styles.Style;
 import javafx.animation.TranslateTransition;
 import javafx.scene.layout.VBox;
 
@@ -11,11 +11,11 @@ public abstract class View extends VBox {
         this.parent = parent;
     }
 
-    protected void changeView(View view) {
+    public void changeView(View view) {
         parent.changeView(view);
     }
 
-    public ViewContainer getContainer() {
+    public ViewContainer getParentContainer() {
         return parent;
     }
 
@@ -34,7 +34,7 @@ public abstract class View extends VBox {
         transition.setToY(1000);
         transition.setNode(this);
         transition.setOnFinished((e) -> {
-            getContainer().getChildren().remove(this);
+            getParentContainer().getChildren().remove(this);
         });
         transition.play();
     }

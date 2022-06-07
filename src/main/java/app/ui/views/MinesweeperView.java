@@ -1,17 +1,16 @@
 package app.ui.views;
 
-import app.checkers.CheckersMove;
-import app.checkers.CheckersPiece;
 import app.core.interactor.InteractiveGame;
 import app.core.interactor.Spectator;
 import app.minesweeper.Minesweeper;
 import app.minesweeper.MinesweeperMove;
 import app.minesweeper.MinesweeperPiece;
-import app.ui.Style;
 import app.ui.board.boards.NormalBoard;
+import app.ui.games.minesweeper.MinesweeperConnector;
 import app.ui.menu.DerpyButton;
 import app.ui.menu.MenuContainer;
-import app.ui.minesweeper.MinesweeperConnector;
+import app.ui.menus.MainMenu;
+import app.ui.styles.Style;
 import app.utils.pieceplayer.StandalonePiecePlayer;
 import javafx.geometry.Pos;
 import javafx.scene.text.Font;
@@ -19,9 +18,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 import java.util.List;
-
-import static app.minesweeper.Minesweeper.State.LOST;
-import static app.minesweeper.Minesweeper.State.WON;
 
 public class MinesweeperView extends View {
 
@@ -84,8 +80,7 @@ public class MinesweeperView extends View {
     }
 
     @Override
-    protected void setGameStyle(Style style)
-    {
+    protected void setGameStyle(Style style) {
 
     }
 }

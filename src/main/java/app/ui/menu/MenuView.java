@@ -1,6 +1,6 @@
 package app.ui.menu;
 
-import app.ui.Style;
+import app.ui.styles.Style;
 import javafx.scene.Node;
 
 public interface MenuView {

@@ -1,6 +1,6 @@
 package app.ui.menu;
 
-import app.ui.Style;
+import app.ui.styles.Style;
 import app.ui.views.View;
 import app.ui.views.ViewContainer;
 import javafx.animation.TranslateTransition;
@@ -30,7 +30,10 @@ public class MenuContainer extends View {
 
         pane.widthProperty().addListener((obs, oldVal, newVal) -> {
             if (!menuViews.isEmpty())
-                pane.setTranslateX(getWidth() / 2 - viewsContainer.getWidth() + menuViews.get(menuViews.size() - 1).getContent().getLayoutBounds().getWidth() / 2);
+                pane.setTranslateX(getWidth() / 2 - viewsContainer.getWidth() + menuViews.get(menuViews.size() - 1)
+                                                                                         .getContent()
+                                                                                         .getLayoutBounds()
+                                                                                         .getWidth() / 2);
         });
 
     }
@@ -83,7 +86,8 @@ public class MenuContainer extends View {
         elephant.moveTo(newView.getSpaceForElephant());
         newView.getSpaceForElephant().smoothGrow();
         var scroll = new TranslateTransition(Duration.millis(500), pane);
-        scroll.setToX(getWidth() / 2 - viewsContainer.getWidth() + newView.getContent().getLayoutBounds().getWidth() / 2);
+        scroll.setToX(
+                getWidth() / 2 - viewsContainer.getWidth() + newView.getContent().getLayoutBounds().getWidth() / 2);
         scroll.play();
         menuViews.remove(menuViews.size() - 1);
     }
@@ -94,7 +98,7 @@ public class MenuContainer extends View {
     }
 
     public Style getGameStyle() {
-        return getContainer().getGameStyle();
+        return getParentContainer().getGameStyle();
     }
 
     @Override

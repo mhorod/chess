@@ -1,6 +1,6 @@
 package app.ui.views;
 
-import app.ui.Style;
+import app.ui.styles.Style;
 import javafx.geometry.Pos;
 import javafx.scene.layout.StackPane;
 

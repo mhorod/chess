@@ -1,8 +1,8 @@
 package app.ui.board;
 
 import app.core.game.Field;
-import app.ui.Style;
 import app.ui.board.state.Behavior;
+import app.ui.styles.Style;
 import app.ui.utils.Position;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
@@ -29,10 +29,12 @@ public abstract class GraphicalBoard<P extends app.core.game.Piece> extends VBox
             for (int y = 0; y < 8; y++) {
                 if ((x + y) % 2 == 1)
                     graphicalFields[x][y] = new GraphicalField(style.blackField, style.blackFieldCircle, fieldSize,
-                            new Position(25 + x * fieldSize + fieldSize / 2, y * fieldSize + fieldSize / 2));
+                                                               new Position(25 + x * fieldSize + fieldSize / 2,
+                                                                            y * fieldSize + fieldSize / 2));
                 else
                     graphicalFields[x][y] = new GraphicalField(style.whiteField, style.whiteFieldCircle, fieldSize,
-                            new Position(25 + x * fieldSize + fieldSize / 2, y * fieldSize + fieldSize / 2));
+                                                               new Position(25 + x * fieldSize + fieldSize / 2,
+                                                                            y * fieldSize + fieldSize / 2));
 
 
                 grid.add(graphicalFields[x][y], x + 1, y + 1);
@@ -41,7 +43,8 @@ public abstract class GraphicalBoard<P extends app.core.game.Piece> extends VBox
 
         var cornerRadius = fieldSize / 5;
 
-        graphicalFields[7][0].setBackground(new Background(new BackgroundFill(style.blackField, new CornerRadii(0, cornerRadius, 0, 0, false), Insets.EMPTY)));
+        graphicalFields[7][0].setBackground(new Background(
+                new BackgroundFill(style.blackField, new CornerRadii(0, cornerRadius, 0, 0, false), Insets.EMPTY)));
 
         for (int y = 0; y < 8; y++) {
             Label label;
@@ -52,9 +55,13 @@ public abstract class GraphicalBoard<P extends app.core.game.Piece> extends VBox
                 label = new Label(getLeftLabel(y), style.font, style.borderWhite, style.borderText);
 
             if (y == 0)
-                label.setBackground(new Background(new BackgroundFill(style.borderBlack, new CornerRadii(cornerRadius, 0, 0, 0, false), Insets.EMPTY)));
+                label.setBackground(new Background(
+                        new BackgroundFill(style.borderBlack, new CornerRadii(cornerRadius, 0, 0, 0, false),
+                                           Insets.EMPTY)));
             if (y == 7)
-                label.setBackground(new Background(new BackgroundFill(style.borderWhite, new CornerRadii(0, 0, 0, cornerRadius, false), Insets.EMPTY)));
+                label.setBackground(new Background(
+                        new BackgroundFill(style.borderWhite, new CornerRadii(0, 0, 0, cornerRadius, false),
+                                           Insets.EMPTY)));
 
             grid.add(label, 0, y + 1);
         }
@@ -68,9 +75,13 @@ public abstract class GraphicalBoard<P extends app.core.game.Piece> extends VBox
                 label = new Label(getBottomLabel(x), style.font, style.borderWhite, style.borderText);
 
             if (x == 0)
-                label.setBackground(new Background(new BackgroundFill(style.borderWhite, new CornerRadii(0, 0, 0, cornerRadius, false), Insets.EMPTY)));
+                label.setBackground(new Background(
+                        new BackgroundFill(style.borderWhite, new CornerRadii(0, 0, 0, cornerRadius, false),
+                                           Insets.EMPTY)));
             if (x == 7)
-                label.setBackground(new Background(new BackgroundFill(style.borderBlack, new CornerRadii(0, 0, cornerRadius, 0, false), Insets.EMPTY)));
+                label.setBackground(new Background(
+                        new BackgroundFill(style.borderBlack, new CornerRadii(0, 0, cornerRadius, 0, false),
+                                           Insets.EMPTY)));
             grid.add(label, x + 1, 9);
         }
 
@@ -116,7 +127,8 @@ public abstract class GraphicalBoard<P extends app.core.game.Piece> extends VBox
     }
 
     private void showPicker() {
-        if (this.picker == null || this.oldPicker != null) return;
+        if (this.picker == null || this.oldPicker != null)
+            return;
         picker.setTranslateY(100);
         getChildren().add(0, picker);
 
@@ -128,7 +140,8 @@ public abstract class GraphicalBoard<P extends app.core.game.Piece> extends VBox
     }
 
     public void hidePicker() {
-        if (picker == null || oldPicker != null) return;
+        if (picker == null || oldPicker != null)
+            return;
         oldPicker = picker;
         picker = null;
         var transition = new TranslateTransition(Duration.seconds(0.2), oldPicker);

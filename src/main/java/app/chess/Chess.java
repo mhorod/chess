@@ -1,31 +1,39 @@
 package app.chess;
 
-import app.chess.board.*;
-import app.chess.moves.*;
-import app.chess.pieces.*;
-import app.chess.rules.*;
-import app.chess.utils.*;
-import app.core.game.*;
+import app.chess.board.ChessBoard;
+import app.chess.moves.ChessMove;
+import app.chess.moves.Promotion;
+import app.chess.pieces.Bishop;
+import app.chess.pieces.Knight;
+import app.chess.pieces.Queen;
+import app.chess.pieces.Rook;
+import app.chess.rules.Rule;
+import app.chess.rules.StandardValidator;
+import app.chess.rules.Validator;
+import app.chess.utils.Utils;
+import app.core.game.Game;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
 
+/**
+ * Chess kernel that implements behavior of standard chess
+ */
 public class Chess implements Game<ChessMove, ChessPiece> {
     public static final int SIZE = 8;
     private final StateManager manager = new StateManager();
     private final Mover mover = new StandardMover();
     private final Validator validator;
     ChessPiece[][] board;
-    private List<Rule> ruleset = new ArrayList<>();
+    private Collection<Rule> ruleset;
 
     public Chess(ChessBoard board) {
         this.board = board.getPieces();
         validator = new StandardValidator();
         ruleset = validator.getDefaultRules();
-    }
-
-    public Chess(ChessBoard board, Validator validator) {
-        this.validator = validator;
     }
 
     @Override
@@ -43,21 +51,23 @@ public class Chess implements Game<ChessMove, ChessPiece> {
      */
     private List<ChessMove> getPromotionMoves(int player) {
 
-        var where = Utils.findPawnThatCanBePromoted(player, board).getPosition();
+        var promotedPawn = Utils.findPawnThatCanBePromoted(player, board);
+        var where = promotedPawn.getPosition();
 
         //And now we need to create piece pick for each piece that's in game... ouch
         List<AbstractChessPiece> subAnswer = new ArrayList<>();
         boolean isBlack = player != 0;
 
-        subAnswer.add(new Rook(where, isBlack));
-        subAnswer.add(new Queen(where, isBlack));
-        subAnswer.add(new Knight(where, isBlack));
-        subAnswer.add(new Bishop(where, isBlack));
+        var color = promotedPawn.getColor();
+        subAnswer.add(new Rook(where, color));
+        subAnswer.add(new Queen(where, color));
+        subAnswer.add(new Knight(where, color));
+        subAnswer.add(new Bishop(where, color));
 
         List<ChessMove> answer = new ArrayList<>();
 
-        for (var piece : subAnswer) {
-            answer.add(new Promotion(piece.wrap(), where));
+        for (var pieceAfterPromotion : subAnswer) {
+            answer.add(new Promotion(promotedPawn.piece.wrap(), pieceAfterPromotion.wrap(), where));
         }
 
         return answer;
@@ -88,7 +98,8 @@ public class Chess implements Game<ChessMove, ChessPiece> {
 
     @Override
     public List<ChessMove> getLegalMoves(int player, ChessPiece piece) {
-        if (!piece.isAlive()) return List.of();
+        if (!piece.isAlive())
+            return List.of();
 
         if (player != manager.getCurrentPlayer()) {
             return Collections.emptyList();
@@ -102,7 +113,7 @@ public class Chess implements Game<ChessMove, ChessPiece> {
             }
         }
 
-        return validator.getLegalMoves(piece, board, ruleset);
+        return validator.getLegalMoves(piece, board, ruleset).stream().toList();
     }
 
     @Override
@@ -110,6 +121,9 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         return mover.makeMove(player, move, board, manager);
     }
 
+    /**
+     * Get current win/lose state of the player
+     */
     public ChessState getState(int player) {
         if (manager.getCurrentPlayer() != player) {
             return ChessState.OK;
@@ -146,15 +160,15 @@ public class Chess implements Game<ChessMove, ChessPiece> {
         ruleset = rules;
     }
 
-    public List<Rule> getCurrentRules() {
-        return ruleset;
-    }
 
     @Override
     public int getPlayerCount() {
         return 2; //It's always going to be that way in classical chess
     }
 
+    /**
+     * Exception thrown when board state is disturbed
+     */
     static class BoardDiscrepancy extends RuntimeException {
     }
 

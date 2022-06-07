@@ -1,16 +1,17 @@
 package app.ui.views;
 
-import app.ai.dumb.DumbPlayer;
+import app.ai.DumbPlayer;
 import app.checkers.Checkers;
 import app.checkers.CheckersMove;
 import app.checkers.CheckersPiece;
 import app.core.interactor.InteractiveGame;
 import app.core.interactor.Spectator;
-import app.ui.Style;
 import app.ui.board.boards.NormalBoard;
-import app.ui.checkers.CheckersConnector;
+import app.ui.games.checkers.CheckersConnector;
 import app.ui.menu.DerpyButton;
 import app.ui.menu.MenuContainer;
+import app.ui.menus.MainMenu;
+import app.ui.styles.Style;
 import app.utils.pieceplayer.StandalonePiecePlayer;
 import javafx.geometry.Pos;
 import javafx.scene.text.Font;

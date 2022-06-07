@@ -33,13 +33,16 @@ public class Minesweeper implements Game<MinesweeperMove, MinesweeperPiece> {
 
     @Override
     public List<MinesweeperPiece> makeMove(int player, MinesweeperMove move) {
-        var piece = move.changed;
-        if (move.getPiece().kind.type == SHOVEL)
+        var piece = move.getPiece();
+        if (move.getPick().kind.type == SHOVEL)
             return uncover(piece);
         else
             return switchFlag(piece);
     }
 
+    /**
+     * If piece is flagged removes the flag, adds flag otherwise
+     */
     private List<MinesweeperPiece> switchFlag(MinesweeperPiece piece) {
         if (piece.kind.type == FLAG)
             piece.kind.type = COVERED_EMPTY;
@@ -49,6 +52,9 @@ public class Minesweeper implements Game<MinesweeperMove, MinesweeperPiece> {
     }
 
 
+    /**
+     * Uncover the piece and surrounding area if there are no mines around
+     */
     List<MinesweeperPiece> uncover(MinesweeperPiece piece) {
 
         if (mines.contains(piece.getPosition())) {
@@ -63,6 +69,9 @@ public class Minesweeper implements Game<MinesweeperMove, MinesweeperPiece> {
         return List.of(piece);
     }
 
+    /**
+     * Uncover just this piece without checking surroundings
+     */
     void uncoverSingle(MinesweeperPiece piece) {
         var around = minesAround(piece);
         if (around == 0)
@@ -128,7 +137,8 @@ public class Minesweeper implements Game<MinesweeperMove, MinesweeperPiece> {
 
     @Override
     public List<MinesweeperMove> getLegalMoves(int player) {
-        if (lost) return List.of();
+        if (lost)
+            return List.of();
         return pieces.values()
                      .stream()
                      .filter(MinesweeperPiece::isCovered)

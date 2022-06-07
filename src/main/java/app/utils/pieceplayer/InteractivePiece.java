@@ -12,7 +12,7 @@ import java.util.List;
  * <p>
  * Override update method to implement custom behavior
  */
-public class InteractivePiece<M extends Move<P>, P extends Piece> {
+public abstract class InteractivePiece<M extends Move<P>, P extends Piece> {
     // Underlying controls that hide implementation details
     // This way we can still expose InteractivePiece as a class and allow to extend it
     // while having flexibility to choose between different strategies e.g. completely disallowing moves

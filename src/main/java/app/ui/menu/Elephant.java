@@ -1,9 +1,8 @@
 package app.ui.menu;
 
-import app.chess.pieces.ChessPieceKind;
-import app.ui.ImageManager;
-import app.ui.Style;
+import app.ui.styles.Style;
 import app.ui.utils.ColoredImage;
+import app.ui.utils.Images;
 import javafx.animation.Transition;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
@@ -13,6 +12,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
+/**
+ * Elephant that jumps as the menu changes
+ */
 public class Elephant extends Pane {
     Circle eye = new Circle(5);
     Circle outerEye = new Circle(10);
@@ -24,7 +26,7 @@ public class Elephant extends Pane {
 
     public Elephant(Color color, ElephantSpace currentSpace) {
         this.currentSpace = currentSpace;
-        piece = new ColoredImage(ImageManager.getPieceImageHQ(ChessPieceKind.BISHOP), color);
+        piece = new ColoredImage(Images.elephant, color);
         piece.setFitWidth(100);
         piece.setPreserveRatio(true);
         piece.setViewport(new Rectangle2D(30 * 4, 0, 72 * 4, 512));

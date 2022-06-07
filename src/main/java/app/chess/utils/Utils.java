@@ -1,14 +1,19 @@
 package app.chess.utils;
 
-import app.chess.*;
-import app.chess.moves.*;
-import app.chess.pieces.*;
-import app.chess.rules.*;
-import app.core.game.*;
+import app.chess.ChessPiece;
+import app.chess.moves.Castle;
+import app.chess.moves.ChessMove;
+import app.chess.pieces.ChessPieceKind;
+import app.chess.rules.KingsSafetyDisabledRules;
+import app.chess.rules.StandardValidator;
+import app.chess.rules.Validator;
+import app.core.game.Field;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-import static app.chess.Chess.*;
+import static app.chess.Chess.SIZE;
 
 public final class Utils {
     private Utils() {
@@ -50,7 +55,7 @@ public final class Utils {
      * @return Assuming that castling is possible, returns the position on which the rook should be located. Makes
      *         ABSOLUTELY NO GUARANTEE that castling is legal.
      *         <p>
-     *                                                 TODO: Placement of this function is bad. Find a class where it makes more sense.
+     *                                                         TODO: Placement of this function is bad. Find a class where it makes more sense.
      */
     public static Field getRookPositionBasedOnCastling(Castle move) {
         final int currentFile = move.getPiece().getPosition().file();
@@ -111,7 +116,7 @@ public final class Utils {
         var ruleset = new KingsSafetyDisabledRules().getRules();
 
         for (var piece : playerPieces) {
-            List<ChessMove> movesForPiece = validator.getLegalMoves(piece, board, ruleset);
+            Collection<ChessMove> movesForPiece = validator.getLegalMoves(piece, board, ruleset);
             for (var move : movesForPiece) {
                 if (move.getField().rank() == field.rank() && move.getField().file() == field.file()) {
                     return true;
