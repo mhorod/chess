@@ -28,6 +28,14 @@ Project is built with [Maven](https://maven.apache.org/)
 - [x] api for external players and ai (almost)
 - [x] checkers and minesweeper
 
+# Contribution percentage
+Person | Total contribution percentage
+--- | --- |
+Michał Horodecki | 34%
+Dominik Matuszek | 34%
+Michał Pajda | 34%
+Kacper Topolski | -2%
+
 # Screenshots
 
 ![s1](screenshots/s1.png)
