@@ -29,7 +29,7 @@
 
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
+            <artifactId>javafx-graphics</artifactId>
             <version>17.0.1</version>
             <classifier>win</classifier>
         </dependency>
